@@ -1,0 +1,37 @@
+language: go
+
+sudo: required
+
+os:
+- linux
+
+go:
+- "1.10.x"
+- "1.11.x"
+- master
+
+before_install:
+- curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+- go get -u github.com/mgechev/revive
+
+install:
+- make install
+
+stages:
+- lint
+- compile
+- test
+
+jobs:
+  include:
+  - stage: lint
+    script:
+    - make vet
+    - make lint
+  - stage: compile
+    script:
+    - make generate
+    - make compile
+  - stage: test
+    script:
+    - make cover

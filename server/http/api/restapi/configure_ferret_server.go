@@ -1,0 +1,94 @@
+// This file is safe to edit. Once it exists it will not be overwritten
+
+package restapi
+
+import (
+	"crypto/tls"
+	"net/http"
+
+	errors "github.com/go-openapi/errors"
+	runtime "github.com/go-openapi/runtime"
+	middleware "github.com/go-openapi/runtime/middleware"
+
+	"github.com/MontFerret/ferret-server/server/http/api/restapi/operations"
+)
+
+//go:generate swagger generate server --target ../server/http/api --name FerretServer --spec ../api/api.oas2.json --exclude-main
+
+func configureFlags(api *operations.FerretServerAPI) {
+	// api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ ... }
+}
+
+func configureAPI(api *operations.FerretServerAPI) http.Handler {
+	// configure the api here
+	api.ServeError = errors.ServeError
+
+	// Set your custom logger if needed. Default one is log.Printf
+	// Expected interface func(string, ...interface{})
+	//
+	// Example:
+	// api.Logger = log.Printf
+
+	api.JSONConsumer = runtime.JSONConsumer()
+
+	api.JSONProducer = runtime.JSONProducer()
+
+	api.CreateProjectHandler = operations.CreateProjectHandlerFunc(func(params operations.CreateProjectParams) middleware.Responder {
+		return middleware.NotImplemented("operation .CreateProject has not yet been implemented")
+	})
+	api.CreateScriptHandler = operations.CreateScriptHandlerFunc(func(params operations.CreateScriptParams) middleware.Responder {
+		return middleware.NotImplemented("operation .CreateScript has not yet been implemented")
+	})
+	api.DeleteProjectHandler = operations.DeleteProjectHandlerFunc(func(params operations.DeleteProjectParams) middleware.Responder {
+		return middleware.NotImplemented("operation .DeleteProject has not yet been implemented")
+	})
+	api.DeleteScriptHandler = operations.DeleteScriptHandlerFunc(func(params operations.DeleteScriptParams) middleware.Responder {
+		return middleware.NotImplemented("operation .DeleteScript has not yet been implemented")
+	})
+	api.FindProjectsHandler = operations.FindProjectsHandlerFunc(func(params operations.FindProjectsParams) middleware.Responder {
+		return middleware.NotImplemented("operation .FindProjects has not yet been implemented")
+	})
+	api.FindScriptsHandler = operations.FindScriptsHandlerFunc(func(params operations.FindScriptsParams) middleware.Responder {
+		return middleware.NotImplemented("operation .FindScripts has not yet been implemented")
+	})
+	api.GetProjectHandler = operations.GetProjectHandlerFunc(func(params operations.GetProjectParams) middleware.Responder {
+		return middleware.NotImplemented("operation .GetProject has not yet been implemented")
+	})
+	api.GetScriptHandler = operations.GetScriptHandlerFunc(func(params operations.GetScriptParams) middleware.Responder {
+		return middleware.NotImplemented("operation .GetScript has not yet been implemented")
+	})
+	api.UpdateProjectHandler = operations.UpdateProjectHandlerFunc(func(params operations.UpdateProjectParams) middleware.Responder {
+		return middleware.NotImplemented("operation .UpdateProject has not yet been implemented")
+	})
+	api.UpdateScriptHandler = operations.UpdateScriptHandlerFunc(func(params operations.UpdateScriptParams) middleware.Responder {
+		return middleware.NotImplemented("operation .UpdateScript has not yet been implemented")
+	})
+
+	api.ServerShutdown = func() {}
+
+	return setupGlobalMiddleware(api.Serve(setupMiddlewares))
+}
+
+// The TLS configuration before HTTPS server starts.
+func configureTLS(tlsConfig *tls.Config) {
+	// Make all necessary changes to the TLS configuration here.
+}
+
+// As soon as server is initialized but not run yet, this function will be called.
+// If you need to modify a config, store server instance to stop it individually later, this is the place.
+// This function can be called multiple times, depending on the number of serving schemes.
+// scheme value will be set accordingly: "http", "https" or "unix"
+func configureServer(s *http.Server, scheme, addr string) {
+}
+
+// The middleware configuration is for the handler executors. These do not apply to the swagger.json document.
+// The middleware executes after routing but before authentication, binding and validation
+func setupMiddlewares(handler http.Handler) http.Handler {
+	return handler
+}
+
+// The middleware configuration happens before anything, this middleware also applies to serving the swagger.json document.
+// So this is a good place to plug in a panic handling middleware, logging and metrics
+func setupGlobalMiddleware(handler http.Handler) http.Handler {
+	return handler
+}
