@@ -2,7 +2,7 @@
 
 
 [[projects]]
-  digest = "1:d6c6ca3050fb9d753ea29c6bd3ba7bc1334c7509d770521e1353fe186bdb6f40"
+  digest = "1:bee3c2a1f8858b4325804ba486308384cf88cf311251451c3ed54e3690fe42be"
   name = "github.com/MontFerret/ferret"
   packages = [
     "pkg/compiler",
@@ -35,8 +35,8 @@
     "pkg/stdlib/utils",
   ]
   pruneopts = "UT"
-  revision = "30abe61f7234218b4f902fe56f813d432921b0c4"
-  version = "v0.5.0"
+  revision = "dba9761b2c205760521a0599787cfec81a7753b4"
+  version = "v0.5.1"
 
 [[projects]]
   digest = "1:573fa46f8d413d4bc3f7cc5e86b2c43cb21559f4fb0a19d9874d228e28fdc07c"
@@ -116,11 +116,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:cc439e1d9d8cff3d575642f5401033b00f2b8d0cd9f859db45604701c990879a"
+  digest = "1:86909a5b1e4522ad763f86327cfa65e51d7eb838d4adb3d6f68069fede181122"
   name = "github.com/corpix/uarand"
   packages = ["."]
   pruneopts = "UT"
-  revision = "2b8494104d86337cdd41d0a49cbed8e4583c0ab4"
+  revision = "37c9140f52f6bf4998ff7617c456d554d6a2dc2f"
 
 [[projects]]
   digest = "1:6f82cacd0af5921e99bf3f46748705239b36489464f4529a1589bc895764fb18"
@@ -426,25 +426,24 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:f030bcffad408506011a2172ba348533f0917ad15e83554589143ae0385c7fc1"
+  digest = "1:5842c9310ef8cc501dde52f107f31e243c53bb1f639dae739951f18cd40fffe0"
   name = "golang.org/x/net"
   packages = [
-    "context",
     "html",
     "html/atom",
     "idna",
     "netutil",
   ]
   pruneopts = "UT"
-  revision = "c10e9556a7bc0e7c942242b606f0acf024ad5d6a"
+  revision = "adae6a3d119ae4890b46832a2e88a95adc62b8e7"
 
 [[projects]]
   branch = "master"
-  digest = "1:39ebcc2b11457b703ae9ee2e8cca0f68df21969c6102cb3b705f76cca0ea0239"
+  digest = "1:b521f10a2d8fa85c04a8ef4e62f2d1e14d303599a55d64dabf9f5a02f84d35eb"
   name = "golang.org/x/sync"
   packages = ["errgroup"]
   pruneopts = "UT"
-  revision = "1d60e4601c6fd243af51cc01ddf169918a5407ca"
+  revision = "42b317875d0fa942474b76e1b46a6060d720ae6e"
 
 [[projects]]
   digest = "1:0c56024909189aee3364b7f21a95a27459f718aa7c199a5c111c36cfffd9eaef"

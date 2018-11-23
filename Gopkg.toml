@@ -56,8 +56,8 @@ required = ["github.com/go-swagger/go-swagger"]
 
 [[constraint]]
   name = "github.com/rs/zerolog"
-  version = "1.10.0"
+  version = "1.10.3"
 
 [[constraint]]
   name = "github.com/MontFerret/ferret"
-  version = "0.5.0"
+  version = "0.5.1"
