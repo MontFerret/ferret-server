@@ -83,7 +83,7 @@ func init() {
         }
       }
     },
-    "/projects/{projectId}": {
+    "/projects/{projectID}": {
       "get": {
         "summary": "Get Project",
         "operationId": "getProject",
@@ -124,14 +124,87 @@ func init() {
       },
       "parameters": [
         {
+          "$ref": "#/parameters/projectID"
+        }
+      ]
+    },
+    "/projects/{projectID}/execution": {
+      "get": {
+        "summary": "List Execution",
+        "operationId": "findExecutions",
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/execution-output"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Execution",
+        "operationId": "createExecution",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/execution-input"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/parameters/projectID"
+        },
+        {
+          "$ref": "#/parameters/status"
+        }
+      ]
+    },
+    "/projects/{projectID}/execution/{jobID}": {
+      "get": {
+        "summary": "Get Status of Execution",
+        "operationId": "getExecution",
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/execution-output-detailed"
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Cancel Execution",
+        "operationId": "deleteExecution",
+        "responses": {
+          "204": {}
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/parameters/projectID"
+        },
+        {
+          "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
           "type": "string",
-          "name": "projectId",
+          "name": "jobID",
           "in": "path",
           "required": true
         }
       ]
     },
-    "/projects/{projectId}/scripts": {
+    "/projects/{projectID}/scripts": {
       "get": {
         "summary": "List Script",
         "operationId": "findScripts",
@@ -176,14 +249,11 @@ func init() {
       },
       "parameters": [
         {
-          "type": "string",
-          "name": "projectId",
-          "in": "path",
-          "required": true
+          "$ref": "#/parameters/projectID"
         }
       ]
     },
-    "/projects/{projectId}/scripts/{scriptId}": {
+    "/projects/{projectID}/scripts/{scriptID}": {
       "get": {
         "summary": "Get Script",
         "operationId": "getScript",
@@ -224,16 +294,10 @@ func init() {
       },
       "parameters": [
         {
-          "type": "string",
-          "name": "projectId",
-          "in": "path",
-          "required": true
+          "$ref": "#/parameters/projectID"
         },
         {
-          "type": "string",
-          "name": "scriptId",
-          "in": "path",
-          "required": true
+          "$ref": "#/parameters/scriptID"
         }
       ]
     }
@@ -266,18 +330,140 @@ func init() {
         }
       ]
     },
+    "execution-cause": {
+      "description": "Execution cause",
+      "type": "string",
+      "title": "Execution Cause",
+      "enum": [
+        "unknown",
+        "manual",
+        "schedule",
+        "hook"
+      ]
+    },
+    "execution-common": {
+      "description": "The properties that are shared amongst all versions of the Execution model.",
+      "type": "object",
+      "title": "Execution Common",
+      "required": [
+        "job_id",
+        "script_id",
+        "script_rev",
+        "status",
+        "cause"
+      ],
+      "properties": {
+        "cause": {
+          "$ref": "#/definitions/execution-cause"
+        },
+        "job_id": {
+          "type": "string",
+          "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+        },
+        "script_id": {
+          "type": "string",
+          "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+        },
+        "script_rev": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/execution-status"
+        }
+      }
+    },
+    "execution-input": {
+      "description": "The properties that are allowed when creating or updating a Execution.",
+      "type": "object",
+      "title": "Execution Input",
+      "required": [
+        "scriptID"
+      ],
+      "properties": {
+        "params": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/any"
+          }
+        },
+        "scriptID": {
+          "type": "string",
+          "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+        }
+      }
+    },
+    "execution-output": {
+      "description": "The properties that are included when fetching a list of Executions.",
+      "title": "Execution Output",
+      "allOf": [
+        {
+          "type": "object"
+        },
+        {
+          "$ref": "#/definitions/execution-common"
+        }
+      ]
+    },
+    "execution-output-detailed": {
+      "description": "The properties that are included when fetching a single Execution.",
+      "title": "Execution Output Detailed",
+      "allOf": [
+        {
+          "$ref": "#/definitions/execution-output"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "ended_at": {
+              "type": "string"
+            },
+            "error": {
+              "type": "string"
+            },
+            "logs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/definitions/any"
+              }
+            },
+            "started_at": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "execution-status": {
+      "description": "Execution stats",
+      "type": "string",
+      "title": "Execution Status",
+      "enum": [
+        "unknown",
+        "queued",
+        "running",
+        "completed",
+        "cancelled",
+        "errored"
+      ]
+    },
     "metadata": {
       "description": "Response model for data creation endpoints",
       "type": "object",
       "title": "Metadata",
       "required": [
-        "createdAt"
+        "created_at"
       ],
       "properties": {
-        "createdAt": {
+        "created_at": {
           "type": "string"
         },
-        "updatedAt": {
+        "updated_at": {
           "type": "string"
         }
       }
@@ -468,6 +654,20 @@ func init() {
       "name": "page",
       "in": "query"
     },
+    "projectID": {
+      "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+      "type": "string",
+      "name": "projectID",
+      "in": "path",
+      "required": true
+    },
+    "scriptID": {
+      "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+      "type": "string",
+      "name": "scriptID",
+      "in": "path",
+      "required": true
+    },
     "size": {
       "maximum": 100,
       "minimum": 1,
@@ -477,6 +677,20 @@ func init() {
       "description": "Page size",
       "name": "size",
       "in": "query"
+    },
+    "status": {
+      "enum": [
+        "unknown",
+        "queued",
+        "running",
+        "completed",
+        "cancelled",
+        "errored"
+      ],
+      "type": "string",
+      "name": "status",
+      "in": "query",
+      "allowEmptyValue": true
     }
   },
   "responses": {
@@ -567,13 +781,13 @@ func init() {
                         "type": "object",
                         "title": "Metadata",
                         "required": [
-                          "createdAt"
+                          "created_at"
                         ],
                         "properties": {
-                          "createdAt": {
+                          "created_at": {
                             "type": "string"
                           },
-                          "updatedAt": {
+                          "updated_at": {
                             "type": "string"
                           }
                         }
@@ -652,13 +866,13 @@ func init() {
                   "type": "object",
                   "title": "Metadata",
                   "required": [
-                    "createdAt"
+                    "created_at"
                   ],
                   "properties": {
-                    "createdAt": {
+                    "created_at": {
                       "type": "string"
                     },
-                    "updatedAt": {
+                    "updated_at": {
                       "type": "string"
                     }
                   }
@@ -669,7 +883,7 @@ func init() {
         }
       }
     },
-    "/projects/{projectId}": {
+    "/projects/{projectID}": {
       "get": {
         "summary": "Get Project",
         "operationId": "getProject",
@@ -703,13 +917,13 @@ func init() {
                       "type": "object",
                       "title": "Metadata",
                       "required": [
-                        "createdAt"
+                        "created_at"
                       ],
                       "properties": {
-                        "createdAt": {
+                        "created_at": {
                           "type": "string"
                         },
-                        "updatedAt": {
+                        "updated_at": {
                           "type": "string"
                         }
                       }
@@ -796,13 +1010,13 @@ func init() {
                   "type": "object",
                   "title": "Metadata",
                   "required": [
-                    "createdAt"
+                    "created_at"
                   ],
                   "properties": {
-                    "createdAt": {
+                    "created_at": {
                       "type": "string"
                     },
-                    "updatedAt": {
+                    "updated_at": {
                       "type": "string"
                     }
                   }
@@ -821,14 +1035,269 @@ func init() {
       },
       "parameters": [
         {
+          "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
           "type": "string",
-          "name": "projectId",
+          "name": "projectID",
           "in": "path",
           "required": true
         }
       ]
     },
-    "/projects/{projectId}/scripts": {
+    "/projects/{projectID}/execution": {
+      "get": {
+        "summary": "List Execution",
+        "operationId": "findExecutions",
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "description": "The properties that are included when fetching a list of Executions.",
+                "title": "Execution Output",
+                "allOf": [
+                  {
+                    "type": "object"
+                  },
+                  {
+                    "description": "The properties that are shared amongst all versions of the Execution model.",
+                    "type": "object",
+                    "title": "Execution Common",
+                    "required": [
+                      "job_id",
+                      "script_id",
+                      "script_rev",
+                      "status",
+                      "cause"
+                    ],
+                    "properties": {
+                      "cause": {
+                        "description": "Execution cause",
+                        "type": "string",
+                        "title": "Execution Cause",
+                        "enum": [
+                          "unknown",
+                          "manual",
+                          "schedule",
+                          "hook"
+                        ]
+                      },
+                      "job_id": {
+                        "type": "string",
+                        "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+                      },
+                      "script_id": {
+                        "type": "string",
+                        "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+                      },
+                      "script_rev": {
+                        "type": "string"
+                      },
+                      "status": {
+                        "description": "Execution stats",
+                        "type": "string",
+                        "title": "Execution Status",
+                        "enum": [
+                          "unknown",
+                          "queued",
+                          "running",
+                          "completed",
+                          "cancelled",
+                          "errored"
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Execution",
+        "operationId": "createExecution",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "description": "The properties that are allowed when creating or updating a Execution.",
+              "type": "object",
+              "title": "Execution Input",
+              "required": [
+                "scriptID"
+              ],
+              "properties": {
+                "params": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "title": "Any"
+                  }
+                },
+                "scriptID": {
+                  "type": "string",
+                  "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+          "type": "string",
+          "name": "projectID",
+          "in": "path",
+          "required": true
+        },
+        {
+          "enum": [
+            "unknown",
+            "queued",
+            "running",
+            "completed",
+            "cancelled",
+            "errored"
+          ],
+          "type": "string",
+          "name": "status",
+          "in": "query",
+          "allowEmptyValue": true
+        }
+      ]
+    },
+    "/projects/{projectID}/execution/{jobID}": {
+      "get": {
+        "summary": "Get Status of Execution",
+        "operationId": "getExecution",
+        "responses": {
+          "200": {
+            "schema": {
+              "description": "The properties that are included when fetching a single Execution.",
+              "title": "Execution Output Detailed",
+              "allOf": [
+                {
+                  "description": "The properties that are included when fetching a list of Executions.",
+                  "title": "Execution Output",
+                  "allOf": [
+                    {
+                      "type": "object"
+                    },
+                    {
+                      "description": "The properties that are shared amongst all versions of the Execution model.",
+                      "type": "object",
+                      "title": "Execution Common",
+                      "required": [
+                        "job_id",
+                        "script_id",
+                        "script_rev",
+                        "status",
+                        "cause"
+                      ],
+                      "properties": {
+                        "cause": {
+                          "description": "Execution cause",
+                          "type": "string",
+                          "title": "Execution Cause",
+                          "enum": [
+                            "unknown",
+                            "manual",
+                            "schedule",
+                            "hook"
+                          ]
+                        },
+                        "job_id": {
+                          "type": "string",
+                          "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+                        },
+                        "script_id": {
+                          "type": "string",
+                          "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+                        },
+                        "script_rev": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "description": "Execution stats",
+                          "type": "string",
+                          "title": "Execution Status",
+                          "enum": [
+                            "unknown",
+                            "queued",
+                            "running",
+                            "completed",
+                            "cancelled",
+                            "errored"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "ended_at": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "logs": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "params": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "title": "Any"
+                      }
+                    },
+                    "started_at": {
+                      "type": "string"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Cancel Execution",
+        "operationId": "deleteExecution",
+        "responses": {
+          "204": {}
+        }
+      },
+      "parameters": [
+        {
+          "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+          "type": "string",
+          "name": "projectID",
+          "in": "path",
+          "required": true
+        },
+        {
+          "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+          "type": "string",
+          "name": "jobID",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/projects/{projectID}/scripts": {
       "get": {
         "summary": "List Script",
         "operationId": "findScripts",
@@ -885,13 +1354,13 @@ func init() {
                         "type": "object",
                         "title": "Metadata",
                         "required": [
-                          "createdAt"
+                          "created_at"
                         ],
                         "properties": {
-                          "createdAt": {
+                          "created_at": {
                             "type": "string"
                           },
-                          "updatedAt": {
+                          "updated_at": {
                             "type": "string"
                           }
                         }
@@ -1007,13 +1476,13 @@ func init() {
                   "type": "object",
                   "title": "Metadata",
                   "required": [
-                    "createdAt"
+                    "created_at"
                   ],
                   "properties": {
-                    "createdAt": {
+                    "created_at": {
                       "type": "string"
                     },
-                    "updatedAt": {
+                    "updated_at": {
                       "type": "string"
                     }
                   }
@@ -1025,14 +1494,15 @@ func init() {
       },
       "parameters": [
         {
+          "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
           "type": "string",
-          "name": "projectId",
+          "name": "projectID",
           "in": "path",
           "required": true
         }
       ]
     },
-    "/projects/{projectId}/scripts/{scriptId}": {
+    "/projects/{projectID}/scripts/{scriptID}": {
       "get": {
         "summary": "Get Script",
         "operationId": "getScript",
@@ -1065,13 +1535,13 @@ func init() {
                       "type": "object",
                       "title": "Metadata",
                       "required": [
-                        "createdAt"
+                        "created_at"
                       ],
                       "properties": {
-                        "createdAt": {
+                        "created_at": {
                           "type": "string"
                         },
-                        "updatedAt": {
+                        "updated_at": {
                           "type": "string"
                         }
                       }
@@ -1232,13 +1702,13 @@ func init() {
                   "type": "object",
                   "title": "Metadata",
                   "required": [
-                    "createdAt"
+                    "created_at"
                   ],
                   "properties": {
-                    "createdAt": {
+                    "created_at": {
                       "type": "string"
                     },
-                    "updatedAt": {
+                    "updated_at": {
                       "type": "string"
                     }
                   }
@@ -1257,14 +1727,16 @@ func init() {
       },
       "parameters": [
         {
+          "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
           "type": "string",
-          "name": "projectId",
+          "name": "projectID",
           "in": "path",
           "required": true
         },
         {
+          "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
           "type": "string",
-          "name": "scriptId",
+          "name": "scriptID",
           "in": "path",
           "required": true
         }
@@ -1299,17 +1771,258 @@ func init() {
           "type": "object",
           "title": "Metadata",
           "required": [
-            "createdAt"
+            "created_at"
           ],
           "properties": {
-            "createdAt": {
+            "created_at": {
               "type": "string"
             },
-            "updatedAt": {
+            "updated_at": {
               "type": "string"
             }
           }
         }
+      ]
+    },
+    "execution-cause": {
+      "description": "Execution cause",
+      "type": "string",
+      "title": "Execution Cause",
+      "enum": [
+        "unknown",
+        "manual",
+        "schedule",
+        "hook"
+      ]
+    },
+    "execution-common": {
+      "description": "The properties that are shared amongst all versions of the Execution model.",
+      "type": "object",
+      "title": "Execution Common",
+      "required": [
+        "job_id",
+        "script_id",
+        "script_rev",
+        "status",
+        "cause"
+      ],
+      "properties": {
+        "cause": {
+          "description": "Execution cause",
+          "type": "string",
+          "title": "Execution Cause",
+          "enum": [
+            "unknown",
+            "manual",
+            "schedule",
+            "hook"
+          ]
+        },
+        "job_id": {
+          "type": "string",
+          "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+        },
+        "script_id": {
+          "type": "string",
+          "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+        },
+        "script_rev": {
+          "type": "string"
+        },
+        "status": {
+          "description": "Execution stats",
+          "type": "string",
+          "title": "Execution Status",
+          "enum": [
+            "unknown",
+            "queued",
+            "running",
+            "completed",
+            "cancelled",
+            "errored"
+          ]
+        }
+      }
+    },
+    "execution-input": {
+      "description": "The properties that are allowed when creating or updating a Execution.",
+      "type": "object",
+      "title": "Execution Input",
+      "required": [
+        "scriptID"
+      ],
+      "properties": {
+        "params": {
+          "type": "object",
+          "additionalProperties": {
+            "title": "Any"
+          }
+        },
+        "scriptID": {
+          "type": "string",
+          "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+        }
+      }
+    },
+    "execution-output": {
+      "description": "The properties that are included when fetching a list of Executions.",
+      "title": "Execution Output",
+      "allOf": [
+        {
+          "type": "object"
+        },
+        {
+          "description": "The properties that are shared amongst all versions of the Execution model.",
+          "type": "object",
+          "title": "Execution Common",
+          "required": [
+            "job_id",
+            "script_id",
+            "script_rev",
+            "status",
+            "cause"
+          ],
+          "properties": {
+            "cause": {
+              "description": "Execution cause",
+              "type": "string",
+              "title": "Execution Cause",
+              "enum": [
+                "unknown",
+                "manual",
+                "schedule",
+                "hook"
+              ]
+            },
+            "job_id": {
+              "type": "string",
+              "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+            },
+            "script_id": {
+              "type": "string",
+              "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+            },
+            "script_rev": {
+              "type": "string"
+            },
+            "status": {
+              "description": "Execution stats",
+              "type": "string",
+              "title": "Execution Status",
+              "enum": [
+                "unknown",
+                "queued",
+                "running",
+                "completed",
+                "cancelled",
+                "errored"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "execution-output-detailed": {
+      "description": "The properties that are included when fetching a single Execution.",
+      "title": "Execution Output Detailed",
+      "allOf": [
+        {
+          "description": "The properties that are included when fetching a list of Executions.",
+          "title": "Execution Output",
+          "allOf": [
+            {
+              "type": "object"
+            },
+            {
+              "description": "The properties that are shared amongst all versions of the Execution model.",
+              "type": "object",
+              "title": "Execution Common",
+              "required": [
+                "job_id",
+                "script_id",
+                "script_rev",
+                "status",
+                "cause"
+              ],
+              "properties": {
+                "cause": {
+                  "description": "Execution cause",
+                  "type": "string",
+                  "title": "Execution Cause",
+                  "enum": [
+                    "unknown",
+                    "manual",
+                    "schedule",
+                    "hook"
+                  ]
+                },
+                "job_id": {
+                  "type": "string",
+                  "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+                },
+                "script_id": {
+                  "type": "string",
+                  "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+                },
+                "script_rev": {
+                  "type": "string"
+                },
+                "status": {
+                  "description": "Execution stats",
+                  "type": "string",
+                  "title": "Execution Status",
+                  "enum": [
+                    "unknown",
+                    "queued",
+                    "running",
+                    "completed",
+                    "cancelled",
+                    "errored"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "ended_at": {
+              "type": "string"
+            },
+            "error": {
+              "type": "string"
+            },
+            "logs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": {
+                "title": "Any"
+              }
+            },
+            "started_at": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "execution-status": {
+      "description": "Execution stats",
+      "type": "string",
+      "title": "Execution Status",
+      "enum": [
+        "unknown",
+        "queued",
+        "running",
+        "completed",
+        "cancelled",
+        "errored"
       ]
     },
     "metadata": {
@@ -1317,13 +2030,13 @@ func init() {
       "type": "object",
       "title": "Metadata",
       "required": [
-        "createdAt"
+        "created_at"
       ],
       "properties": {
-        "createdAt": {
+        "created_at": {
           "type": "string"
         },
-        "updatedAt": {
+        "updated_at": {
           "type": "string"
         }
       }
@@ -1396,13 +2109,13 @@ func init() {
               "type": "object",
               "title": "Metadata",
               "required": [
-                "createdAt"
+                "created_at"
               ],
               "properties": {
-                "createdAt": {
+                "created_at": {
                   "type": "string"
                 },
-                "updatedAt": {
+                "updated_at": {
                   "type": "string"
                 }
               }
@@ -1459,13 +2172,13 @@ func init() {
               "type": "object",
               "title": "Metadata",
               "required": [
-                "createdAt"
+                "created_at"
               ],
               "properties": {
-                "createdAt": {
+                "created_at": {
                   "type": "string"
                 },
-                "updatedAt": {
+                "updated_at": {
                   "type": "string"
                 }
               }
@@ -1513,13 +2226,13 @@ func init() {
               "type": "object",
               "title": "Metadata",
               "required": [
-                "createdAt"
+                "created_at"
               ],
               "properties": {
-                "createdAt": {
+                "created_at": {
                   "type": "string"
                 },
-                "updatedAt": {
+                "updated_at": {
                   "type": "string"
                 }
               }
@@ -1709,13 +2422,13 @@ func init() {
               "type": "object",
               "title": "Metadata",
               "required": [
-                "createdAt"
+                "created_at"
               ],
               "properties": {
-                "createdAt": {
+                "created_at": {
                   "type": "string"
                 },
-                "updatedAt": {
+                "updated_at": {
                   "type": "string"
                 }
               }
@@ -1829,13 +2542,13 @@ func init() {
               "type": "object",
               "title": "Metadata",
               "required": [
-                "createdAt"
+                "created_at"
               ],
               "properties": {
-                "createdAt": {
+                "created_at": {
                   "type": "string"
                 },
-                "updatedAt": {
+                "updated_at": {
                   "type": "string"
                 }
               }
@@ -1882,13 +2595,13 @@ func init() {
               "type": "object",
               "title": "Metadata",
               "required": [
-                "createdAt"
+                "created_at"
               ],
               "properties": {
-                "createdAt": {
+                "created_at": {
                   "type": "string"
                 },
-                "updatedAt": {
+                "updated_at": {
                   "type": "string"
                 }
               }
@@ -2037,6 +2750,20 @@ func init() {
       "name": "page",
       "in": "query"
     },
+    "projectID": {
+      "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+      "type": "string",
+      "name": "projectID",
+      "in": "path",
+      "required": true
+    },
+    "scriptID": {
+      "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+      "type": "string",
+      "name": "scriptID",
+      "in": "path",
+      "required": true
+    },
     "size": {
       "maximum": 100,
       "minimum": 1,
@@ -2046,6 +2773,20 @@ func init() {
       "description": "Page size",
       "name": "size",
       "in": "query"
+    },
+    "status": {
+      "enum": [
+        "unknown",
+        "queued",
+        "running",
+        "completed",
+        "cancelled",
+        "errored"
+      ],
+      "type": "string",
+      "name": "status",
+      "in": "query",
+      "allowEmptyValue": true
     }
   },
   "responses": {

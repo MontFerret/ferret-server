@@ -21,10 +21,10 @@ type Metadata struct {
 
 	// created at
 	// Required: true
-	CreatedAt *string `json:"createdAt"`
+	CreatedAt *string `json:"created_at"`
 
 	// updated at
-	UpdatedAt string `json:"updatedAt,omitempty"`
+	UpdatedAt string `json:"updated_at,omitempty"`
 }
 
 // Validate validates this metadata
@@ -43,7 +43,7 @@ func (m *Metadata) Validate(formats strfmt.Registry) error {
 
 func (m *Metadata) validateCreatedAt(formats strfmt.Registry) error {
 
-	if err := validate.Required("createdAt", "body", m.CreatedAt); err != nil {
+	if err := validate.Required("created_at", "body", m.CreatedAt); err != nil {
 		return err
 	}
 

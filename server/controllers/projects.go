@@ -17,7 +17,7 @@ type ProjectsController struct {
 
 func NewProjectsController(service *projects.Service) (*ProjectsController, error) {
 	if service == nil {
-		return nil, common.Error(common.ErrMissedArgument, "service")
+		return nil, common.Error(common.ErrMissedArgument, "exec")
 	}
 
 	return &ProjectsController{service}, nil
@@ -26,7 +26,7 @@ func NewProjectsController(service *projects.Service) (*ProjectsController, erro
 func (ctl *ProjectsController) CreateProject(params operations.CreateProjectParams) middleware.Responder {
 	logger := logging.FromRequest(params.HTTPRequest)
 
-	out, err := ctl.service.CreateProject(params.HTTPRequest.Context(), &projects.Project{
+	out, err := ctl.service.CreateProject(params.HTTPRequest.Context(), projects.Project{
 		Name:        *params.Body.Name,
 		Description: params.Body.Description,
 	})
@@ -59,7 +59,7 @@ func (ctl *ProjectsController) CreateProject(params operations.CreateProjectPara
 func (ctl *ProjectsController) UpdateProject(params operations.UpdateProjectParams) middleware.Responder {
 	logger := logging.FromRequest(params.HTTPRequest)
 
-	out, err := ctl.service.UpdateProject(params.HTTPRequest.Context(), &projects.UpdateProject{
+	out, err := ctl.service.UpdateProject(params.HTTPRequest.Context(), projects.UpdateProject{
 		Project: projects.Project{
 			Name:        *params.Body.Name,
 			Description: params.Body.Description,
@@ -123,6 +123,10 @@ func (ctl *ProjectsController) GetProject(params operations.GetProjectParams) mi
 	out, err := ctl.service.GetProject(params.HTTPRequest.Context(), params.ProjectID)
 
 	if err != nil {
+		if err == common.ErrNotFound {
+			return http.NotFound()
+		}
+
 		logger.Error().
 			Timestamp().
 			Err(err).
@@ -130,15 +134,6 @@ func (ctl *ProjectsController) GetProject(params operations.GetProjectParams) mi
 			Msg("failed to get project")
 
 		return http.InternalError()
-	}
-
-	if out == nil {
-		logger.Warn().
-			Timestamp().
-			Str("id", params.ProjectID).
-			Msg("project not found")
-
-		return http.NotFound()
 	}
 
 	createdAt, updatedAt := dto.ToMetadataDates(out.Metadata)
@@ -161,9 +156,9 @@ func (ctl *ProjectsController) FindProjects(params operations.FindProjectsParams
 	var size uint = 10
 	var page uint = 1
 
-	if params.PageSize != nil {
-		size = uint(*params.PageSize)
-		page = uint(*params.PageNumber)
+	if params.Size != nil {
+		size = uint(*params.Size)
+		page = uint(*params.Page)
 	}
 
 	query := dal.Query{

@@ -33,7 +33,7 @@ func NewCreateScript(ctx *middleware.Context, handler CreateScriptHandler) *Crea
 	return &CreateScript{Context: ctx, Handler: handler}
 }
 
-/*CreateScript swagger:route POST /projects/{projectId}/scripts createScript
+/*CreateScript swagger:route POST /projects/{projectID}/scripts createScript
 
 Create Script
 
@@ -217,10 +217,10 @@ type CreateScriptCreatedBody struct {
 
 	// created at
 	// Required: true
-	CreatedAt *string `json:"createdAt"`
+	CreatedAt *string `json:"created_at"`
 
 	// updated at
-	UpdatedAt string `json:"updatedAt,omitempty"`
+	UpdatedAt string `json:"updated_at,omitempty"`
 }
 
 // UnmarshalJSON unmarshals this object from a JSON structure
@@ -241,9 +241,9 @@ func (o *CreateScriptCreatedBody) UnmarshalJSON(raw []byte) error {
 
 	// CreateScriptCreatedBodyAO1
 	var dataCreateScriptCreatedBodyAO1 struct {
-		CreatedAt *string `json:"createdAt"`
+		CreatedAt *string `json:"created_at"`
 
-		UpdatedAt string `json:"updatedAt,omitempty"`
+		UpdatedAt string `json:"updated_at,omitempty"`
 	}
 	if err := swag.ReadJSON(raw, &dataCreateScriptCreatedBodyAO1); err != nil {
 		return err
@@ -277,9 +277,9 @@ func (o CreateScriptCreatedBody) MarshalJSON() ([]byte, error) {
 	_parts = append(_parts, jsonDataCreateScriptCreatedBodyAO0)
 
 	var dataCreateScriptCreatedBodyAO1 struct {
-		CreatedAt *string `json:"createdAt"`
+		CreatedAt *string `json:"created_at"`
 
-		UpdatedAt string `json:"updatedAt,omitempty"`
+		UpdatedAt string `json:"updated_at,omitempty"`
 	}
 
 	dataCreateScriptCreatedBodyAO1.CreatedAt = o.CreatedAt
@@ -337,7 +337,7 @@ func (o *CreateScriptCreatedBody) validateRev(formats strfmt.Registry) error {
 
 func (o *CreateScriptCreatedBody) validateCreatedAt(formats strfmt.Registry) error {
 
-	if err := validate.Required("createScriptCreated"+"."+"createdAt", "body", o.CreatedAt); err != nil {
+	if err := validate.Required("createScriptCreated"+"."+"created_at", "body", o.CreatedAt); err != nil {
 		return err
 	}
 

@@ -33,7 +33,7 @@ func NewFindScripts(ctx *middleware.Context, handler FindScriptsHandler) *FindSc
 	return &FindScripts{Context: ctx, Handler: handler}
 }
 
-/*FindScripts swagger:route GET /projects/{projectId}/scripts findScripts
+/*FindScripts swagger:route GET /projects/{projectID}/scripts findScripts
 
 List Script
 
@@ -182,10 +182,10 @@ type FindScriptsOKBodyItems0AllOf0 struct {
 
 	// created at
 	// Required: true
-	CreatedAt *string `json:"createdAt"`
+	CreatedAt *string `json:"created_at"`
 
 	// updated at
-	UpdatedAt string `json:"updatedAt,omitempty"`
+	UpdatedAt string `json:"updated_at,omitempty"`
 }
 
 // UnmarshalJSON unmarshals this object from a JSON structure
@@ -206,9 +206,9 @@ func (o *FindScriptsOKBodyItems0AllOf0) UnmarshalJSON(raw []byte) error {
 
 	// AO1
 	var dataAO1 struct {
-		CreatedAt *string `json:"createdAt"`
+		CreatedAt *string `json:"created_at"`
 
-		UpdatedAt string `json:"updatedAt,omitempty"`
+		UpdatedAt string `json:"updated_at,omitempty"`
 	}
 	if err := swag.ReadJSON(raw, &dataAO1); err != nil {
 		return err
@@ -242,9 +242,9 @@ func (o FindScriptsOKBodyItems0AllOf0) MarshalJSON() ([]byte, error) {
 	_parts = append(_parts, jsonDataAO0)
 
 	var dataAO1 struct {
-		CreatedAt *string `json:"createdAt"`
+		CreatedAt *string `json:"created_at"`
 
-		UpdatedAt string `json:"updatedAt,omitempty"`
+		UpdatedAt string `json:"updated_at,omitempty"`
 	}
 
 	dataAO1.CreatedAt = o.CreatedAt
@@ -302,7 +302,7 @@ func (o *FindScriptsOKBodyItems0AllOf0) validateRev(formats strfmt.Registry) err
 
 func (o *FindScriptsOKBodyItems0AllOf0) validateCreatedAt(formats strfmt.Registry) error {
 
-	if err := validate.Required("createdAt", "body", o.CreatedAt); err != nil {
+	if err := validate.Required("created_at", "body", o.CreatedAt); err != nil {
 		return err
 	}
 

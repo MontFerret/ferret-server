@@ -6,13 +6,13 @@ import (
 )
 
 type Repository interface {
-	Get(ctx context.Context, id string) (*ProjectEntity, error)
+	Get(ctx context.Context, id string) (ProjectEntity, error)
 
-	Find(ctx context.Context, query dal.Query) ([]*ProjectEntity, error)
+	Find(ctx context.Context, query dal.Query) ([]ProjectEntity, error)
 
-	Create(ctx context.Context, project *Project) (*dal.Entity, error)
+	Create(ctx context.Context, project Project) (dal.Entity, error)
 
-	Update(ctx context.Context, project *UpdateProject) (*dal.Entity, error)
+	Update(ctx context.Context, project UpdateProject) (dal.Entity, error)
 
 	Delete(ctx context.Context, id string) error
 }

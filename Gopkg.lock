@@ -2,6 +2,51 @@
 
 
 [[projects]]
+  digest = "1:d6c6ca3050fb9d753ea29c6bd3ba7bc1334c7509d770521e1353fe186bdb6f40"
+  name = "github.com/MontFerret/ferret"
+  packages = [
+    "pkg/compiler",
+    "pkg/html",
+    "pkg/html/common",
+    "pkg/html/dynamic",
+    "pkg/html/dynamic/eval",
+    "pkg/html/dynamic/events",
+    "pkg/html/static",
+    "pkg/parser",
+    "pkg/parser/fql",
+    "pkg/runtime",
+    "pkg/runtime/collections",
+    "pkg/runtime/core",
+    "pkg/runtime/env",
+    "pkg/runtime/expressions",
+    "pkg/runtime/expressions/clauses",
+    "pkg/runtime/expressions/literals",
+    "pkg/runtime/expressions/operators",
+    "pkg/runtime/logging",
+    "pkg/runtime/values",
+    "pkg/stdlib",
+    "pkg/stdlib/arrays",
+    "pkg/stdlib/collections",
+    "pkg/stdlib/html",
+    "pkg/stdlib/math",
+    "pkg/stdlib/objects",
+    "pkg/stdlib/strings",
+    "pkg/stdlib/types",
+    "pkg/stdlib/utils",
+  ]
+  pruneopts = "UT"
+  revision = "30abe61f7234218b4f902fe56f813d432921b0c4"
+  version = "v0.5.0"
+
+[[projects]]
+  digest = "1:573fa46f8d413d4bc3f7cc5e86b2c43cb21559f4fb0a19d9874d228e28fdc07c"
+  name = "github.com/PuerkitoBio/goquery"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "2d2796f41742ece03e8086188fa4db16a3a0b458"
+  version = "v1.5.0"
+
+[[projects]]
   digest = "1:d1665c44bd5db19aaee18d1b6233c99b0b9a986e8bccb24ef54747547a48027f"
   name = "github.com/PuerkitoBio/purell"
   packages = ["."]
@@ -18,7 +63,23 @@
   revision = "de5bf2ad457846296e2031421a34e2568e304e35"
 
 [[projects]]
-  digest = "1:5eecc353d069048d0a40df54d3a49f6728afd2837bfa365e1513cad9e3d6a6d3"
+  digest = "1:66b3310cf22cdc96c35ef84ede4f7b9b370971c4025f394c89a2638729653b11"
+  name = "github.com/andybalholm/cascadia"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "901648c87902174f774fac311d7f176f8647bdaa"
+  version = "v1.0.0"
+
+[[projects]]
+  digest = "1:5e79f7a65816b2ba311439df21c9b24af91868cbb5d67489be6d94be2cccb286"
+  name = "github.com/antlr/antlr4"
+  packages = ["runtime/Go/antlr"]
+  pruneopts = "UT"
+  revision = "bdc05c87be2ad981744223df0fd745e8345baba9"
+  version = "4.7.1"
+
+[[projects]]
+  digest = "1:32c8784f5385da8d193a3ecbd0a37a1eae25588ec9a648df280bd7a82640d147"
   name = "github.com/arangodb/go-driver"
   packages = [
     ".",
@@ -27,7 +88,7 @@
     "util",
   ]
   pruneopts = "UT"
-  revision = "d60f4a8520d3922a46d596fcc24ce55134b21029"
+  revision = "65af12d6f1241f2cd57a34b919701e9c6452fe4f"
 
 [[projects]]
   branch = "master"
@@ -52,6 +113,14 @@
   pruneopts = "UT"
   revision = "c6a59be0ce122566695fbd5e48a77f8f10c8a63a"
   version = "v1.0.0"
+
+[[projects]]
+  branch = "master"
+  digest = "1:cc439e1d9d8cff3d575642f5401033b00f2b8d0cd9f859db45604701c990879a"
+  name = "github.com/corpix/uarand"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "2b8494104d86337cdd41d0a49cbed8e4583c0ab4"
 
 [[projects]]
   digest = "1:6f82cacd0af5921e99bf3f46748705239b36489464f4529a1589bc895764fb18"
@@ -181,12 +250,91 @@
   version = "v3.1.2"
 
 [[projects]]
+  branch = "master"
+  digest = "1:f14d1b50e0075fb00177f12a96dd7addf93d1e2883c25befd17285b779549795"
+  name = "github.com/gopherjs/gopherjs"
+  packages = ["js"]
+  pruneopts = "UT"
+  revision = "d547d1d9531ed93dbdebcbff7f83e7c876a1e0ee"
+
+[[projects]]
+  digest = "1:7b5c6e2eeaa9ae5907c391a91c132abfd5c9e8a784a341b5625e750c67e6825d"
+  name = "github.com/gorilla/websocket"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "66b9c49e59c6c48f0ffce28c2d8b8a5678502c6d"
+  version = "v1.4.0"
+
+[[projects]]
   digest = "1:a2cff208d4759f6ba1b1cd228587b0a1869f95f22542ec9cd17fff64430113c7"
   name = "github.com/jessevdk/go-flags"
   packages = ["."]
   pruneopts = "UT"
   revision = "c6ca198ec95c841fdb89fc0de7496fed11ab854e"
   version = "v1.4.0"
+
+[[projects]]
+  digest = "1:4b63210654b1f2b664f74ec434a1bb1cb442b3d75742cc064a10808d1cca6361"
+  name = "github.com/jtolds/gls"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "b4936e06046bbecbb94cae9c18127ebe510a2cb9"
+  version = "v4.20"
+
+[[projects]]
+  digest = "1:612ebc66cfa7484088f90ab86c7f1eb3d7696cf38ec2451c63f8d6008ff7625f"
+  name = "github.com/mafredri/cdp"
+  packages = [
+    ".",
+    "devtool",
+    "internal/errors",
+    "protocol/accessibility",
+    "protocol/animation",
+    "protocol/applicationcache",
+    "protocol/audits",
+    "protocol/browser",
+    "protocol/cachestorage",
+    "protocol/console",
+    "protocol/css",
+    "protocol/database",
+    "protocol/debugger",
+    "protocol/deviceorientation",
+    "protocol/dom",
+    "protocol/domdebugger",
+    "protocol/domsnapshot",
+    "protocol/domstorage",
+    "protocol/emulation",
+    "protocol/headlessexperimental",
+    "protocol/heapprofiler",
+    "protocol/indexeddb",
+    "protocol/input",
+    "protocol/inspector",
+    "protocol/internal",
+    "protocol/io",
+    "protocol/layertree",
+    "protocol/log",
+    "protocol/memory",
+    "protocol/network",
+    "protocol/overlay",
+    "protocol/page",
+    "protocol/performance",
+    "protocol/profiler",
+    "protocol/runtime",
+    "protocol/schema",
+    "protocol/security",
+    "protocol/serviceworker",
+    "protocol/storage",
+    "protocol/systeminfo",
+    "protocol/target",
+    "protocol/testing",
+    "protocol/tethering",
+    "protocol/tracing",
+    "rpcc",
+    "session",
+  ]
+  pruneopts = "UT"
+  revision = "0b30a3d15c28f2c8f028f99009cfba0b19baf126"
+  version = "v0.20.0"
 
 [[projects]]
   branch = "master"
@@ -233,7 +381,7 @@
   version = "v0.8.0"
 
 [[projects]]
-  digest = "1:a79db0d8827ceac01726ebea395bf8e67af9b3cced22aedda5fce2a6952038fb"
+  digest = "1:6112a5eaec2ec65df289ccbb7a730aaf03e3c5cce6c906d367ccf9b7ac567604"
   name = "github.com/rs/zerolog"
   packages = [
     ".",
@@ -241,19 +389,62 @@
     "internal/json",
   ]
   pruneopts = "UT"
-  revision = "e7627a4f73bfd66654c39d79386e5374cc36ffec"
-  version = "v1.10.0"
+  revision = "8747b7b3a51b5d08ee7ac50eaf4869edaf9f714a"
+  version = "v1.11.0"
+
+[[projects]]
+  digest = "1:4ca145a665316d3c020a39c0741780fa3636b9152b824206796c4dce541f4a24"
+  name = "github.com/sethgrid/pester"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "03e26c9abbbf5accb8349790bf9f41bde09d72c3"
+  version = "1.0.0"
+
+[[projects]]
+  digest = "1:cc1c574c9cb5e99b123888c12b828e2d19224ab6c2244bda34647f230bf33243"
+  name = "github.com/smartystreets/assertions"
+  packages = [
+    ".",
+    "internal/go-render/render",
+    "internal/oglematchers",
+  ]
+  pruneopts = "UT"
+  revision = "7678a5452ebea5b7090a6b163f844c133f523da2"
+  version = "1.8.3"
+
+[[projects]]
+  digest = "1:a3e081e593ee8e3b0a9af6a5dcac964c67a40c4f2034b5345b2ad78d05920728"
+  name = "github.com/smartystreets/goconvey"
+  packages = [
+    "convey",
+    "convey/gotest",
+    "convey/reporting",
+  ]
+  pruneopts = "UT"
+  revision = "9e8dc3f972df6c8fcc0375ef492c24d0bb204857"
+  version = "1.6.3"
 
 [[projects]]
   branch = "master"
-  digest = "1:bbd232f46e33dfb01068e0f4193a3da2d662a350873804bc964f697de5f39ac7"
+  digest = "1:f030bcffad408506011a2172ba348533f0917ad15e83554589143ae0385c7fc1"
   name = "golang.org/x/net"
   packages = [
+    "context",
+    "html",
+    "html/atom",
     "idna",
     "netutil",
   ]
   pruneopts = "UT"
   revision = "c10e9556a7bc0e7c942242b606f0acf024ad5d6a"
+
+[[projects]]
+  branch = "master"
+  digest = "1:39ebcc2b11457b703ae9ee2e8cca0f68df21969c6102cb3b705f76cca0ea0239"
+  name = "golang.org/x/sync"
+  packages = ["errgroup"]
+  pruneopts = "UT"
+  revision = "1d60e4601c6fd243af51cc01ddf169918a5407ca"
 
 [[projects]]
   digest = "1:0c56024909189aee3364b7f21a95a27459f718aa7c199a5c111c36cfffd9eaef"
@@ -291,6 +482,8 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/MontFerret/ferret/pkg/compiler",
+    "github.com/MontFerret/ferret/pkg/runtime",
     "github.com/arangodb/go-driver",
     "github.com/arangodb/go-driver/http",
     "github.com/codegangsta/negroni",
@@ -311,6 +504,7 @@
     "github.com/pilu/xrequestid",
     "github.com/pkg/errors",
     "github.com/rs/zerolog",
+    "github.com/smartystreets/goconvey/convey",
     "golang.org/x/net/netutil",
   ]
   solver-name = "gps-cdcl"

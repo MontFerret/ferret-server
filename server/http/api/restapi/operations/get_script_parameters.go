@@ -10,6 +10,7 @@ import (
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/validate"
 
 	strfmt "github.com/go-openapi/strfmt"
 )
@@ -32,11 +33,13 @@ type GetScriptParams struct {
 
 	/*
 	  Required: true
+	  Pattern: [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}
 	  In: path
 	*/
 	ProjectID string
 	/*
 	  Required: true
+	  Pattern: [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}
 	  In: path
 	*/
 	ScriptID string
@@ -51,12 +54,12 @@ func (o *GetScriptParams) BindRequest(r *http.Request, route *middleware.Matched
 
 	o.HTTPRequest = r
 
-	rProjectID, rhkProjectID, _ := route.Params.GetOK("projectId")
+	rProjectID, rhkProjectID, _ := route.Params.GetOK("projectID")
 	if err := o.bindProjectID(rProjectID, rhkProjectID, route.Formats); err != nil {
 		res = append(res, err)
 	}
 
-	rScriptID, rhkScriptID, _ := route.Params.GetOK("scriptId")
+	rScriptID, rhkScriptID, _ := route.Params.GetOK("scriptID")
 	if err := o.bindScriptID(rScriptID, rhkScriptID, route.Formats); err != nil {
 		res = append(res, err)
 	}
@@ -79,6 +82,20 @@ func (o *GetScriptParams) bindProjectID(rawData []string, hasKey bool, formats s
 
 	o.ProjectID = raw
 
+	if err := o.validateProjectID(formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// validateProjectID carries on validations for parameter ProjectID
+func (o *GetScriptParams) validateProjectID(formats strfmt.Registry) error {
+
+	if err := validate.Pattern("projectID", "path", o.ProjectID, `[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -93,6 +110,20 @@ func (o *GetScriptParams) bindScriptID(rawData []string, hasKey bool, formats st
 	// Parameter is provided by construction from the route
 
 	o.ScriptID = raw
+
+	if err := o.validateScriptID(formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// validateScriptID carries on validations for parameter ScriptID
+func (o *GetScriptParams) validateScriptID(formats strfmt.Registry) error {
+
+	if err := validate.Pattern("scriptID", "path", o.ScriptID, `[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`); err != nil {
+		return err
+	}
 
 	return nil
 }

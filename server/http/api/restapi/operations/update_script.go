@@ -33,7 +33,7 @@ func NewUpdateScript(ctx *middleware.Context, handler UpdateScriptHandler) *Upda
 	return &UpdateScript{Context: ctx, Handler: handler}
 }
 
-/*UpdateScript swagger:route PUT /projects/{projectId}/scripts/{scriptId} updateScript
+/*UpdateScript swagger:route PUT /projects/{projectID}/scripts/{scriptID} updateScript
 
 Update Script
 
@@ -217,10 +217,10 @@ type UpdateScriptOKBody struct {
 
 	// created at
 	// Required: true
-	CreatedAt *string `json:"createdAt"`
+	CreatedAt *string `json:"created_at"`
 
 	// updated at
-	UpdatedAt string `json:"updatedAt,omitempty"`
+	UpdatedAt string `json:"updated_at,omitempty"`
 }
 
 // UnmarshalJSON unmarshals this object from a JSON structure
@@ -241,9 +241,9 @@ func (o *UpdateScriptOKBody) UnmarshalJSON(raw []byte) error {
 
 	// UpdateScriptOKBodyAO1
 	var dataUpdateScriptOKBodyAO1 struct {
-		CreatedAt *string `json:"createdAt"`
+		CreatedAt *string `json:"created_at"`
 
-		UpdatedAt string `json:"updatedAt,omitempty"`
+		UpdatedAt string `json:"updated_at,omitempty"`
 	}
 	if err := swag.ReadJSON(raw, &dataUpdateScriptOKBodyAO1); err != nil {
 		return err
@@ -277,9 +277,9 @@ func (o UpdateScriptOKBody) MarshalJSON() ([]byte, error) {
 	_parts = append(_parts, jsonDataUpdateScriptOKBodyAO0)
 
 	var dataUpdateScriptOKBodyAO1 struct {
-		CreatedAt *string `json:"createdAt"`
+		CreatedAt *string `json:"created_at"`
 
-		UpdatedAt string `json:"updatedAt,omitempty"`
+		UpdatedAt string `json:"updated_at,omitempty"`
 	}
 
 	dataUpdateScriptOKBodyAO1.CreatedAt = o.CreatedAt
@@ -337,7 +337,7 @@ func (o *UpdateScriptOKBody) validateRev(formats strfmt.Registry) error {
 
 func (o *UpdateScriptOKBody) validateCreatedAt(formats strfmt.Registry) error {
 
-	if err := validate.Required("updateScriptOK"+"."+"createdAt", "body", o.CreatedAt); err != nil {
+	if err := validate.Required("updateScriptOK"+"."+"created_at", "body", o.CreatedAt); err != nil {
 		return err
 	}
 

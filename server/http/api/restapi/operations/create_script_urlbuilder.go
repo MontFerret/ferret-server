@@ -40,11 +40,11 @@ func (o *CreateScriptURL) SetBasePath(bp string) {
 func (o *CreateScriptURL) Build() (*url.URL, error) {
 	var result url.URL
 
-	var _path = "/projects/{projectId}/scripts"
+	var _path = "/projects/{projectID}/scripts"
 
 	projectID := o.ProjectID
 	if projectID != "" {
-		_path = strings.Replace(_path, "{projectId}", projectID, -1)
+		_path = strings.Replace(_path, "{projectID}", projectID, -1)
 	} else {
 		return nil, errors.New("ProjectID is required on CreateScriptURL")
 	}

@@ -17,7 +17,7 @@ type ScriptsController struct {
 
 func NewScriptsController(service *scripts.Service) (*ScriptsController, error) {
 	if service == nil {
-		return nil, common.Error(common.ErrMissedArgument, "service")
+		return nil, common.Error(common.ErrMissedArgument, "exec")
 	}
 
 	return &ScriptsController{service}, nil
@@ -26,7 +26,7 @@ func NewScriptsController(service *scripts.Service) (*ScriptsController, error) 
 func (ctl *ScriptsController) CreateScript(params operations.CreateScriptParams) middleware.Responder {
 	logger := logging.FromRequest(params.HTTPRequest)
 
-	entity := &scripts.Script{
+	entity := scripts.Script{
 		Name:        *params.Body.Name,
 		Description: params.Body.Description,
 		Execution: scripts.Execution{
@@ -66,7 +66,7 @@ func (ctl *ScriptsController) CreateScript(params operations.CreateScriptParams)
 func (ctl *ScriptsController) UpdateScript(params operations.UpdateScriptParams) middleware.Responder {
 	logger := logging.FromRequest(params.HTTPRequest)
 
-	script := &scripts.UpdateScript{
+	script := scripts.UpdateScript{
 		Script: scripts.Script{
 			Name:        *params.Body.Name,
 			Description: params.Body.Description,
@@ -140,6 +140,10 @@ func (ctl *ScriptsController) GetScripts(params operations.GetScriptParams) midd
 	out, err := ctl.service.GetScript(params.HTTPRequest.Context(), params.ProjectID, params.ScriptID)
 
 	if err != nil {
+		if err == common.ErrNotFound {
+			return http.NotFound()
+		}
+
 		logger.Error().
 			Timestamp().
 			Err(err).
@@ -148,16 +152,6 @@ func (ctl *ScriptsController) GetScripts(params operations.GetScriptParams) midd
 			Msg("failed to get script")
 
 		return http.InternalError()
-	}
-
-	if out == nil {
-		logger.Warn().
-			Timestamp().
-			Str("project_id", params.ProjectID).
-			Str("id", params.ScriptID).
-			Msg("script not found")
-
-		return http.NotFound()
 	}
 
 	createdAt, updatedAt := dto.ToMetadataDates(out.Metadata)
@@ -188,9 +182,9 @@ func (ctl *ScriptsController) FindScripts(params operations.FindScriptsParams) m
 	var size uint = 10
 	var page uint = 1
 
-	if params.PageSize != nil {
-		size = uint(*params.PageSize)
-		page = uint(*params.PageNumber)
+	if params.Size != nil {
+		size = uint(*params.Size)
+		page = uint(*params.Page)
 	}
 
 	query := dal.Query{

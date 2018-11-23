@@ -165,10 +165,10 @@ type CreateProjectCreatedBody struct {
 
 	// created at
 	// Required: true
-	CreatedAt *string `json:"createdAt"`
+	CreatedAt *string `json:"created_at"`
 
 	// updated at
-	UpdatedAt string `json:"updatedAt,omitempty"`
+	UpdatedAt string `json:"updated_at,omitempty"`
 }
 
 // UnmarshalJSON unmarshals this object from a JSON structure
@@ -189,9 +189,9 @@ func (o *CreateProjectCreatedBody) UnmarshalJSON(raw []byte) error {
 
 	// CreateProjectCreatedBodyAO1
 	var dataCreateProjectCreatedBodyAO1 struct {
-		CreatedAt *string `json:"createdAt"`
+		CreatedAt *string `json:"created_at"`
 
-		UpdatedAt string `json:"updatedAt,omitempty"`
+		UpdatedAt string `json:"updated_at,omitempty"`
 	}
 	if err := swag.ReadJSON(raw, &dataCreateProjectCreatedBodyAO1); err != nil {
 		return err
@@ -225,9 +225,9 @@ func (o CreateProjectCreatedBody) MarshalJSON() ([]byte, error) {
 	_parts = append(_parts, jsonDataCreateProjectCreatedBodyAO0)
 
 	var dataCreateProjectCreatedBodyAO1 struct {
-		CreatedAt *string `json:"createdAt"`
+		CreatedAt *string `json:"created_at"`
 
-		UpdatedAt string `json:"updatedAt,omitempty"`
+		UpdatedAt string `json:"updated_at,omitempty"`
 	}
 
 	dataCreateProjectCreatedBodyAO1.CreatedAt = o.CreatedAt
@@ -285,7 +285,7 @@ func (o *CreateProjectCreatedBody) validateRev(formats strfmt.Registry) error {
 
 func (o *CreateProjectCreatedBody) validateCreatedAt(formats strfmt.Registry) error {
 
-	if err := validate.Required("createProjectCreated"+"."+"createdAt", "body", o.CreatedAt); err != nil {
+	if err := validate.Required("createProjectCreated"+"."+"created_at", "body", o.CreatedAt); err != nil {
 		return err
 	}
 

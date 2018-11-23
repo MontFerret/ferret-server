@@ -25,17 +25,17 @@ func NewService(db DbContext) (*Service, error) {
 	return &Service{db}, nil
 }
 
-func (service *Service) GetProject(ctx context.Context, id string) (*ProjectEntity, error) {
+func (service *Service) GetProject(ctx context.Context, id string) (ProjectEntity, error) {
 	repo, err := service.db.GetProjectsRepository()
 
 	if err != nil {
-		return nil, errors.Wrap(err, "resolve project repository")
+		return ProjectEntity{}, errors.Wrap(err, "resolve project repository")
 	}
 
 	return repo.Get(ctx, id)
 }
 
-func (service *Service) FindProjects(ctx context.Context, q dal.Query) ([]*ProjectEntity, error) {
+func (service *Service) FindProjects(ctx context.Context, q dal.Query) ([]ProjectEntity, error) {
 	repo, err := service.db.GetProjectsRepository()
 
 	if err != nil {
@@ -45,21 +45,21 @@ func (service *Service) FindProjects(ctx context.Context, q dal.Query) ([]*Proje
 	return repo.Find(ctx, q)
 }
 
-func (service *Service) CreateProject(ctx context.Context, project *Project) (*dal.Entity, error) {
+func (service *Service) CreateProject(ctx context.Context, project Project) (dal.Entity, error) {
 	repo, err := service.db.GetProjectsRepository()
 
 	if err != nil {
-		return nil, errors.Wrap(err, "resolve project repository")
+		return dal.Entity{}, errors.Wrap(err, "resolve project repository")
 	}
 
 	return repo.Create(ctx, project)
 }
 
-func (service *Service) UpdateProject(ctx context.Context, project *UpdateProject) (*dal.Entity, error) {
+func (service *Service) UpdateProject(ctx context.Context, project UpdateProject) (dal.Entity, error) {
 	repo, err := service.db.GetProjectsRepository()
 
 	if err != nil {
-		return nil, errors.Wrap(err, "resolve project repository")
+		return dal.Entity{}, errors.Wrap(err, "resolve project repository")
 	}
 
 	return repo.Update(ctx, project)

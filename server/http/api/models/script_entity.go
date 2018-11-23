@@ -338,10 +338,10 @@ type ScriptEntityAllOf0 struct {
 
 	// created at
 	// Required: true
-	CreatedAt *string `json:"createdAt"`
+	CreatedAt *string `json:"created_at"`
 
 	// updated at
-	UpdatedAt string `json:"updatedAt,omitempty"`
+	UpdatedAt string `json:"updated_at,omitempty"`
 }
 
 // UnmarshalJSON unmarshals this object from a JSON structure
@@ -362,9 +362,9 @@ func (m *ScriptEntityAllOf0) UnmarshalJSON(raw []byte) error {
 
 	// AO1
 	var dataAO1 struct {
-		CreatedAt *string `json:"createdAt"`
+		CreatedAt *string `json:"created_at"`
 
-		UpdatedAt string `json:"updatedAt,omitempty"`
+		UpdatedAt string `json:"updated_at,omitempty"`
 	}
 	if err := swag.ReadJSON(raw, &dataAO1); err != nil {
 		return err
@@ -398,9 +398,9 @@ func (m ScriptEntityAllOf0) MarshalJSON() ([]byte, error) {
 	_parts = append(_parts, jsonDataAO0)
 
 	var dataAO1 struct {
-		CreatedAt *string `json:"createdAt"`
+		CreatedAt *string `json:"created_at"`
 
-		UpdatedAt string `json:"updatedAt,omitempty"`
+		UpdatedAt string `json:"updated_at,omitempty"`
 	}
 
 	dataAO1.CreatedAt = m.CreatedAt
@@ -458,7 +458,7 @@ func (m *ScriptEntityAllOf0) validateRev(formats strfmt.Registry) error {
 
 func (m *ScriptEntityAllOf0) validateCreatedAt(formats strfmt.Registry) error {
 
-	if err := validate.Required("createdAt", "body", m.CreatedAt); err != nil {
+	if err := validate.Required("created_at", "body", m.CreatedAt); err != nil {
 		return err
 	}
 

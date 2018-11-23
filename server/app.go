@@ -1,24 +1,39 @@
 package server
 
 import (
+	"github.com/MontFerret/ferret-server/pkg/execution"
+	"github.com/MontFerret/ferret-server/pkg/history"
+	"github.com/MontFerret/ferret-server/pkg/persistence"
 	"github.com/MontFerret/ferret-server/pkg/projects"
 	"github.com/MontFerret/ferret-server/pkg/scripts"
 	"github.com/MontFerret/ferret-server/server/controllers"
 	"github.com/MontFerret/ferret-server/server/db"
 	"github.com/MontFerret/ferret-server/server/http"
 	"github.com/MontFerret/ferret-server/server/http/api/restapi/operations"
+	"github.com/MontFerret/ferret/pkg/compiler"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"os"
+	"runtime"
+)
+
+const (
+	BYTE = 1 << (10 * iota)
+	KILOBYTE
+	MEGABYTE
+	GIGABYTE
+	TERABYTE
 )
 
 type Application struct {
-	settings Settings
-	logger   *zerolog.Logger
-	server   *http.Server
-	db       *db.Manager
-	projects *projects.Service
-	scripts  *scripts.Service
+	settings  Settings
+	logger    *zerolog.Logger
+	server    *http.Server
+	db        *db.Manager
+	projects  *projects.Service
+	scripts   *scripts.Service
+	history   *history.Service
+	execution *execution.Service
 }
 
 func New(settings Settings) (*Application, error) {
@@ -52,6 +67,35 @@ func New(settings Settings) (*Application, error) {
 		return nil, errors.Wrap(err, "create scripts service")
 	}
 
+	historySrv, err := history.NewService(dbManager)
+
+	if err != nil {
+		return nil, errors.Wrap(err, "create history service")
+	}
+
+	fqlCompiler := compiler.New()
+
+	mem := &runtime.MemStats{}
+	runtime.ReadMemStats(mem)
+
+	queueSize := uint64(mem.Sys/MEGABYTE) * 2
+	queue, err := execution.NewInMemoryQueue(uint64(queueSize))
+
+	if err != nil {
+		return nil, errors.Wrap(err, "create execution queue")
+	}
+
+	execSrv, err := execution.NewService(
+		settings.Execution,
+		&logger,
+		dbManager,
+		fqlCompiler,
+		queue,
+		history.ToStatusWriter(historySrv),
+		history.ToLogWriter(historySrv),
+		persistence.NewStdoutWriterFn(&logger),
+	)
+
 	return &Application{
 		settings,
 		&logger,
@@ -59,6 +103,8 @@ func New(settings Settings) (*Application, error) {
 		dbManager,
 		projectsSrv,
 		scriptsSrv,
+		historySrv,
+		execSrv,
 	}, nil
 }
 
@@ -69,6 +115,10 @@ func (app *Application) Run() error {
 
 	if err := app.configureScriptsController(); err != nil {
 		return errors.Wrap(err, "configure scripts controller")
+	}
+
+	if err := app.configureExecutionController(); err != nil {
+		return errors.Wrap(err, "configure execution controller")
 	}
 
 	return app.server.Run()
@@ -102,6 +152,21 @@ func (app *Application) configureScriptsController() error {
 	app.server.API().DeleteScriptHandler = operations.DeleteScriptHandlerFunc(ctl.DeleteScript)
 	app.server.API().GetScriptHandler = operations.GetScriptHandlerFunc(ctl.GetScripts)
 	app.server.API().FindScriptsHandler = operations.FindScriptsHandlerFunc(ctl.FindScripts)
+
+	return nil
+}
+
+func (app *Application) configureExecutionController() error {
+	ctl, err := controllers.NewExecutionController(app.execution, app.history)
+
+	if err != nil {
+		return errors.Wrap(err, "new execution controller")
+	}
+
+	app.server.API().CreateExecutionHandler = operations.CreateExecutionHandlerFunc(ctl.Create)
+	app.server.API().DeleteExecutionHandler = operations.DeleteExecutionHandlerFunc(ctl.Delete)
+	app.server.API().FindExecutionsHandler = operations.FindExecutionsHandlerFunc(ctl.Find)
+	app.server.API().GetExecutionHandler = operations.GetExecutionHandlerFunc(ctl.Get)
 
 	return nil
 }

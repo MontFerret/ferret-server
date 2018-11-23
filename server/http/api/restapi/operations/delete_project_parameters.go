@@ -10,6 +10,7 @@ import (
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/validate"
 
 	strfmt "github.com/go-openapi/strfmt"
 )
@@ -32,6 +33,7 @@ type DeleteProjectParams struct {
 
 	/*
 	  Required: true
+	  Pattern: [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}
 	  In: path
 	*/
 	ProjectID string
@@ -46,7 +48,7 @@ func (o *DeleteProjectParams) BindRequest(r *http.Request, route *middleware.Mat
 
 	o.HTTPRequest = r
 
-	rProjectID, rhkProjectID, _ := route.Params.GetOK("projectId")
+	rProjectID, rhkProjectID, _ := route.Params.GetOK("projectID")
 	if err := o.bindProjectID(rProjectID, rhkProjectID, route.Formats); err != nil {
 		res = append(res, err)
 	}
@@ -68,6 +70,20 @@ func (o *DeleteProjectParams) bindProjectID(rawData []string, hasKey bool, forma
 	// Parameter is provided by construction from the route
 
 	o.ProjectID = raw
+
+	if err := o.validateProjectID(formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// validateProjectID carries on validations for parameter ProjectID
+func (o *DeleteProjectParams) validateProjectID(formats strfmt.Registry) error {
+
+	if err := validate.Pattern("projectID", "path", o.ProjectID, `[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`); err != nil {
+		return err
+	}
 
 	return nil
 }

@@ -33,7 +33,7 @@ func NewGetProject(ctx *middleware.Context, handler GetProjectHandler) *GetProje
 	return &GetProject{Context: ctx, Handler: handler}
 }
 
-/*GetProject swagger:route GET /projects/{projectId} getProject
+/*GetProject swagger:route GET /projects/{projectID} getProject
 
 Get Project
 
@@ -226,10 +226,10 @@ type GetProjectOKBodyAllOf0 struct {
 
 	// created at
 	// Required: true
-	CreatedAt *string `json:"createdAt"`
+	CreatedAt *string `json:"created_at"`
 
 	// updated at
-	UpdatedAt string `json:"updatedAt,omitempty"`
+	UpdatedAt string `json:"updated_at,omitempty"`
 }
 
 // UnmarshalJSON unmarshals this object from a JSON structure
@@ -250,9 +250,9 @@ func (o *GetProjectOKBodyAllOf0) UnmarshalJSON(raw []byte) error {
 
 	// AO1
 	var dataAO1 struct {
-		CreatedAt *string `json:"createdAt"`
+		CreatedAt *string `json:"created_at"`
 
-		UpdatedAt string `json:"updatedAt,omitempty"`
+		UpdatedAt string `json:"updated_at,omitempty"`
 	}
 	if err := swag.ReadJSON(raw, &dataAO1); err != nil {
 		return err
@@ -286,9 +286,9 @@ func (o GetProjectOKBodyAllOf0) MarshalJSON() ([]byte, error) {
 	_parts = append(_parts, jsonDataAO0)
 
 	var dataAO1 struct {
-		CreatedAt *string `json:"createdAt"`
+		CreatedAt *string `json:"created_at"`
 
-		UpdatedAt string `json:"updatedAt,omitempty"`
+		UpdatedAt string `json:"updated_at,omitempty"`
 	}
 
 	dataAO1.CreatedAt = o.CreatedAt
@@ -346,7 +346,7 @@ func (o *GetProjectOKBodyAllOf0) validateRev(formats strfmt.Registry) error {
 
 func (o *GetProjectOKBodyAllOf0) validateCreatedAt(formats strfmt.Registry) error {
 
-	if err := validate.Required("createdAt", "body", o.CreatedAt); err != nil {
+	if err := validate.Required("created_at", "body", o.CreatedAt); err != nil {
 		return err
 	}
 

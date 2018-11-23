@@ -33,11 +33,17 @@ func configureAPI(api *operations.FerretServerAPI) http.Handler {
 
 	api.JSONProducer = runtime.JSONProducer()
 
+	api.CreateExecutionHandler = operations.CreateExecutionHandlerFunc(func(params operations.CreateExecutionParams) middleware.Responder {
+		return middleware.NotImplemented("operation .CreateExecution has not yet been implemented")
+	})
 	api.CreateProjectHandler = operations.CreateProjectHandlerFunc(func(params operations.CreateProjectParams) middleware.Responder {
 		return middleware.NotImplemented("operation .CreateProject has not yet been implemented")
 	})
 	api.CreateScriptHandler = operations.CreateScriptHandlerFunc(func(params operations.CreateScriptParams) middleware.Responder {
 		return middleware.NotImplemented("operation .CreateScript has not yet been implemented")
+	})
+	api.DeleteExecutionHandler = operations.DeleteExecutionHandlerFunc(func(params operations.DeleteExecutionParams) middleware.Responder {
+		return middleware.NotImplemented("operation .DeleteExecution has not yet been implemented")
 	})
 	api.DeleteProjectHandler = operations.DeleteProjectHandlerFunc(func(params operations.DeleteProjectParams) middleware.Responder {
 		return middleware.NotImplemented("operation .DeleteProject has not yet been implemented")
@@ -45,11 +51,17 @@ func configureAPI(api *operations.FerretServerAPI) http.Handler {
 	api.DeleteScriptHandler = operations.DeleteScriptHandlerFunc(func(params operations.DeleteScriptParams) middleware.Responder {
 		return middleware.NotImplemented("operation .DeleteScript has not yet been implemented")
 	})
+	api.FindExecutionsHandler = operations.FindExecutionsHandlerFunc(func(params operations.FindExecutionsParams) middleware.Responder {
+		return middleware.NotImplemented("operation .FindExecutions has not yet been implemented")
+	})
 	api.FindProjectsHandler = operations.FindProjectsHandlerFunc(func(params operations.FindProjectsParams) middleware.Responder {
 		return middleware.NotImplemented("operation .FindProjects has not yet been implemented")
 	})
 	api.FindScriptsHandler = operations.FindScriptsHandlerFunc(func(params operations.FindScriptsParams) middleware.Responder {
 		return middleware.NotImplemented("operation .FindScripts has not yet been implemented")
+	})
+	api.GetExecutionHandler = operations.GetExecutionHandlerFunc(func(params operations.GetExecutionParams) middleware.Responder {
+		return middleware.NotImplemented("operation .GetExecution has not yet been implemented")
 	})
 	api.GetProjectHandler = operations.GetProjectHandlerFunc(func(params operations.GetProjectParams) middleware.Responder {
 		return middleware.NotImplemented("operation .GetProject has not yet been implemented")

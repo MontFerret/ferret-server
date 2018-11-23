@@ -37,11 +37,17 @@ func NewFerretServerAPI(spec *loads.Document) *FerretServerAPI {
 		BearerAuthenticator: security.BearerAuth,
 		JSONConsumer:        runtime.JSONConsumer(),
 		JSONProducer:        runtime.JSONProducer(),
+		CreateExecutionHandler: CreateExecutionHandlerFunc(func(params CreateExecutionParams) middleware.Responder {
+			return middleware.NotImplemented("operation CreateExecution has not yet been implemented")
+		}),
 		CreateProjectHandler: CreateProjectHandlerFunc(func(params CreateProjectParams) middleware.Responder {
 			return middleware.NotImplemented("operation CreateProject has not yet been implemented")
 		}),
 		CreateScriptHandler: CreateScriptHandlerFunc(func(params CreateScriptParams) middleware.Responder {
 			return middleware.NotImplemented("operation CreateScript has not yet been implemented")
+		}),
+		DeleteExecutionHandler: DeleteExecutionHandlerFunc(func(params DeleteExecutionParams) middleware.Responder {
+			return middleware.NotImplemented("operation DeleteExecution has not yet been implemented")
 		}),
 		DeleteProjectHandler: DeleteProjectHandlerFunc(func(params DeleteProjectParams) middleware.Responder {
 			return middleware.NotImplemented("operation DeleteProject has not yet been implemented")
@@ -49,11 +55,17 @@ func NewFerretServerAPI(spec *loads.Document) *FerretServerAPI {
 		DeleteScriptHandler: DeleteScriptHandlerFunc(func(params DeleteScriptParams) middleware.Responder {
 			return middleware.NotImplemented("operation DeleteScript has not yet been implemented")
 		}),
+		FindExecutionsHandler: FindExecutionsHandlerFunc(func(params FindExecutionsParams) middleware.Responder {
+			return middleware.NotImplemented("operation FindExecutions has not yet been implemented")
+		}),
 		FindProjectsHandler: FindProjectsHandlerFunc(func(params FindProjectsParams) middleware.Responder {
 			return middleware.NotImplemented("operation FindProjects has not yet been implemented")
 		}),
 		FindScriptsHandler: FindScriptsHandlerFunc(func(params FindScriptsParams) middleware.Responder {
 			return middleware.NotImplemented("operation FindScripts has not yet been implemented")
+		}),
+		GetExecutionHandler: GetExecutionHandlerFunc(func(params GetExecutionParams) middleware.Responder {
+			return middleware.NotImplemented("operation GetExecution has not yet been implemented")
 		}),
 		GetProjectHandler: GetProjectHandlerFunc(func(params GetProjectParams) middleware.Responder {
 			return middleware.NotImplemented("operation GetProject has not yet been implemented")
@@ -98,18 +110,26 @@ type FerretServerAPI struct {
 	// JSONProducer registers a producer for a "application/json" mime type
 	JSONProducer runtime.Producer
 
+	// CreateExecutionHandler sets the operation handler for the create execution operation
+	CreateExecutionHandler CreateExecutionHandler
 	// CreateProjectHandler sets the operation handler for the create project operation
 	CreateProjectHandler CreateProjectHandler
 	// CreateScriptHandler sets the operation handler for the create script operation
 	CreateScriptHandler CreateScriptHandler
+	// DeleteExecutionHandler sets the operation handler for the delete execution operation
+	DeleteExecutionHandler DeleteExecutionHandler
 	// DeleteProjectHandler sets the operation handler for the delete project operation
 	DeleteProjectHandler DeleteProjectHandler
 	// DeleteScriptHandler sets the operation handler for the delete script operation
 	DeleteScriptHandler DeleteScriptHandler
+	// FindExecutionsHandler sets the operation handler for the find executions operation
+	FindExecutionsHandler FindExecutionsHandler
 	// FindProjectsHandler sets the operation handler for the find projects operation
 	FindProjectsHandler FindProjectsHandler
 	// FindScriptsHandler sets the operation handler for the find scripts operation
 	FindScriptsHandler FindScriptsHandler
+	// GetExecutionHandler sets the operation handler for the get execution operation
+	GetExecutionHandler GetExecutionHandler
 	// GetProjectHandler sets the operation handler for the get project operation
 	GetProjectHandler GetProjectHandler
 	// GetScriptHandler sets the operation handler for the get script operation
@@ -181,12 +201,20 @@ func (o *FerretServerAPI) Validate() error {
 		unregistered = append(unregistered, "JSONProducer")
 	}
 
+	if o.CreateExecutionHandler == nil {
+		unregistered = append(unregistered, "CreateExecutionHandler")
+	}
+
 	if o.CreateProjectHandler == nil {
 		unregistered = append(unregistered, "CreateProjectHandler")
 	}
 
 	if o.CreateScriptHandler == nil {
 		unregistered = append(unregistered, "CreateScriptHandler")
+	}
+
+	if o.DeleteExecutionHandler == nil {
+		unregistered = append(unregistered, "DeleteExecutionHandler")
 	}
 
 	if o.DeleteProjectHandler == nil {
@@ -197,12 +225,20 @@ func (o *FerretServerAPI) Validate() error {
 		unregistered = append(unregistered, "DeleteScriptHandler")
 	}
 
+	if o.FindExecutionsHandler == nil {
+		unregistered = append(unregistered, "FindExecutionsHandler")
+	}
+
 	if o.FindProjectsHandler == nil {
 		unregistered = append(unregistered, "FindProjectsHandler")
 	}
 
 	if o.FindScriptsHandler == nil {
 		unregistered = append(unregistered, "FindScriptsHandler")
+	}
+
+	if o.GetExecutionHandler == nil {
+		unregistered = append(unregistered, "GetExecutionHandler")
 	}
 
 	if o.GetProjectHandler == nil {
@@ -322,22 +358,37 @@ func (o *FerretServerAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/projects/{projectID}/execution"] = NewCreateExecution(o.context, o.CreateExecutionHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/projects"] = NewCreateProject(o.context, o.CreateProjectHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/projects/{projectId}/scripts"] = NewCreateScript(o.context, o.CreateScriptHandler)
+	o.handlers["POST"]["/projects/{projectID}/scripts"] = NewCreateScript(o.context, o.CreateScriptHandler)
 
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
-	o.handlers["DELETE"]["/projects/{projectId}"] = NewDeleteProject(o.context, o.DeleteProjectHandler)
+	o.handlers["DELETE"]["/projects/{projectID}/execution/{jobID}"] = NewDeleteExecution(o.context, o.DeleteExecutionHandler)
 
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
-	o.handlers["DELETE"]["/projects/{projectId}/scripts/{scriptId}"] = NewDeleteScript(o.context, o.DeleteScriptHandler)
+	o.handlers["DELETE"]["/projects/{projectID}"] = NewDeleteProject(o.context, o.DeleteProjectHandler)
+
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/projects/{projectID}/scripts/{scriptID}"] = NewDeleteScript(o.context, o.DeleteScriptHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/projects/{projectID}/execution"] = NewFindExecutions(o.context, o.FindExecutionsHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
@@ -347,27 +398,32 @@ func (o *FerretServerAPI) initHandlerCache() {
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/projects/{projectId}/scripts"] = NewFindScripts(o.context, o.FindScriptsHandler)
+	o.handlers["GET"]["/projects/{projectID}/scripts"] = NewFindScripts(o.context, o.FindScriptsHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/projects/{projectId}"] = NewGetProject(o.context, o.GetProjectHandler)
+	o.handlers["GET"]["/projects/{projectID}/execution/{jobID}"] = NewGetExecution(o.context, o.GetExecutionHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/projects/{projectId}/scripts/{scriptId}"] = NewGetScript(o.context, o.GetScriptHandler)
+	o.handlers["GET"]["/projects/{projectID}"] = NewGetProject(o.context, o.GetProjectHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/projects/{projectID}/scripts/{scriptID}"] = NewGetScript(o.context, o.GetScriptHandler)
 
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
-	o.handlers["PUT"]["/projects/{projectId}"] = NewUpdateProject(o.context, o.UpdateProjectHandler)
+	o.handlers["PUT"]["/projects/{projectID}"] = NewUpdateProject(o.context, o.UpdateProjectHandler)
 
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
-	o.handlers["PUT"]["/projects/{projectId}/scripts/{scriptId}"] = NewUpdateScript(o.context, o.UpdateScriptHandler)
+	o.handlers["PUT"]["/projects/{projectID}/scripts/{scriptID}"] = NewUpdateScript(o.context, o.UpdateScriptHandler)
 
 }
 

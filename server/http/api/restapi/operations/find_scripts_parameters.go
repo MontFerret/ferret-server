@@ -53,6 +53,7 @@ type FindScriptsParams struct {
 	Page *int32
 	/*
 	  Required: true
+	  Pattern: [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}
 	  In: path
 	*/
 	ProjectID string
@@ -81,7 +82,7 @@ func (o *FindScriptsParams) BindRequest(r *http.Request, route *middleware.Match
 		res = append(res, err)
 	}
 
-	rProjectID, rhkProjectID, _ := route.Params.GetOK("projectId")
+	rProjectID, rhkProjectID, _ := route.Params.GetOK("projectID")
 	if err := o.bindProjectID(rProjectID, rhkProjectID, route.Formats); err != nil {
 		res = append(res, err)
 	}
@@ -145,6 +146,20 @@ func (o *FindScriptsParams) bindProjectID(rawData []string, hasKey bool, formats
 	// Parameter is provided by construction from the route
 
 	o.ProjectID = raw
+
+	if err := o.validateProjectID(formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// validateProjectID carries on validations for parameter ProjectID
+func (o *FindScriptsParams) validateProjectID(formats strfmt.Registry) error {
+
+	if err := validate.Pattern("projectID", "path", o.ProjectID, `[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`); err != nil {
+		return err
+	}
 
 	return nil
 }

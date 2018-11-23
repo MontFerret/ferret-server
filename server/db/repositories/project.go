@@ -14,7 +14,7 @@ import (
 )
 
 type (
-	ProjectRecord struct {
+	projectRecord struct {
 		Key string `json:"_key"`
 		dal.Metadata
 		projects.Project
@@ -27,49 +27,31 @@ type (
 )
 
 func NewProjectRepository(client driver.Client, db driver.Database, collectionName string) (*ProjectRepository, error) {
-	ctx := context.Background()
-
-	exists, err := db.CollectionExists(ctx, collectionName)
+	collection, err := initCollection(db, collectionName)
 
 	if err != nil {
 		return nil, err
-	}
-
-	var collection driver.Collection
-
-	if exists {
-		collection, err = db.Collection(ctx, collectionName)
-
-		if err != nil {
-			return nil, err
-		}
-	} else {
-		collection, err = db.CreateCollection(ctx, collectionName, nil)
-
-		if err != nil {
-			return nil, err
-		}
 	}
 
 	return &ProjectRepository{client, collection}, nil
 }
 
-func (repo *ProjectRepository) Get(ctx context.Context, id string) (*projects.ProjectEntity, error) {
-	record := &ProjectRecord{}
-	meta, err := repo.collection.ReadDocument(ctx, id, record)
+func (repo *ProjectRepository) Get(ctx context.Context, id string) (projects.ProjectEntity, error) {
+	record := projectRecord{}
+	meta, err := repo.collection.ReadDocument(ctx, id, &record)
 
 	if err != nil {
 		if driver.IsNotFound(err) {
-			return nil, nil
+			return projects.ProjectEntity{}, common.ErrNotFound
 		}
 
-		return nil, err
+		return projects.ProjectEntity{}, err
 	}
 
 	return repo.fromRecord(meta, record), nil
 }
 
-func (repo *ProjectRepository) Find(ctx context.Context, q dal.Query) ([]*projects.ProjectEntity, error) {
+func (repo *ProjectRepository) Find(ctx context.Context, q dal.Query) ([]projects.ProjectEntity, error) {
 	cursor, err := repo.collection.Database().Query(
 		ctx,
 		fmt.Sprintf(queries.FindAll, repo.collection.Name()),
@@ -83,14 +65,14 @@ func (repo *ProjectRepository) Find(ctx context.Context, q dal.Query) ([]*projec
 		return nil, err
 	}
 
-	result := make([]*projects.ProjectEntity, 0, q.Pagination.Size)
+	result := make([]projects.ProjectEntity, 0, q.Pagination.Size)
 
 	defer cursor.Close()
 
 	for cursor.HasMore() {
-		record := &ProjectRecord{}
+		record := projectRecord{}
 
-		meta, err := cursor.ReadDocument(ctx, record)
+		meta, err := cursor.ReadDocument(ctx, &record)
 
 		if err != nil {
 			return nil, err
@@ -102,13 +84,9 @@ func (repo *ProjectRepository) Find(ctx context.Context, q dal.Query) ([]*projec
 	return result, nil
 }
 
-func (repo *ProjectRepository) Create(ctx context.Context, project *projects.Project) (*dal.Entity, error) {
-	if project == nil {
-		return nil, common.Error(common.ErrMissedArgument, "project")
-	}
-
+func (repo *ProjectRepository) Create(ctx context.Context, project projects.Project) (dal.Entity, error) {
 	if project.Name == "" {
-		return nil, common.Error(common.ErrInvalidArgument, "empty name")
+		return dal.Entity{}, common.Error(common.ErrInvalidArgument, "empty name")
 	}
 
 	cursor, err := repo.collection.Database().Query(
@@ -120,7 +98,7 @@ func (repo *ProjectRepository) Create(ctx context.Context, project *projects.Pro
 	)
 
 	if err != nil {
-		return nil, err
+		return dal.Entity{}, err
 	}
 
 	defer cursor.Close()
@@ -128,26 +106,26 @@ func (repo *ProjectRepository) Create(ctx context.Context, project *projects.Pro
 	exists := cursor.HasMore()
 
 	if exists {
-		return nil, common.Errorf(common.ErrNotUnique, "project name %s", project.Name)
+		return dal.Entity{}, common.Errorf(common.ErrNotUnique, "project name %s", project.Name)
 	}
 
 	dbName, err := repo.generateID()
 
 	if err != nil {
-		return nil, errors.Wrapf(err, "generation new project id")
+		return dal.Entity{}, errors.Wrapf(err, "generation new project id")
 	}
 
 	db, err := repo.client.CreateDatabase(ctx, dbName, nil)
 
 	if err != nil {
-		return nil, errors.Wrapf(err, "create new database with id %s", dbName)
+		return dal.Entity{}, errors.Wrapf(err, "create new database with id %s", dbName)
 	}
 
 	createdAt := time.Now()
 
-	meta, err := repo.collection.CreateDocument(ctx, &ProjectRecord{
+	meta, err := repo.collection.CreateDocument(ctx, &projectRecord{
 		Key:     dbName,
-		Project: *project,
+		Project: project,
 		Metadata: dal.Metadata{
 			CreatedAt: createdAt,
 		},
@@ -156,19 +134,15 @@ func (repo *ProjectRepository) Create(ctx context.Context, project *projects.Pro
 	if err != nil {
 		db.Remove(ctx)
 
-		return nil, err
+		return dal.Entity{}, err
 	}
 
 	return createdEntity(meta, createdAt), nil
 }
 
-func (repo *ProjectRepository) Update(ctx context.Context, project *projects.UpdateProject) (*dal.Entity, error) {
-	if project == nil {
-		return nil, common.Error(common.ErrMissedArgument, "project")
-	}
-
+func (repo *ProjectRepository) Update(ctx context.Context, project projects.UpdateProject) (dal.Entity, error) {
 	if project.ID == "" {
-		return nil, common.Error(common.ErrInvalidOperation, "project model does not have ID")
+		return dal.Entity{}, common.Error(common.ErrInvalidOperation, "project model does not have ID")
 	}
 
 	updatedAt := time.Now()
@@ -177,7 +151,7 @@ func (repo *ProjectRepository) Update(ctx context.Context, project *projects.Upd
 
 	updateCtx := driver.WithMergeObjects(driver.WithReturnOld(ctx, &old), false)
 
-	meta, err := repo.collection.UpdateDocument(updateCtx, project.ID, &ProjectRecord{
+	meta, err := repo.collection.UpdateDocument(updateCtx, project.ID, &projectRecord{
 		Project: project.Project,
 		Metadata: dal.Metadata{
 			UpdateAt: updatedAt,
@@ -185,7 +159,7 @@ func (repo *ProjectRepository) Update(ctx context.Context, project *projects.Upd
 	})
 
 	if err != nil {
-		return nil, err
+		return dal.Entity{}, err
 	}
 
 	return updatedEntity(meta, old.CreatedAt, updatedAt), nil
@@ -225,8 +199,8 @@ func (repo *ProjectRepository) generateID() (string, error) {
 	return string(append(res, b[1:]...)), nil
 }
 
-func (repo *ProjectRepository) fromRecord(meta driver.DocumentMeta, record *ProjectRecord) *projects.ProjectEntity {
-	return &projects.ProjectEntity{
+func (repo *ProjectRepository) fromRecord(meta driver.DocumentMeta, record projectRecord) projects.ProjectEntity {
+	return projects.ProjectEntity{
 		Entity: dal.Entity{
 			ID:       meta.Key,
 			Rev:      meta.Rev,
