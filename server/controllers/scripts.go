@@ -134,7 +134,7 @@ func (ctl *ScriptsController) DeleteScript(params operations.DeleteScriptParams)
 	return operations.NewDeleteScriptNoContent()
 }
 
-func (ctl *ScriptsController) GetScripts(params operations.GetScriptParams) middleware.Responder {
+func (ctl *ScriptsController) GetScript(params operations.GetScriptParams) middleware.Responder {
 	logger := logging.FromRequest(params.HTTPRequest)
 
 	out, err := ctl.service.GetScript(params.HTTPRequest.Context(), params.ProjectID, params.ScriptID)
@@ -220,6 +220,7 @@ func (ctl *ScriptsController) FindScripts(params operations.FindScriptsParams) m
 				CreatedAt: &createdAt,
 				UpdatedAt: updatedAt,
 			},
+			Name: &p.Name,
 		})
 	}
 

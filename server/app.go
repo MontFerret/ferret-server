@@ -150,7 +150,7 @@ func (app *Application) configureScriptsController() error {
 	app.server.API().CreateScriptHandler = operations.CreateScriptHandlerFunc(ctl.CreateScript)
 	app.server.API().UpdateScriptHandler = operations.UpdateScriptHandlerFunc(ctl.UpdateScript)
 	app.server.API().DeleteScriptHandler = operations.DeleteScriptHandlerFunc(ctl.DeleteScript)
-	app.server.API().GetScriptHandler = operations.GetScriptHandlerFunc(ctl.GetScripts)
+	app.server.API().GetScriptHandler = operations.GetScriptHandlerFunc(ctl.GetScript)
 	app.server.API().FindScriptsHandler = operations.FindScriptsHandlerFunc(ctl.FindScripts)
 
 	return nil
