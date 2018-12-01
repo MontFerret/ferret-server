@@ -30,6 +30,8 @@ func NewInMemoryQueue(size uint64) (*InMemoryQueue, error) {
 
 func (q *InMemoryQueue) Enqueue(ctx context.Context, job Job) error {
 	select {
+	case <-ctx.Done():
+		return common.ErrTerminated
 	case q.queue <- job:
 		return nil
 	default:
@@ -37,6 +39,6 @@ func (q *InMemoryQueue) Enqueue(ctx context.Context, job Job) error {
 	}
 }
 
-func (q *InMemoryQueue) Dequeue(ctx context.Context) (<-chan Job, error) {
+func (q *InMemoryQueue) Dequeue(_ context.Context) (<-chan Job, error) {
 	return q.queue, nil
 }

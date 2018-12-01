@@ -85,7 +85,7 @@ func (ctl *ExecutionController) Delete(params operations.DeleteExecutionParams) 
 	return operations.NewDeleteExecutionNoContent()
 }
 
-func (ctl *ExecutionController) Find(params operations.FindExecutionsParams) middleware.Responder {
+func (ctl *ExecutionController) Find(_ operations.FindExecutionsParams) middleware.Responder {
 	return http.Bad("not implemented")
 }
 
