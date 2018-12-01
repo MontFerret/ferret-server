@@ -2,7 +2,7 @@
 
 
 [[projects]]
-  digest = "1:bee3c2a1f8858b4325804ba486308384cf88cf311251451c3ed54e3690fe42be"
+  digest = "1:4100d73f74bb2eff3301cce010dbd67bc37eb1d25cb09e1a4c1d72afead077d6"
   name = "github.com/MontFerret/ferret"
   packages = [
     "pkg/compiler",
@@ -35,8 +35,8 @@
     "pkg/stdlib/utils",
   ]
   pruneopts = "UT"
-  revision = "dba9761b2c205760521a0599787cfec81a7753b4"
-  version = "v0.5.1"
+  revision = "0ce0426b55861cd07651c16db88a08a11b4a933a"
+  version = "v0.5.2"
 
 [[projects]]
   digest = "1:573fa46f8d413d4bc3f7cc5e86b2c43cb21559f4fb0a19d9874d228e28fdc07c"

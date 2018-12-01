@@ -60,4 +60,4 @@ required = ["github.com/go-swagger/go-swagger"]
 
 [[constraint]]
   name = "github.com/MontFerret/ferret"
-  version = "0.5.1"
+  version = "0.5.2"

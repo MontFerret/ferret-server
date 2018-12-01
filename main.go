@@ -72,7 +72,9 @@ func createSettings() (server.Settings, error) {
 	settings.HTTP.Port = *httpPort
 
 	// Db
-	settings.Database.Endpoints = dbEndpoints
+	if len(dbEndpoints) > 0 {
+		settings.Database.Endpoints = dbEndpoints
+	}
 
 	return settings, nil
 }

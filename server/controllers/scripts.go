@@ -210,7 +210,8 @@ func (ctl *ScriptsController) FindScripts(params operations.FindScriptsParams) m
 
 	res := make([]*operations.FindScriptsOKBodyItems0, 0, len(out))
 
-	for _, p := range out {
+	for _, i := range out {
+		p := i
 		createdAt, updatedAt := dto.ToMetadataDates(p.Metadata)
 
 		res = append(res, &operations.FindScriptsOKBodyItems0{

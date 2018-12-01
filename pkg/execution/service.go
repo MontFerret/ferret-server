@@ -123,14 +123,9 @@ func (service *Service) Start(ctx context.Context, event Event) (string, error) 
 	jobID := id.String()
 
 	job := Job{
-		ID:     jobID,
-		Script: entity,
-	}
-
-	err = service.queue.Enqueue(ctx, job)
-
-	if err != nil {
-		return "", errors.Wrap(err, "enqueue")
+		ID:        jobID,
+		ProjectID: event.ProjectID,
+		Script:    entity,
 	}
 
 	err = service.state.Write(State{
@@ -142,7 +137,26 @@ func (service *Service) Start(ctx context.Context, event Event) (string, error) 
 	if err != nil {
 		service.log(job, err).
 			Str("state", StatusQueued.String()).
-			Msg("failed to write state")
+			Msg("failed to create job state")
+	}
+
+	err = service.queue.Enqueue(ctx, job)
+
+	if err != nil {
+		e := service.state.Write(State{
+			Job:       job,
+			Status:    StatusErrored,
+			Timestamp: time.Now(),
+			Error:     err,
+		})
+
+		if e != nil {
+			service.log(job, err).
+				Str("state", StatusQueued.String()).
+				Msg("failed to update job state")
+		}
+
+		return "", errors.Wrap(err, "enqueue")
 	}
 
 	return jobID, nil

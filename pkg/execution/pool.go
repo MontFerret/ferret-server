@@ -98,7 +98,7 @@ func (wp *WorkerPool) Consume(ctx context.Context, q Queue) (<-chan Result, erro
 						Str("project_id", job.ProjectID).
 						Str("job_id", job.ID).
 						Str("state", state.Status.String()).
-						Msg("faoiled to update job state")
+						Msg("failed to update job state")
 				}
 
 				worker := wp.factory(job)
