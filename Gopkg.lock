@@ -234,12 +234,12 @@
   version = "v0.17.2"
 
 [[projects]]
-  digest = "1:520dabded5f6fd0536c36dbeee0c7053789ba511b43acc5550b28b3faf8d1b9c"
+  digest = "1:d47009e3a370040497dd17134d5cf6071c47874e14eec34ff69ad3f6902be861"
   name = "github.com/go-swagger/go-swagger"
   packages = ["."]
   pruneopts = "UT"
-  revision = "800a3052f0305ab54980f961bd4f1e8b3e5599fe"
-  version = "v0.17.2"
+  revision = "6b23bb61413826ce42c3b14a37bf5870caf91e0b"
+  version = "v0.18.0"
 
 [[projects]]
   digest = "1:c594a691090b434d55c67f6cc8e326ef5ba49452abc059821bd5d4fd4cdef08c"
