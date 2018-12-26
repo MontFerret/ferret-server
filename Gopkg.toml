@@ -24,23 +24,46 @@
 #   go-tests = true
 #   unused-packages = true
 
-required = ["github.com/go-swagger/go-swagger"]
-
-[prune]
-  go-tests = true
-  unused-packages = true
 
 [[constraint]]
+  name = "github.com/MontFerret/ferret"
+  version = "0.6.0"
+
+[[constraint]]
+  branch = "master"
   name = "github.com/arangodb/go-driver"
-  revision = "65af12d6f1241f2cd57a34b919701e9c6452fe4f"
 
 [[constraint]]
   name = "github.com/codegangsta/negroni"
   version = "1.0.0"
 
 [[constraint]]
-  name = "github.com/go-swagger/go-swagger"
-  version = "0.17.2"
+  name = "github.com/go-openapi/errors"
+  version = "0.18.0"
+
+[[constraint]]
+  name = "github.com/go-openapi/loads"
+  version = "0.18.0"
+
+[[constraint]]
+  name = "github.com/go-openapi/runtime"
+  version = "0.18.0"
+
+[[constraint]]
+  name = "github.com/go-openapi/spec"
+  version = "0.18.0"
+
+[[constraint]]
+  name = "github.com/go-openapi/strfmt"
+  version = "0.18.0"
+
+[[constraint]]
+  name = "github.com/go-openapi/swag"
+  version = "0.18.0"
+
+[[constraint]]
+  name = "github.com/go-openapi/validate"
+  version = "0.18.0"
 
 [[constraint]]
   name = "github.com/gofrs/uuid"
@@ -55,9 +78,25 @@ required = ["github.com/go-swagger/go-swagger"]
   version = "1.7.4-pre"
 
 [[constraint]]
-  name = "github.com/rs/zerolog"
-  version = "1.10.3"
+  branch = "master"
+  name = "github.com/pilu/xrequestid"
 
 [[constraint]]
-  name = "github.com/MontFerret/ferret"
-  version = "0.5.2"
+  name = "github.com/pkg/errors"
+  version = "0.8.0"
+
+[[constraint]]
+  name = "github.com/rs/zerolog"
+  version = "1.11.0"
+
+[[constraint]]
+  name = "github.com/smartystreets/goconvey"
+  version = "1.6.3"
+
+[[constraint]]
+  branch = "master"
+  name = "golang.org/x/net"
+
+[prune]
+  go-tests = true
+  unused-packages = true
