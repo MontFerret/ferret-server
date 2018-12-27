@@ -2,22 +2,16 @@
 
 
 [[projects]]
-  digest = "1:4100d73f74bb2eff3301cce010dbd67bc37eb1d25cb09e1a4c1d72afead077d6"
+  digest = "1:85525c43d64916622ef291798b728a3871f1d98e842400cf414ad844a8df2d86"
   name = "github.com/MontFerret/ferret"
   packages = [
     "pkg/compiler",
-    "pkg/html",
-    "pkg/html/common",
-    "pkg/html/dynamic",
-    "pkg/html/dynamic/eval",
-    "pkg/html/dynamic/events",
-    "pkg/html/static",
+    "pkg/drivers",
     "pkg/parser",
     "pkg/parser/fql",
     "pkg/runtime",
     "pkg/runtime/collections",
     "pkg/runtime/core",
-    "pkg/runtime/env",
     "pkg/runtime/expressions",
     "pkg/runtime/expressions/clauses",
     "pkg/runtime/expressions/literals",
@@ -35,16 +29,8 @@
     "pkg/stdlib/utils",
   ]
   pruneopts = "UT"
-  revision = "0ce0426b55861cd07651c16db88a08a11b4a933a"
-  version = "v0.5.2"
-
-[[projects]]
-  digest = "1:573fa46f8d413d4bc3f7cc5e86b2c43cb21559f4fb0a19d9874d228e28fdc07c"
-  name = "github.com/PuerkitoBio/goquery"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "2d2796f41742ece03e8086188fa4db16a3a0b458"
-  version = "v1.5.0"
+  revision = "38e7798cea2976879ac29479c820a1f543ab224c"
+  version = "v0.6.0"
 
 [[projects]]
   digest = "1:d1665c44bd5db19aaee18d1b6233c99b0b9a986e8bccb24ef54747547a48027f"
@@ -63,20 +49,12 @@
   revision = "de5bf2ad457846296e2031421a34e2568e304e35"
 
 [[projects]]
-  digest = "1:66b3310cf22cdc96c35ef84ede4f7b9b370971c4025f394c89a2638729653b11"
-  name = "github.com/andybalholm/cascadia"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "901648c87902174f774fac311d7f176f8647bdaa"
-  version = "v1.0.0"
-
-[[projects]]
-  digest = "1:5e79f7a65816b2ba311439df21c9b24af91868cbb5d67489be6d94be2cccb286"
+  digest = "1:d04889482897652dedae6d8575b479c06fa3eb3c3abe248163b25d3df5fab43e"
   name = "github.com/antlr/antlr4"
   packages = ["runtime/Go/antlr"]
   pruneopts = "UT"
-  revision = "bdc05c87be2ad981744223df0fd745e8345baba9"
-  version = "4.7.1"
+  revision = "be58ebffde8e29c154192c019608f0a5b8e6a064"
+  version = "4.7.2"
 
 [[projects]]
   digest = "1:32c8784f5385da8d193a3ecbd0a37a1eae25588ec9a648df280bd7a82640d147"
@@ -113,14 +91,6 @@
   pruneopts = "UT"
   revision = "c6a59be0ce122566695fbd5e48a77f8f10c8a63a"
   version = "v1.0.0"
-
-[[projects]]
-  branch = "master"
-  digest = "1:86909a5b1e4522ad763f86327cfa65e51d7eb838d4adb3d6f68069fede181122"
-  name = "github.com/corpix/uarand"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "37c9140f52f6bf4998ff7617c456d554d6a2dc2f"
 
 [[projects]]
   digest = "1:6f82cacd0af5921e99bf3f46748705239b36489464f4529a1589bc895764fb18"
@@ -258,14 +228,6 @@
   revision = "d547d1d9531ed93dbdebcbff7f83e7c876a1e0ee"
 
 [[projects]]
-  digest = "1:7b5c6e2eeaa9ae5907c391a91c132abfd5c9e8a784a341b5625e750c67e6825d"
-  name = "github.com/gorilla/websocket"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "66b9c49e59c6c48f0ffce28c2d8b8a5678502c6d"
-  version = "v1.4.0"
-
-[[projects]]
   digest = "1:a2cff208d4759f6ba1b1cd228587b0a1869f95f22542ec9cd17fff64430113c7"
   name = "github.com/jessevdk/go-flags"
   packages = ["."]
@@ -280,61 +242,6 @@
   pruneopts = "UT"
   revision = "b4936e06046bbecbb94cae9c18127ebe510a2cb9"
   version = "v4.20"
-
-[[projects]]
-  digest = "1:612ebc66cfa7484088f90ab86c7f1eb3d7696cf38ec2451c63f8d6008ff7625f"
-  name = "github.com/mafredri/cdp"
-  packages = [
-    ".",
-    "devtool",
-    "internal/errors",
-    "protocol/accessibility",
-    "protocol/animation",
-    "protocol/applicationcache",
-    "protocol/audits",
-    "protocol/browser",
-    "protocol/cachestorage",
-    "protocol/console",
-    "protocol/css",
-    "protocol/database",
-    "protocol/debugger",
-    "protocol/deviceorientation",
-    "protocol/dom",
-    "protocol/domdebugger",
-    "protocol/domsnapshot",
-    "protocol/domstorage",
-    "protocol/emulation",
-    "protocol/headlessexperimental",
-    "protocol/heapprofiler",
-    "protocol/indexeddb",
-    "protocol/input",
-    "protocol/inspector",
-    "protocol/internal",
-    "protocol/io",
-    "protocol/layertree",
-    "protocol/log",
-    "protocol/memory",
-    "protocol/network",
-    "protocol/overlay",
-    "protocol/page",
-    "protocol/performance",
-    "protocol/profiler",
-    "protocol/runtime",
-    "protocol/schema",
-    "protocol/security",
-    "protocol/serviceworker",
-    "protocol/storage",
-    "protocol/systeminfo",
-    "protocol/target",
-    "protocol/testing",
-    "protocol/tethering",
-    "protocol/tracing",
-    "rpcc",
-    "session",
-  ]
-  pruneopts = "UT"
-  revision = "0b30a3d15c28f2c8f028f99009cfba0b19baf126"
-  version = "v0.20.0"
 
 [[projects]]
   branch = "master"
@@ -393,14 +300,6 @@
   version = "v1.11.0"
 
 [[projects]]
-  digest = "1:4ca145a665316d3c020a39c0741780fa3636b9152b824206796c4dce541f4a24"
-  name = "github.com/sethgrid/pester"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "03e26c9abbbf5accb8349790bf9f41bde09d72c3"
-  version = "1.0.0"
-
-[[projects]]
   digest = "1:cc1c574c9cb5e99b123888c12b828e2d19224ab6c2244bda34647f230bf33243"
   name = "github.com/smartystreets/assertions"
   packages = [
@@ -426,24 +325,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:5842c9310ef8cc501dde52f107f31e243c53bb1f639dae739951f18cd40fffe0"
+  digest = "1:bbd232f46e33dfb01068e0f4193a3da2d662a350873804bc964f697de5f39ac7"
   name = "golang.org/x/net"
   packages = [
-    "html",
-    "html/atom",
     "idna",
     "netutil",
   ]
   pruneopts = "UT"
   revision = "adae6a3d119ae4890b46832a2e88a95adc62b8e7"
-
-[[projects]]
-  branch = "master"
-  digest = "1:b521f10a2d8fa85c04a8ef4e62f2d1e14d303599a55d64dabf9f5a02f84d35eb"
-  name = "golang.org/x/sync"
-  packages = ["errgroup"]
-  pruneopts = "UT"
-  revision = "42b317875d0fa942474b76e1b46a6060d720ae6e"
 
 [[projects]]
   digest = "1:0c56024909189aee3364b7f21a95a27459f718aa7c199a5c111c36cfffd9eaef"
