@@ -2,6 +2,8 @@ package db
 
 import (
 	"context"
+	"sync"
+
 	"github.com/MontFerret/ferret-server/pkg/history"
 	"github.com/MontFerret/ferret-server/pkg/projects"
 	"github.com/MontFerret/ferret-server/pkg/scripts"
@@ -9,7 +11,6 @@ import (
 	"github.com/arangodb/go-driver"
 	"github.com/arangodb/go-driver/http"
 	"github.com/pkg/errors"
-	"sync"
 )
 
 const systemDBName = "ferret_server"
@@ -23,10 +24,10 @@ type (
 	Manager struct {
 		client    driver.Client
 		systemDB  driver.Database
-		databases sync.Map
+		databases *sync.Map
 		projects  projects.Repository
-		scripts   sync.Map
-		histories sync.Map
+		scripts   *sync.Map
+		histories *sync.Map
 	}
 )
 
@@ -81,7 +82,7 @@ func New(settings Settings) (*Manager, error) {
 	manager.client = client
 	manager.systemDB = db
 	manager.projects = proj
-	manager.scripts = sync.Map{}
+	manager.scripts = new(sync.Map)
 
 	return manager, nil
 }
@@ -114,7 +115,7 @@ func (manager *Manager) GetHistoryRepository(projectID string) (history.Reposito
 	return repo.(history.Repository), nil
 }
 
-func (manager *Manager) resolveRepo(projectID string, collectionName string, cache sync.Map, f factory) (interface{}, error) {
+func (manager *Manager) resolveRepo(projectID string, collectionName string, cache *sync.Map, f factory) (interface{}, error) {
 	repo, exists := cache.Load(projectID)
 
 	if !exists {

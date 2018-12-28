@@ -2,12 +2,13 @@ package execution_test
 
 import (
 	"context"
-	"github.com/MontFerret/ferret-server/pkg/execution"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 	"sync"
 	"testing"
 	"time"
+
+	"github.com/MontFerret/ferret-server/pkg/execution"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 
 	. "github.com/smartystreets/goconvey/convey"
 )
@@ -30,7 +31,7 @@ type (
 	}
 )
 
-func (nsw NoopStatusWriter) Write(job execution.Job, status execution.Status) error {
+func (nsw NoopStatusWriter) Write(state execution.State) error {
 	return nil
 }
 
@@ -73,17 +74,16 @@ func (nw *MockedWorker) Interrupt() {
 	nw.cancelled = true
 }
 
-func (sw *MockedStatusWriter) Write(job execution.Job, status execution.Status) error {
+func (sw *MockedStatusWriter) Write(state execution.State) error {
 	sw.mu.Lock()
 	defer sw.mu.Unlock()
 
-	found, ok := sw.jobs[job.ID]
-
+	found, ok := sw.jobs[state.Job.ID]
 	if !ok {
 		found = make([]execution.Status, 0, 5)
 	}
 
-	sw.jobs[job.ID] = append(found, status)
+	sw.jobs[state.Job.ID] = append(found, state.Status)
 
 	return nil
 }
@@ -164,7 +164,7 @@ func TestPool(t *testing.T) {
 				select {
 				case j := <-res:
 					i++
-					So(j.ID, ShouldEqual, jobs[i].ID)
+					So(j.Job.ID, ShouldEqual, jobs[i].ID)
 				default:
 					return
 				}
@@ -221,7 +221,7 @@ func TestPool(t *testing.T) {
 				select {
 				case j := <-res:
 					i++
-					So(j.ID, ShouldEqual, jobs[i].ID)
+					So(j.Job.ID, ShouldEqual, jobs[i].ID)
 				default:
 					break
 				}
