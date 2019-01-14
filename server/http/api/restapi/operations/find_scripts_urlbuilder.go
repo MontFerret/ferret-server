@@ -43,7 +43,7 @@ func (o *FindScriptsURL) SetBasePath(bp string) {
 
 // Build a url path and query string
 func (o *FindScriptsURL) Build() (*url.URL, error) {
-	var result url.URL
+	var _result url.URL
 
 	var _path = "/projects/{projectID}/scripts"
 
@@ -55,7 +55,7 @@ func (o *FindScriptsURL) Build() (*url.URL, error) {
 	}
 
 	_basePath := o._basePath
-	result.Path = golangswaggerpaths.Join(_basePath, _path)
+	_result.Path = golangswaggerpaths.Join(_basePath, _path)
 
 	qs := make(url.Values)
 
@@ -75,9 +75,9 @@ func (o *FindScriptsURL) Build() (*url.URL, error) {
 		qs.Set("size", size)
 	}
 
-	result.RawQuery = qs.Encode()
+	_result.RawQuery = qs.Encode()
 
-	return &result, nil
+	return &_result, nil
 }
 
 // Must is a helper function to panic when the url builder returns an error

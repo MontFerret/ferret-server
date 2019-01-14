@@ -19,6 +19,22 @@ var (
 	ErrNotImplemented        = errors.New("not implemented")
 )
 
+type AggregatedError struct {
+	errors []error
+}
+
+func NewAggregatedError(errs []error) AggregatedError {
+	return AggregatedError{errs}
+}
+
+func (e AggregatedError) Errors() []error {
+	return e.errors
+}
+
+func (e AggregatedError) Error() string {
+	return Errors(e.errors...).Error()
+}
+
 func Error(err error, msg string) error {
 	return errors.Errorf("%s: %s", err.Error(), msg)
 }

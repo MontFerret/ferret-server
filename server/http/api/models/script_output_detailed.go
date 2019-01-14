@@ -292,15 +292,31 @@ func (m *ScriptOutputDetailedAO1Execution) UnmarshalBinary(b []byte) error {
 // swagger:model ScriptOutputDetailedAO1Persistence
 type ScriptOutputDetailedAO1Persistence struct {
 
-	// local
-	Local string `json:"local,omitempty"`
-
-	// remote
-	Remote []string `json:"remote"`
+	// enabled
+	// Required: true
+	Enabled *bool `json:"enabled"`
 }
 
 // Validate validates this script output detailed a o1 persistence
 func (m *ScriptOutputDetailedAO1Persistence) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateEnabled(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *ScriptOutputDetailedAO1Persistence) validateEnabled(formats strfmt.Registry) error {
+
+	if err := validate.Required("persistence"+"."+"enabled", "body", m.Enabled); err != nil {
+		return err
+	}
+
 	return nil
 }
 

@@ -13,7 +13,7 @@ import (
 	"github.com/MontFerret/ferret-server/server/http/api/restapi/operations"
 )
 
-//go:generate swagger generate server --target ../server/http/api --name FerretServer --spec ../api/api.oas2.json --exclude-main
+//go:generate swagger generate server --target ../../api --name FerretServer --spec ../../../../api/api.oas2.json --exclude-main
 
 func configureFlags(api *operations.FerretServerAPI) {
 	// api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ ... }
@@ -51,11 +51,20 @@ func configureAPI(api *operations.FerretServerAPI) http.Handler {
 	api.DeleteScriptHandler = operations.DeleteScriptHandlerFunc(func(params operations.DeleteScriptParams) middleware.Responder {
 		return middleware.NotImplemented("operation .DeleteScript has not yet been implemented")
 	})
+	api.DeleteScriptDataHandler = operations.DeleteScriptDataHandlerFunc(func(params operations.DeleteScriptDataParams) middleware.Responder {
+		return middleware.NotImplemented("operation .DeleteScriptData has not yet been implemented")
+	})
 	api.FindExecutionsHandler = operations.FindExecutionsHandlerFunc(func(params operations.FindExecutionsParams) middleware.Responder {
 		return middleware.NotImplemented("operation .FindExecutions has not yet been implemented")
 	})
+	api.FindProjectDataHandler = operations.FindProjectDataHandlerFunc(func(params operations.FindProjectDataParams) middleware.Responder {
+		return middleware.NotImplemented("operation .FindProjectData has not yet been implemented")
+	})
 	api.FindProjectsHandler = operations.FindProjectsHandlerFunc(func(params operations.FindProjectsParams) middleware.Responder {
 		return middleware.NotImplemented("operation .FindProjects has not yet been implemented")
+	})
+	api.FindScriptDataHandler = operations.FindScriptDataHandlerFunc(func(params operations.FindScriptDataParams) middleware.Responder {
+		return middleware.NotImplemented("operation .FindScriptData has not yet been implemented")
 	})
 	api.FindScriptsHandler = operations.FindScriptsHandlerFunc(func(params operations.FindScriptsParams) middleware.Responder {
 		return middleware.NotImplemented("operation .FindScripts has not yet been implemented")
@@ -69,11 +78,17 @@ func configureAPI(api *operations.FerretServerAPI) http.Handler {
 	api.GetScriptHandler = operations.GetScriptHandlerFunc(func(params operations.GetScriptParams) middleware.Responder {
 		return middleware.NotImplemented("operation .GetScript has not yet been implemented")
 	})
+	api.GetScriptDataHandler = operations.GetScriptDataHandlerFunc(func(params operations.GetScriptDataParams) middleware.Responder {
+		return middleware.NotImplemented("operation .GetScriptData has not yet been implemented")
+	})
 	api.UpdateProjectHandler = operations.UpdateProjectHandlerFunc(func(params operations.UpdateProjectParams) middleware.Responder {
 		return middleware.NotImplemented("operation .UpdateProject has not yet been implemented")
 	})
 	api.UpdateScriptHandler = operations.UpdateScriptHandlerFunc(func(params operations.UpdateScriptParams) middleware.Responder {
 		return middleware.NotImplemented("operation .UpdateScript has not yet been implemented")
+	})
+	api.UpdateScriptDataHandler = operations.UpdateScriptDataHandlerFunc(func(params operations.UpdateScriptDataParams) middleware.Responder {
+		return middleware.NotImplemented("operation .UpdateScriptData has not yet been implemented")
 	})
 
 	api.ServerShutdown = func() {}

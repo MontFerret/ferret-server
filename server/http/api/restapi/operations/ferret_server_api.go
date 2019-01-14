@@ -55,11 +55,20 @@ func NewFerretServerAPI(spec *loads.Document) *FerretServerAPI {
 		DeleteScriptHandler: DeleteScriptHandlerFunc(func(params DeleteScriptParams) middleware.Responder {
 			return middleware.NotImplemented("operation DeleteScript has not yet been implemented")
 		}),
+		DeleteScriptDataHandler: DeleteScriptDataHandlerFunc(func(params DeleteScriptDataParams) middleware.Responder {
+			return middleware.NotImplemented("operation DeleteScriptData has not yet been implemented")
+		}),
 		FindExecutionsHandler: FindExecutionsHandlerFunc(func(params FindExecutionsParams) middleware.Responder {
 			return middleware.NotImplemented("operation FindExecutions has not yet been implemented")
 		}),
+		FindProjectDataHandler: FindProjectDataHandlerFunc(func(params FindProjectDataParams) middleware.Responder {
+			return middleware.NotImplemented("operation FindProjectData has not yet been implemented")
+		}),
 		FindProjectsHandler: FindProjectsHandlerFunc(func(params FindProjectsParams) middleware.Responder {
 			return middleware.NotImplemented("operation FindProjects has not yet been implemented")
+		}),
+		FindScriptDataHandler: FindScriptDataHandlerFunc(func(params FindScriptDataParams) middleware.Responder {
+			return middleware.NotImplemented("operation FindScriptData has not yet been implemented")
 		}),
 		FindScriptsHandler: FindScriptsHandlerFunc(func(params FindScriptsParams) middleware.Responder {
 			return middleware.NotImplemented("operation FindScripts has not yet been implemented")
@@ -73,11 +82,17 @@ func NewFerretServerAPI(spec *loads.Document) *FerretServerAPI {
 		GetScriptHandler: GetScriptHandlerFunc(func(params GetScriptParams) middleware.Responder {
 			return middleware.NotImplemented("operation GetScript has not yet been implemented")
 		}),
+		GetScriptDataHandler: GetScriptDataHandlerFunc(func(params GetScriptDataParams) middleware.Responder {
+			return middleware.NotImplemented("operation GetScriptData has not yet been implemented")
+		}),
 		UpdateProjectHandler: UpdateProjectHandlerFunc(func(params UpdateProjectParams) middleware.Responder {
 			return middleware.NotImplemented("operation UpdateProject has not yet been implemented")
 		}),
 		UpdateScriptHandler: UpdateScriptHandlerFunc(func(params UpdateScriptParams) middleware.Responder {
 			return middleware.NotImplemented("operation UpdateScript has not yet been implemented")
+		}),
+		UpdateScriptDataHandler: UpdateScriptDataHandlerFunc(func(params UpdateScriptDataParams) middleware.Responder {
+			return middleware.NotImplemented("operation UpdateScriptData has not yet been implemented")
 		}),
 	}
 }
@@ -122,10 +137,16 @@ type FerretServerAPI struct {
 	DeleteProjectHandler DeleteProjectHandler
 	// DeleteScriptHandler sets the operation handler for the delete script operation
 	DeleteScriptHandler DeleteScriptHandler
+	// DeleteScriptDataHandler sets the operation handler for the delete script data operation
+	DeleteScriptDataHandler DeleteScriptDataHandler
 	// FindExecutionsHandler sets the operation handler for the find executions operation
 	FindExecutionsHandler FindExecutionsHandler
+	// FindProjectDataHandler sets the operation handler for the find project data operation
+	FindProjectDataHandler FindProjectDataHandler
 	// FindProjectsHandler sets the operation handler for the find projects operation
 	FindProjectsHandler FindProjectsHandler
+	// FindScriptDataHandler sets the operation handler for the find script data operation
+	FindScriptDataHandler FindScriptDataHandler
 	// FindScriptsHandler sets the operation handler for the find scripts operation
 	FindScriptsHandler FindScriptsHandler
 	// GetExecutionHandler sets the operation handler for the get execution operation
@@ -134,10 +155,14 @@ type FerretServerAPI struct {
 	GetProjectHandler GetProjectHandler
 	// GetScriptHandler sets the operation handler for the get script operation
 	GetScriptHandler GetScriptHandler
+	// GetScriptDataHandler sets the operation handler for the get script data operation
+	GetScriptDataHandler GetScriptDataHandler
 	// UpdateProjectHandler sets the operation handler for the update project operation
 	UpdateProjectHandler UpdateProjectHandler
 	// UpdateScriptHandler sets the operation handler for the update script operation
 	UpdateScriptHandler UpdateScriptHandler
+	// UpdateScriptDataHandler sets the operation handler for the update script data operation
+	UpdateScriptDataHandler UpdateScriptDataHandler
 
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
@@ -225,12 +250,24 @@ func (o *FerretServerAPI) Validate() error {
 		unregistered = append(unregistered, "DeleteScriptHandler")
 	}
 
+	if o.DeleteScriptDataHandler == nil {
+		unregistered = append(unregistered, "DeleteScriptDataHandler")
+	}
+
 	if o.FindExecutionsHandler == nil {
 		unregistered = append(unregistered, "FindExecutionsHandler")
 	}
 
+	if o.FindProjectDataHandler == nil {
+		unregistered = append(unregistered, "FindProjectDataHandler")
+	}
+
 	if o.FindProjectsHandler == nil {
 		unregistered = append(unregistered, "FindProjectsHandler")
+	}
+
+	if o.FindScriptDataHandler == nil {
+		unregistered = append(unregistered, "FindScriptDataHandler")
 	}
 
 	if o.FindScriptsHandler == nil {
@@ -249,12 +286,20 @@ func (o *FerretServerAPI) Validate() error {
 		unregistered = append(unregistered, "GetScriptHandler")
 	}
 
+	if o.GetScriptDataHandler == nil {
+		unregistered = append(unregistered, "GetScriptDataHandler")
+	}
+
 	if o.UpdateProjectHandler == nil {
 		unregistered = append(unregistered, "UpdateProjectHandler")
 	}
 
 	if o.UpdateScriptHandler == nil {
 		unregistered = append(unregistered, "UpdateScriptHandler")
+	}
+
+	if o.UpdateScriptDataHandler == nil {
+		unregistered = append(unregistered, "UpdateScriptDataHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -385,6 +430,11 @@ func (o *FerretServerAPI) initHandlerCache() {
 	}
 	o.handlers["DELETE"]["/projects/{projectID}/scripts/{scriptID}"] = NewDeleteScript(o.context, o.DeleteScriptHandler)
 
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/projects/{projectID}/data/{scriptID}/{dataId}"] = NewDeleteScriptData(o.context, o.DeleteScriptDataHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
@@ -393,7 +443,17 @@ func (o *FerretServerAPI) initHandlerCache() {
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
+	o.handlers["GET"]["/projects/{projectID}/data"] = NewFindProjectData(o.context, o.FindProjectDataHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
 	o.handlers["GET"]["/projects"] = NewFindProjects(o.context, o.FindProjectsHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/projects/{projectID}/data/{scriptID}"] = NewFindScriptData(o.context, o.FindScriptDataHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
@@ -415,6 +475,11 @@ func (o *FerretServerAPI) initHandlerCache() {
 	}
 	o.handlers["GET"]["/projects/{projectID}/scripts/{scriptID}"] = NewGetScript(o.context, o.GetScriptHandler)
 
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/projects/{projectID}/data/{scriptID}/{dataId}"] = NewGetScriptData(o.context, o.GetScriptDataHandler)
+
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
@@ -424,6 +489,11 @@ func (o *FerretServerAPI) initHandlerCache() {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
 	o.handlers["PUT"]["/projects/{projectID}/scripts/{scriptID}"] = NewUpdateScript(o.context, o.UpdateScriptHandler)
+
+	if o.handlers["PUT"] == nil {
+		o.handlers["PUT"] = make(map[string]http.Handler)
+	}
+	o.handlers["PUT"]["/projects/{projectID}/data/{scriptID}/{dataId}"] = NewUpdateScriptData(o.context, o.UpdateScriptDataHandler)
 
 }
 

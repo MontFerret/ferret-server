@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"github.com/MontFerret/ferret-server/pkg/history"
+	"github.com/MontFerret/ferret-server/pkg/persistence"
 	"github.com/MontFerret/ferret-server/pkg/projects"
 	"github.com/MontFerret/ferret-server/pkg/scripts"
 	"github.com/MontFerret/ferret-server/server/db/repositories"
@@ -16,6 +17,7 @@ const systemDBName = "ferret_server"
 const projectsCollection = "projects"
 const scriptsCollection = "scripts"
 const historyCollection = "history"
+const dataCollection = "data"
 
 type (
 	factory func(driver.Database, string) (interface{}, error)
@@ -27,6 +29,7 @@ type (
 		projects  projects.Repository
 		scripts   sync.Map
 		histories sync.Map
+		data      sync.Map
 	}
 )
 
@@ -82,6 +85,7 @@ func New(settings Settings) (*Manager, error) {
 	manager.systemDB = db
 	manager.projects = proj
 	manager.scripts = sync.Map{}
+	manager.data = sync.Map{}
 
 	return manager, nil
 }
@@ -112,6 +116,18 @@ func (manager *Manager) GetHistoryRepository(projectID string) (history.Reposito
 	}
 
 	return repo.(history.Repository), nil
+}
+
+func (manager *Manager) GetDataRepository(projectID string) (persistence.Repository, error) {
+	repo, err := manager.resolveRepo(projectID, dataCollection, manager.data, func(db driver.Database, name string) (interface{}, error) {
+		return repositories.NewDataRepository(db, name)
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return repo.(persistence.Repository), nil
 }
 
 func (manager *Manager) resolveRepo(projectID string, collectionName string, cache sync.Map, f factory) (interface{}, error) {

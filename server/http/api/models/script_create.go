@@ -217,15 +217,31 @@ func (m *ScriptCreateExecution) UnmarshalBinary(b []byte) error {
 // swagger:model ScriptCreatePersistence
 type ScriptCreatePersistence struct {
 
-	// local
-	Local string `json:"local,omitempty"`
-
-	// remote
-	Remote []string `json:"remote"`
+	// enabled
+	// Required: true
+	Enabled *bool `json:"enabled"`
 }
 
 // Validate validates this script create persistence
 func (m *ScriptCreatePersistence) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateEnabled(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *ScriptCreatePersistence) validateEnabled(formats strfmt.Registry) error {
+
+	if err := validate.Required("persistence"+"."+"enabled", "body", m.Enabled); err != nil {
+		return err
+	}
+
 	return nil
 }
 

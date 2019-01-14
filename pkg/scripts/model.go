@@ -3,13 +3,17 @@ package scripts
 import "github.com/MontFerret/ferret-server/pkg/common/dal"
 
 type (
+	Identity struct {
+		ProjectID string `json:"project_id"`
+		ScriptID  string `json:"script_id"`
+	}
+
 	Persistence struct {
-		Local  string   `json:"local"`
-		Remote []string `json:"remote"`
+		Enabled bool `json:"enabled"`
 	}
 
 	Execution struct {
-		Query  string                 `json:"content"`
+		Query  string                 `json:"query"`
 		Params map[string]interface{} `json:"params"`
 	}
 

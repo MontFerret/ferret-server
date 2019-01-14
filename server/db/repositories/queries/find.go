@@ -2,10 +2,17 @@ package queries
 
 const (
 	FindAll = `
-		FOR d IN %s
+		FOR i IN %s
 			LIMIT @offset, @count
-			RETURN d
+			RETURN i
 `
+	FindAllByScriptID = `
+		FOR i IN %s
+			FILTER i.script_id == @script_id
+			LIMIT @offset, @count
+			RETURN i
+`
+
 	FindOneByName = `
 		FOR i IN %s
 			FILTER i.name == @name

@@ -14,3 +14,7 @@ type (
 		UpdateAt  time.Time `json:"update_at"`
 	}
 )
+
+func (e Entity) IsEmpty() bool {
+	return e.ID == ""
+}

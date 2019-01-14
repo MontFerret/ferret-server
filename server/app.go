@@ -1,6 +1,9 @@
 package server
 
 import (
+	"os"
+	"runtime"
+
 	"github.com/MontFerret/ferret-server/pkg/execution"
 	"github.com/MontFerret/ferret-server/pkg/history"
 	"github.com/MontFerret/ferret-server/pkg/persistence"
@@ -13,8 +16,6 @@ import (
 	"github.com/MontFerret/ferret/pkg/compiler"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
-	"os"
-	"runtime"
 )
 
 const (
@@ -26,14 +27,15 @@ const (
 )
 
 type Application struct {
-	settings  Settings
-	logger    *zerolog.Logger
-	server    *http.Server
-	db        *db.Manager
-	projects  *projects.Service
-	scripts   *scripts.Service
-	history   *history.Service
-	execution *execution.Service
+	settings    Settings
+	logger      *zerolog.Logger
+	server      *http.Server
+	db          *db.Manager
+	projects    *projects.Service
+	scripts     *scripts.Service
+	history     *history.Service
+	execution   *execution.Service
+	persistence *persistence.Service
 }
 
 func New(settings Settings) (*Application, error) {
@@ -73,6 +75,12 @@ func New(settings Settings) (*Application, error) {
 		return nil, errors.Wrap(err, "create history service")
 	}
 
+	perSrv, err := persistence.NewService(dbManager)
+
+	if err != nil {
+		return nil, errors.Wrap(err, "create persistence service")
+	}
+
 	fqlCompiler := compiler.New()
 
 	mem := &runtime.MemStats{}
@@ -93,7 +101,7 @@ func New(settings Settings) (*Application, error) {
 		queue,
 		history.ToStatusWriter(historySrv),
 		history.ToLogWriter(historySrv),
-		persistence.NewStdoutWriterFn(&logger),
+		persistence.ToWriter(perSrv),
 	)
 
 	return &Application{
@@ -105,6 +113,7 @@ func New(settings Settings) (*Application, error) {
 		scriptsSrv,
 		historySrv,
 		execSrv,
+		perSrv,
 	}, nil
 }
 
@@ -167,6 +176,22 @@ func (app *Application) configureExecutionController() error {
 	app.server.API().DeleteExecutionHandler = operations.DeleteExecutionHandlerFunc(ctl.Delete)
 	app.server.API().FindExecutionsHandler = operations.FindExecutionsHandlerFunc(ctl.Find)
 	app.server.API().GetExecutionHandler = operations.GetExecutionHandlerFunc(ctl.Get)
+
+	return nil
+}
+
+func (app *Application) configurePersistenceController() error {
+	ctl, err := controllers.NewDataController(app.persistence)
+
+	if err != nil {
+		return errors.Wrap(err, "new persistence controller")
+	}
+
+	app.server.API().FindProjectDataHandler = operations.FindProjectDataHandlerFunc(ctl.FindAll)
+	app.server.API().FindScriptDataHandler = operations.FindScriptDataHandlerFunc(ctl.Find)
+	app.server.API().GetScriptDataHandler = operations.GetScriptDataHandlerFunc(ctl.Get)
+	app.server.API().UpdateScriptDataHandler = operations.UpdateScriptDataHandlerFunc(ctl.Update)
+	app.server.API().DeleteScriptDataHandler = operations.DeleteScriptDataHandlerFunc(ctl.Delete)
 
 	return nil
 }

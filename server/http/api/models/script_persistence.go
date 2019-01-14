@@ -8,22 +8,40 @@ package models
 import (
 	strfmt "github.com/go-openapi/strfmt"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // ScriptPersistence Script Persistence
 // swagger:model script-persistence
 type ScriptPersistence struct {
 
-	// local
-	Local string `json:"local,omitempty"`
-
-	// remote
-	Remote []string `json:"remote"`
+	// enabled
+	// Required: true
+	Enabled *bool `json:"enabled"`
 }
 
 // Validate validates this script persistence
 func (m *ScriptPersistence) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateEnabled(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *ScriptPersistence) validateEnabled(formats strfmt.Registry) error {
+
+	if err := validate.Required("enabled", "body", m.Enabled); err != nil {
+		return err
+	}
+
 	return nil
 }
 

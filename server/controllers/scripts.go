@@ -170,8 +170,7 @@ func (ctl *ScriptsController) GetScript(params operations.GetScriptParams) middl
 			Params: out.Execution.Params,
 		},
 		Persistence: &operations.GetScriptOKBodyAO1Persistence{
-			Local:  out.Persistence.Local,
-			Remote: out.Persistence.Remote,
+			Enabled: &out.Persistence.Enabled,
 		},
 	})
 }

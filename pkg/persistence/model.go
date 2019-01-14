@@ -1,10 +1,17 @@
 package persistence
 
-type (
-	Local string
+import "github.com/MontFerret/ferret-server/pkg/common/dal"
 
-	Remote struct {
-		Kind   string                 `json:"kind"`
-		Params map[string]interface{} `json:"params"`
+type (
+	Record struct {
+		JobID     string      `json:"job_id"`
+		ScriptID  string      `json:"script_id"`
+		ScriptRev string      `json:"script_rev"`
+		Data      interface{} `json:"data"`
+	}
+
+	RecordEntity struct {
+		dal.Entity
+		Record
 	}
 )

@@ -426,15 +426,31 @@ func (o *CreateScriptParamsBodyExecution) UnmarshalBinary(b []byte) error {
 // swagger:model CreateScriptParamsBodyPersistence
 type CreateScriptParamsBodyPersistence struct {
 
-	// local
-	Local string `json:"local,omitempty"`
-
-	// remote
-	Remote []string `json:"remote"`
+	// enabled
+	// Required: true
+	Enabled *bool `json:"enabled"`
 }
 
 // Validate validates this create script params body persistence
 func (o *CreateScriptParamsBodyPersistence) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateEnabled(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CreateScriptParamsBodyPersistence) validateEnabled(formats strfmt.Registry) error {
+
+	if err := validate.Required("body"+"."+"persistence"+"."+"enabled", "body", o.Enabled); err != nil {
+		return err
+	}
+
 	return nil
 }
 

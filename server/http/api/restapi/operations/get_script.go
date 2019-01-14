@@ -340,15 +340,31 @@ func (o *GetScriptOKBodyAO1Execution) UnmarshalBinary(b []byte) error {
 // swagger:model GetScriptOKBodyAO1Persistence
 type GetScriptOKBodyAO1Persistence struct {
 
-	// local
-	Local string `json:"local,omitempty"`
-
-	// remote
-	Remote []string `json:"remote"`
+	// enabled
+	// Required: true
+	Enabled *bool `json:"enabled"`
 }
 
 // Validate validates this get script o k body a o1 persistence
 func (o *GetScriptOKBodyAO1Persistence) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateEnabled(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetScriptOKBodyAO1Persistence) validateEnabled(formats strfmt.Registry) error {
+
+	if err := validate.Required("getScriptOK"+"."+"persistence"+"."+"enabled", "body", o.Enabled); err != nil {
+		return err
+	}
+
 	return nil
 }
 

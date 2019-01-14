@@ -128,6 +128,152 @@ func init() {
         }
       ]
     },
+    "/projects/{projectID}/data": {
+      "get": {
+        "summary": "List Data",
+        "operationId": "findProjectData",
+        "parameters": [
+          {
+            "$ref": "#/parameters/page"
+          },
+          {
+            "$ref": "#/parameters/size"
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/data-output"
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "string",
+          "name": "projectID",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/projects/{projectID}/data/{scriptID}": {
+      "get": {
+        "summary": "List Script Data",
+        "operationId": "findScriptData",
+        "parameters": [
+          {
+            "$ref": "#/parameters/page"
+          },
+          {
+            "$ref": "#/parameters/size"
+          },
+          {
+            "$ref": "#/parameters/scriptID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/data-output"
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "string",
+          "name": "projectID",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "string",
+          "name": "scriptID",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/projects/{projectID}/data/{scriptID}/{dataId}": {
+      "get": {
+        "summary": "Get Data",
+        "operationId": "getScriptData",
+        "parameters": [
+          {
+            "$ref": "#/parameters/scriptID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/data-output-detailed"
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update Data",
+        "operationId": "updateScriptData",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/data-update"
+            }
+          },
+          {
+            "$ref": "#/parameters/scriptID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/entity"
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Data",
+        "operationId": "deleteScriptData",
+        "parameters": [
+          {
+            "$ref": "#/parameters/scriptID"
+          }
+        ],
+        "responses": {
+          "204": {}
+        }
+      },
+      "parameters": [
+        {
+          "type": "string",
+          "name": "projectID",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "string",
+          "name": "scriptID",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "string",
+          "name": "dataId",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
     "/projects/{projectID}/execution": {
       "get": {
         "summary": "List Execution",
@@ -305,6 +451,91 @@ func init() {
   "definitions": {
     "any": {
       "title": "Any"
+    },
+    "data-common": {
+      "description": "The properties that are shared amongst all versions of the Data model.",
+      "type": "object",
+      "title": "Data Common",
+      "required": [
+        "job_id",
+        "script_id",
+        "script_rev",
+        "value"
+      ],
+      "properties": {
+        "job_id": {
+          "type": "string"
+        },
+        "script_id": {
+          "type": "string"
+        },
+        "script_rev": {
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/any"
+        }
+      }
+    },
+    "data-entity": {
+      "title": "Data Entity",
+      "allOf": [
+        {
+          "$ref": "#/definitions/entity"
+        },
+        {
+          "$ref": "#/definitions/data-common"
+        }
+      ]
+    },
+    "data-output": {
+      "description": "The properties that are included when fetching a list of Data.",
+      "title": "Data Output",
+      "allOf": [
+        {
+          "$ref": "#/definitions/entity"
+        },
+        {
+          "type": "object",
+          "required": [
+            "job_id",
+            "script_id"
+          ],
+          "properties": {
+            "job_id": {
+              "type": "string"
+            },
+            "script_id": {
+              "type": "string"
+            },
+            "script_rev": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "data-output-detailed": {
+      "description": "The properties that are included when fetching a single Data.",
+      "title": "Data Output Detailed",
+      "allOf": [
+        {
+          "$ref": "#/definitions/data-entity"
+        }
+      ]
+    },
+    "data-update": {
+      "description": "The properties that are allowed when updating a Data.",
+      "type": "object",
+      "title": "Data Update",
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "value": {
+          "$ref": "#/definitions/any"
+        }
+      }
     },
     "entity": {
       "description": "Represents a database entity",
@@ -626,15 +857,12 @@ func init() {
     "script-persistence": {
       "type": "object",
       "title": "Script Persistence",
+      "required": [
+        "enabled"
+      ],
       "properties": {
-        "local": {
-          "type": "string"
-        },
-        "remote": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+        "enabled": {
+          "type": "boolean"
         }
       }
     },
@@ -1043,6 +1271,424 @@ func init() {
         }
       ]
     },
+    "/projects/{projectID}/data": {
+      "get": {
+        "summary": "List Data",
+        "operationId": "findProjectData",
+        "parameters": [
+          {
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "default": 1,
+            "description": "Page number for queries",
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "maximum": 100,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "default": 10,
+            "description": "Page size",
+            "name": "size",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "description": "The properties that are included when fetching a list of Data.",
+                "title": "Data Output",
+                "allOf": [
+                  {
+                    "description": "Represents a database entity",
+                    "title": "Entity",
+                    "allOf": [
+                      {
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "rev"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "rev": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      {
+                        "description": "Response model for data creation endpoints",
+                        "type": "object",
+                        "title": "Metadata",
+                        "required": [
+                          "created_at"
+                        ],
+                        "properties": {
+                          "created_at": {
+                            "type": "string"
+                          },
+                          "updated_at": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "job_id",
+                      "script_id"
+                    ],
+                    "properties": {
+                      "job_id": {
+                        "type": "string"
+                      },
+                      "script_id": {
+                        "type": "string"
+                      },
+                      "script_rev": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "string",
+          "name": "projectID",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/projects/{projectID}/data/{scriptID}": {
+      "get": {
+        "summary": "List Script Data",
+        "operationId": "findScriptData",
+        "parameters": [
+          {
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "default": 1,
+            "description": "Page number for queries",
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "maximum": 100,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "default": 10,
+            "description": "Page size",
+            "name": "size",
+            "in": "query"
+          },
+          {
+            "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+            "type": "string",
+            "name": "scriptID",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "description": "The properties that are included when fetching a list of Data.",
+                "title": "Data Output",
+                "allOf": [
+                  {
+                    "description": "Represents a database entity",
+                    "title": "Entity",
+                    "allOf": [
+                      {
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "rev"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "rev": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      {
+                        "description": "Response model for data creation endpoints",
+                        "type": "object",
+                        "title": "Metadata",
+                        "required": [
+                          "created_at"
+                        ],
+                        "properties": {
+                          "created_at": {
+                            "type": "string"
+                          },
+                          "updated_at": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "job_id",
+                      "script_id"
+                    ],
+                    "properties": {
+                      "job_id": {
+                        "type": "string"
+                      },
+                      "script_id": {
+                        "type": "string"
+                      },
+                      "script_rev": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "string",
+          "name": "projectID",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "string",
+          "name": "scriptID",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/projects/{projectID}/data/{scriptID}/{dataId}": {
+      "get": {
+        "summary": "Get Data",
+        "operationId": "getScriptData",
+        "parameters": [
+          {
+            "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+            "type": "string",
+            "name": "scriptID",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "description": "The properties that are included when fetching a single Data.",
+              "title": "Data Output Detailed",
+              "allOf": [
+                {
+                  "title": "Data Entity",
+                  "allOf": [
+                    {
+                      "description": "Represents a database entity",
+                      "title": "Entity",
+                      "allOf": [
+                        {
+                          "type": "object",
+                          "required": [
+                            "id",
+                            "rev"
+                          ],
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "rev": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        {
+                          "description": "Response model for data creation endpoints",
+                          "type": "object",
+                          "title": "Metadata",
+                          "required": [
+                            "created_at"
+                          ],
+                          "properties": {
+                            "created_at": {
+                              "type": "string"
+                            },
+                            "updated_at": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "description": "The properties that are shared amongst all versions of the Data model.",
+                      "type": "object",
+                      "title": "Data Common",
+                      "required": [
+                        "job_id",
+                        "script_id",
+                        "script_rev",
+                        "value"
+                      ],
+                      "properties": {
+                        "job_id": {
+                          "type": "string"
+                        },
+                        "script_id": {
+                          "type": "string"
+                        },
+                        "script_rev": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "title": "Any"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update Data",
+        "operationId": "updateScriptData",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "description": "The properties that are allowed when updating a Data.",
+              "type": "object",
+              "title": "Data Update",
+              "required": [
+                "value"
+              ],
+              "properties": {
+                "value": {
+                  "title": "Any"
+                }
+              }
+            }
+          },
+          {
+            "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+            "type": "string",
+            "name": "scriptID",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "description": "Represents a database entity",
+              "title": "Entity",
+              "allOf": [
+                {
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "rev"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "rev": {
+                      "type": "string"
+                    }
+                  }
+                },
+                {
+                  "description": "Response model for data creation endpoints",
+                  "type": "object",
+                  "title": "Metadata",
+                  "required": [
+                    "created_at"
+                  ],
+                  "properties": {
+                    "created_at": {
+                      "type": "string"
+                    },
+                    "updated_at": {
+                      "type": "string"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Data",
+        "operationId": "deleteScriptData",
+        "parameters": [
+          {
+            "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+            "type": "string",
+            "name": "scriptID",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {}
+        }
+      },
+      "parameters": [
+        {
+          "type": "string",
+          "name": "projectID",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "string",
+          "name": "scriptID",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "string",
+          "name": "dataId",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
     "/projects/{projectID}/execution": {
       "get": {
         "summary": "List Execution",
@@ -1434,15 +2080,12 @@ func init() {
                 "persistence": {
                   "type": "object",
                   "title": "Script Persistence",
+                  "required": [
+                    "enabled"
+                  ],
                   "properties": {
-                    "local": {
-                      "type": "string"
-                    },
-                    "remote": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
+                    "enabled": {
+                      "type": "boolean"
                     }
                   }
                 }
@@ -1591,15 +2234,12 @@ func init() {
                     "persistence": {
                       "type": "object",
                       "title": "Script Persistence",
+                      "required": [
+                        "enabled"
+                      ],
                       "properties": {
-                        "local": {
-                          "type": "string"
-                        },
-                        "remote": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          }
+                        "enabled": {
+                          "type": "boolean"
                         }
                       }
                     }
@@ -1660,15 +2300,12 @@ func init() {
                 "persistence": {
                   "type": "object",
                   "title": "Script Persistence",
+                  "required": [
+                    "enabled"
+                  ],
                   "properties": {
-                    "local": {
-                      "type": "string"
-                    },
-                    "remote": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
+                    "enabled": {
+                      "type": "boolean"
                     }
                   }
                 }
@@ -1746,6 +2383,245 @@ func init() {
   "definitions": {
     "any": {
       "title": "Any"
+    },
+    "data-common": {
+      "description": "The properties that are shared amongst all versions of the Data model.",
+      "type": "object",
+      "title": "Data Common",
+      "required": [
+        "job_id",
+        "script_id",
+        "script_rev",
+        "value"
+      ],
+      "properties": {
+        "job_id": {
+          "type": "string"
+        },
+        "script_id": {
+          "type": "string"
+        },
+        "script_rev": {
+          "type": "string"
+        },
+        "value": {
+          "title": "Any"
+        }
+      }
+    },
+    "data-entity": {
+      "title": "Data Entity",
+      "allOf": [
+        {
+          "description": "Represents a database entity",
+          "title": "Entity",
+          "allOf": [
+            {
+              "type": "object",
+              "required": [
+                "id",
+                "rev"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "rev": {
+                  "type": "string"
+                }
+              }
+            },
+            {
+              "description": "Response model for data creation endpoints",
+              "type": "object",
+              "title": "Metadata",
+              "required": [
+                "created_at"
+              ],
+              "properties": {
+                "created_at": {
+                  "type": "string"
+                },
+                "updated_at": {
+                  "type": "string"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "description": "The properties that are shared amongst all versions of the Data model.",
+          "type": "object",
+          "title": "Data Common",
+          "required": [
+            "job_id",
+            "script_id",
+            "script_rev",
+            "value"
+          ],
+          "properties": {
+            "job_id": {
+              "type": "string"
+            },
+            "script_id": {
+              "type": "string"
+            },
+            "script_rev": {
+              "type": "string"
+            },
+            "value": {
+              "title": "Any"
+            }
+          }
+        }
+      ]
+    },
+    "data-output": {
+      "description": "The properties that are included when fetching a list of Data.",
+      "title": "Data Output",
+      "allOf": [
+        {
+          "description": "Represents a database entity",
+          "title": "Entity",
+          "allOf": [
+            {
+              "type": "object",
+              "required": [
+                "id",
+                "rev"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "rev": {
+                  "type": "string"
+                }
+              }
+            },
+            {
+              "description": "Response model for data creation endpoints",
+              "type": "object",
+              "title": "Metadata",
+              "required": [
+                "created_at"
+              ],
+              "properties": {
+                "created_at": {
+                  "type": "string"
+                },
+                "updated_at": {
+                  "type": "string"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "object",
+          "required": [
+            "job_id",
+            "script_id"
+          ],
+          "properties": {
+            "job_id": {
+              "type": "string"
+            },
+            "script_id": {
+              "type": "string"
+            },
+            "script_rev": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "data-output-detailed": {
+      "description": "The properties that are included when fetching a single Data.",
+      "title": "Data Output Detailed",
+      "allOf": [
+        {
+          "title": "Data Entity",
+          "allOf": [
+            {
+              "description": "Represents a database entity",
+              "title": "Entity",
+              "allOf": [
+                {
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "rev"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "rev": {
+                      "type": "string"
+                    }
+                  }
+                },
+                {
+                  "description": "Response model for data creation endpoints",
+                  "type": "object",
+                  "title": "Metadata",
+                  "required": [
+                    "created_at"
+                  ],
+                  "properties": {
+                    "created_at": {
+                      "type": "string"
+                    },
+                    "updated_at": {
+                      "type": "string"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "description": "The properties that are shared amongst all versions of the Data model.",
+              "type": "object",
+              "title": "Data Common",
+              "required": [
+                "job_id",
+                "script_id",
+                "script_rev",
+                "value"
+              ],
+              "properties": {
+                "job_id": {
+                  "type": "string"
+                },
+                "script_id": {
+                  "type": "string"
+                },
+                "script_rev": {
+                  "type": "string"
+                },
+                "value": {
+                  "title": "Any"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "data-update": {
+      "description": "The properties that are allowed when updating a Data.",
+      "type": "object",
+      "title": "Data Update",
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "value": {
+          "title": "Any"
+        }
+      }
     },
     "entity": {
       "description": "Represents a database entity",
@@ -2324,15 +3200,12 @@ func init() {
         "persistence": {
           "type": "object",
           "title": "Script Persistence",
+          "required": [
+            "enabled"
+          ],
           "properties": {
-            "local": {
-              "type": "string"
-            },
-            "remote": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
+            "enabled": {
+              "type": "boolean"
             }
           }
         }
@@ -2381,15 +3254,12 @@ func init() {
         "persistence": {
           "type": "object",
           "title": "Script Persistence",
+          "required": [
+            "enabled"
+          ],
           "properties": {
-            "local": {
-              "type": "string"
-            },
-            "remote": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
+            "enabled": {
+              "type": "boolean"
             }
           }
         }
@@ -2478,15 +3348,12 @@ func init() {
             "persistence": {
               "type": "object",
               "title": "Script Persistence",
+              "required": [
+                "enabled"
+              ],
               "properties": {
-                "local": {
-                  "type": "string"
-                },
-                "remote": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
+                "enabled": {
+                  "type": "boolean"
                 }
               }
             }
@@ -2651,15 +3518,12 @@ func init() {
             "persistence": {
               "type": "object",
               "title": "Script Persistence",
+              "required": [
+                "enabled"
+              ],
               "properties": {
-                "local": {
-                  "type": "string"
-                },
-                "remote": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
+                "enabled": {
+                  "type": "boolean"
                 }
               }
             }
@@ -2670,15 +3534,12 @@ func init() {
     "script-persistence": {
       "type": "object",
       "title": "Script Persistence",
+      "required": [
+        "enabled"
+      ],
       "properties": {
-        "local": {
-          "type": "string"
-        },
-        "remote": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+        "enabled": {
+          "type": "boolean"
         }
       }
     },
@@ -2725,15 +3586,12 @@ func init() {
         "persistence": {
           "type": "object",
           "title": "Script Persistence",
+          "required": [
+            "enabled"
+          ],
           "properties": {
-            "local": {
-              "type": "string"
-            },
-            "remote": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
+            "enabled": {
+              "type": "boolean"
             }
           }
         }
