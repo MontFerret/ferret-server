@@ -125,7 +125,7 @@ func (service *Service) FindProjectRecords(ctx context.Context, projectID string
 	return out, nil
 }
 
-func (service *Service) resolveRepository(ctx context.Context, projectID string) (Repository, error) {
+func (service *Service) resolveRepository(_ context.Context, projectID string) (Repository, error) {
 	repo, err := service.db.GetDataRepository(projectID)
 
 	if err != nil {
