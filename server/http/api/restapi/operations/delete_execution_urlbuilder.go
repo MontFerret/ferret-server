@@ -41,7 +41,7 @@ func (o *DeleteExecutionURL) SetBasePath(bp string) {
 func (o *DeleteExecutionURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/projects/{projectID}/execution/{jobID}"
+	var _path = "/projects/{projectID}/exec/{jobID}"
 
 	jobID := o.JobID
 	if jobID != "" {

@@ -274,7 +274,7 @@ func init() {
         }
       ]
     },
-    "/projects/{projectID}/execution": {
+    "/projects/{projectID}/exec": {
       "get": {
         "summary": "List Execution",
         "operationId": "findExecutions",
@@ -318,7 +318,7 @@ func init() {
         }
       ]
     },
-    "/projects/{projectID}/execution/{jobID}": {
+    "/projects/{projectID}/exec/{jobID}": {
       "get": {
         "summary": "Get Status of Execution",
         "operationId": "getExecution",
@@ -342,7 +342,6 @@ func init() {
           "$ref": "#/parameters/projectID"
         },
         {
-          "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
           "type": "string",
           "name": "jobID",
           "in": "path",
@@ -1689,7 +1688,7 @@ func init() {
         }
       ]
     },
-    "/projects/{projectID}/execution": {
+    "/projects/{projectID}/exec": {
       "get": {
         "summary": "List Execution",
         "operationId": "findExecutions",
@@ -1820,7 +1819,7 @@ func init() {
         }
       ]
     },
-    "/projects/{projectID}/execution/{jobID}": {
+    "/projects/{projectID}/exec/{jobID}": {
       "get": {
         "summary": "Get Status of Execution",
         "operationId": "getExecution",
@@ -1935,7 +1934,6 @@ func init() {
           "required": true
         },
         {
-          "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
           "type": "string",
           "name": "jobID",
           "in": "path",

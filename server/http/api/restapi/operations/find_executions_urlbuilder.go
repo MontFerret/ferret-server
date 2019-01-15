@@ -42,7 +42,7 @@ func (o *FindExecutionsURL) SetBasePath(bp string) {
 func (o *FindExecutionsURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/projects/{projectID}/execution"
+	var _path = "/projects/{projectID}/exec"
 
 	projectID := o.ProjectID
 	if projectID != "" {

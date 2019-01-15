@@ -34,7 +34,7 @@ func NewGetExecution(ctx *middleware.Context, handler GetExecutionHandler) *GetE
 	return &GetExecution{Context: ctx, Handler: handler}
 }
 
-/*GetExecution swagger:route GET /projects/{projectID}/execution/{jobID} getExecution
+/*GetExecution swagger:route GET /projects/{projectID}/exec/{jobID} getExecution
 
 Get Status of Execution
 

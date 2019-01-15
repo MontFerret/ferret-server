@@ -33,7 +33,6 @@ type DeleteExecutionParams struct {
 
 	/*
 	  Required: true
-	  Pattern: [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}
 	  In: path
 	*/
 	JobID string
@@ -81,20 +80,6 @@ func (o *DeleteExecutionParams) bindJobID(rawData []string, hasKey bool, formats
 	// Parameter is provided by construction from the route
 
 	o.JobID = raw
-
-	if err := o.validateJobID(formats); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// validateJobID carries on validations for parameter JobID
-func (o *DeleteExecutionParams) validateJobID(formats strfmt.Registry) error {
-
-	if err := validate.Pattern("jobID", "path", o.JobID, `[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`); err != nil {
-		return err
-	}
 
 	return nil
 }

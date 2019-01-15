@@ -29,7 +29,7 @@ func NewDeleteExecution(ctx *middleware.Context, handler DeleteExecutionHandler)
 	return &DeleteExecution{Context: ctx, Handler: handler}
 }
 
-/*DeleteExecution swagger:route DELETE /projects/{projectID}/execution/{jobID} deleteExecution
+/*DeleteExecution swagger:route DELETE /projects/{projectID}/exec/{jobID} deleteExecution
 
 Cancel Execution
 

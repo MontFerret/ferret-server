@@ -33,7 +33,7 @@ func NewCreateExecution(ctx *middleware.Context, handler CreateExecutionHandler)
 	return &CreateExecution{Context: ctx, Handler: handler}
 }
 
-/*CreateExecution swagger:route POST /projects/{projectID}/execution createExecution
+/*CreateExecution swagger:route POST /projects/{projectID}/exec createExecution
 
 Create Execution
 

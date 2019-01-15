@@ -403,7 +403,7 @@ func (o *FerretServerAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/projects/{projectID}/execution"] = NewCreateExecution(o.context, o.CreateExecutionHandler)
+	o.handlers["POST"]["/projects/{projectID}/exec"] = NewCreateExecution(o.context, o.CreateExecutionHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
@@ -418,7 +418,7 @@ func (o *FerretServerAPI) initHandlerCache() {
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
-	o.handlers["DELETE"]["/projects/{projectID}/execution/{jobID}"] = NewDeleteExecution(o.context, o.DeleteExecutionHandler)
+	o.handlers["DELETE"]["/projects/{projectID}/exec/{jobID}"] = NewDeleteExecution(o.context, o.DeleteExecutionHandler)
 
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
@@ -438,7 +438,7 @@ func (o *FerretServerAPI) initHandlerCache() {
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/projects/{projectID}/execution"] = NewFindExecutions(o.context, o.FindExecutionsHandler)
+	o.handlers["GET"]["/projects/{projectID}/exec"] = NewFindExecutions(o.context, o.FindExecutionsHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
@@ -463,7 +463,7 @@ func (o *FerretServerAPI) initHandlerCache() {
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/projects/{projectID}/execution/{jobID}"] = NewGetExecution(o.context, o.GetExecutionHandler)
+	o.handlers["GET"]["/projects/{projectID}/exec/{jobID}"] = NewGetExecution(o.context, o.GetExecutionHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
