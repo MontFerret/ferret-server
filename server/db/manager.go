@@ -2,6 +2,8 @@ package db
 
 import (
 	"context"
+	"sync"
+
 	"github.com/MontFerret/ferret-server/pkg/history"
 	"github.com/MontFerret/ferret-server/pkg/persistence"
 	"github.com/MontFerret/ferret-server/pkg/projects"
@@ -10,7 +12,6 @@ import (
 	"github.com/arangodb/go-driver"
 	"github.com/arangodb/go-driver/http"
 	"github.com/pkg/errors"
-	"sync"
 )
 
 const systemDBName = "ferret_server"
