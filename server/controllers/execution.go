@@ -3,6 +3,7 @@ package controllers
 import (
 	"context"
 	"github.com/MontFerret/ferret-server/pkg/common"
+	"github.com/MontFerret/ferret-server/pkg/common/dal"
 	"github.com/MontFerret/ferret-server/pkg/execution"
 	"github.com/MontFerret/ferret-server/pkg/history"
 	"github.com/MontFerret/ferret-server/server/http"
@@ -85,8 +86,72 @@ func (ctl *ExecutionController) Delete(params operations.DeleteExecutionParams) 
 	return operations.NewDeleteExecutionNoContent()
 }
 
-func (ctl *ExecutionController) Find(_ operations.FindExecutionsParams) middleware.Responder {
-	return http.Bad("not implemented")
+func (ctl *ExecutionController) Find(params operations.FindExecutionsParams) middleware.Responder {
+	logger := logging.FromRequest(params.HTTPRequest)
+	ctx := context.Background()
+
+	var size uint = 10
+	var page uint = 1
+
+	if params.Size != nil {
+		size = uint(*params.Size)
+		page = uint(*params.Page)
+	}
+
+	query := dal.Query{
+		Pagination: dal.Pagination{
+			Size: size,
+			Page: page,
+		},
+		Filtering: dal.Filtering{
+			Fields: make([]dal.FilteringField, 0, 2),
+		},
+	}
+
+	if params.Cause != nil {
+		query.Filtering.Fields = append(query.Filtering.Fields, dal.FilteringField{
+			Name:  "cause",
+			Value: execution.NewCause(*params.Cause),
+		})
+	}
+
+	if params.Status != nil {
+		query.Filtering.Fields = append(query.Filtering.Fields, dal.FilteringField{
+			Name:  "status",
+			Value: execution.NewStatus(*params.Status),
+		})
+	}
+
+	out, err := ctl.history.Find(ctx, params.ProjectID, query)
+
+	if err != nil {
+		logger.Error().
+			Timestamp().
+			Err(err).
+			Str("project_id", params.ProjectID).
+			Msg("failed to find jobs")
+
+		return http.InternalError()
+	}
+
+	payload := make([]*operations.FindExecutionsOKBodyItems0, 0, len(out))
+
+	for _, r := range out {
+		el := r
+
+		status := el.Status.String()
+		cause := el.CausedBy.String()
+
+		payload = append(payload, &operations.FindExecutionsOKBodyItems0{
+			ScriptID:  &el.ScriptID,
+			ScriptRev: &el.ScriptRev,
+			JobID:     &el.JobID,
+			Status:    &status,
+			Cause:     &cause,
+		})
+	}
+
+	return operations.NewFindExecutionsOK().WithPayload(payload)
 }
 
 func (ctl *ExecutionController) Get(params operations.GetExecutionParams) middleware.Responder {

@@ -6,7 +6,6 @@ import (
 	"github.com/MontFerret/ferret-server/pkg/common"
 	"github.com/MontFerret/ferret-server/pkg/common/dal"
 	"github.com/MontFerret/ferret-server/pkg/history"
-	"github.com/MontFerret/ferret-server/server/db/repositories/queries"
 	"github.com/arangodb/go-driver"
 	"github.com/pkg/errors"
 	"time"
@@ -120,13 +119,14 @@ func (repo *HistoryRepository) Get(ctx context.Context, jobID string) (history.R
 }
 
 func (repo *HistoryRepository) Find(ctx context.Context, q dal.Query) ([]history.RecordEntity, error) {
+	cq := compileQuery(repo.collection.Name(), q)
+
+	fmt.Println(cq.String)
+
 	cursor, err := repo.collection.Database().Query(
 		ctx,
-		fmt.Sprintf(queries.FindAll, repo.collection.Name()),
-		map[string]interface{}{
-			"offset": q.Pagination.Size * (q.Pagination.Page - 1),
-			"count":  q.Pagination.Size,
-		},
+		cq.String,
+		cq.Params,
 	)
 
 	if err != nil {

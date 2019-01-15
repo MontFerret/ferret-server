@@ -42,10 +42,6 @@ type CreateExecutionParams struct {
 	  In: path
 	*/
 	ProjectID string
-	/*
-	  In: query
-	*/
-	Status string
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -56,8 +52,6 @@ func (o *CreateExecutionParams) BindRequest(r *http.Request, route *middleware.M
 	var res []error
 
 	o.HTTPRequest = r
-
-	qs := runtime.Values(r.URL.Query())
 
 	if runtime.HasBody(r) {
 		defer r.Body.Close()
@@ -77,11 +71,6 @@ func (o *CreateExecutionParams) BindRequest(r *http.Request, route *middleware.M
 	}
 	rProjectID, rhkProjectID, _ := route.Params.GetOK("projectID")
 	if err := o.bindProjectID(rProjectID, rhkProjectID, route.Formats); err != nil {
-		res = append(res, err)
-	}
-
-	qStatus, qhkStatus, _ := qs.GetOK("status")
-	if err := o.bindStatus(qStatus, qhkStatus, route.Formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -114,38 +103,6 @@ func (o *CreateExecutionParams) bindProjectID(rawData []string, hasKey bool, for
 func (o *CreateExecutionParams) validateProjectID(formats strfmt.Registry) error {
 
 	if err := validate.Pattern("projectID", "path", o.ProjectID, `[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// bindStatus binds and validates parameter Status from query.
-func (o *CreateExecutionParams) bindStatus(rawData []string, hasKey bool, formats strfmt.Registry) error {
-	var raw string
-	if len(rawData) > 0 {
-		raw = rawData[len(rawData)-1]
-	}
-
-	// Required: false
-	// AllowEmptyValue: true
-	if raw == "" { // empty values pass all other validations
-		return nil
-	}
-
-	o.Status = raw
-
-	if err := o.validateStatus(formats); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// validateStatus carries on validations for parameter Status
-func (o *CreateExecutionParams) validateStatus(formats strfmt.Registry) error {
-
-	if err := validate.Enum("status", "query", o.Status, []interface{}{"unknown", "queued", "running", "completed", "cancelled", "errored"}); err != nil {
 		return err
 	}
 

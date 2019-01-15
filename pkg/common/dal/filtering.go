@@ -6,13 +6,13 @@ type (
 	LogicOperator int
 
 	FilteringField struct {
-		Name       string     `json:"name"`
-		Value      string     `json:"value"`
-		Comparator Comparator `json:"comparator"`
+		Name       string      `json:"name"`
+		Value      interface{} `json:"value"`
+		Comparator Comparator  `json:"comparator"`
 	}
 
 	Filtering struct {
-		Fields   []*FilteringField
+		Fields   []FilteringField
 		Operator LogicOperator
 	}
 )
@@ -30,8 +30,8 @@ const (
 )
 
 var (
-	ComparatorValues = map[Comparator]string{
-		ComparatorEq:  "=",
+	comparatorValues = map[Comparator]string{
+		ComparatorEq:  "==",
 		ComparatorGt:  ">",
 		ComparatorGte: ">=",
 		ComparatorLt:  "<",
@@ -39,8 +39,28 @@ var (
 		ComparatorIn:  "IN",
 	}
 
-	LogicOperatorValues = map[LogicOperator]string{
+	logicOperatorValues = map[LogicOperator]string{
 		LogicOperatorAnd: "AND",
 		LogicOperatorOr:  "OR",
 	}
 )
+
+func (c Comparator) String() string {
+	v, found := comparatorValues[c]
+
+	if found {
+		return v
+	}
+
+	return comparatorValues[ComparatorEq]
+}
+
+func (l LogicOperator) String() string {
+	v, found := logicOperatorValues[l]
+
+	if found {
+		return v
+	}
+
+	return logicOperatorValues[LogicOperatorAnd]
+}

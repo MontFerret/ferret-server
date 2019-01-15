@@ -11,16 +11,29 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 
 	strfmt "github.com/go-openapi/strfmt"
 )
 
 // NewFindExecutionsParams creates a new FindExecutionsParams object
-// no default values defined in spec.
+// with the default values initialized.
 func NewFindExecutionsParams() FindExecutionsParams {
 
-	return FindExecutionsParams{}
+	var (
+		// initialize parameters with default values
+
+		pageDefault = int32(1)
+
+		sizeDefault = int32(10)
+	)
+
+	return FindExecutionsParams{
+		Page: &pageDefault,
+
+		Size: &sizeDefault,
+	}
 }
 
 // FindExecutionsParams contains all the bound params for the find executions operation
@@ -32,16 +45,33 @@ type FindExecutionsParams struct {
 	// HTTP Request Object
 	HTTPRequest *http.Request `json:"-"`
 
+	/*Script execution cause
+	  In: query
+	*/
+	Cause *string
+	/*Page number for queries
+	  Minimum: 1
+	  In: query
+	  Default: 1
+	*/
+	Page *int32
 	/*
 	  Required: true
 	  Pattern: [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}
 	  In: path
 	*/
 	ProjectID string
+	/*Page size
+	  Maximum: 100
+	  Minimum: 1
+	  In: query
+	  Default: 10
+	*/
+	Size *int32
 	/*
 	  In: query
 	*/
-	Status string
+	Status *string
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -55,8 +85,23 @@ func (o *FindExecutionsParams) BindRequest(r *http.Request, route *middleware.Ma
 
 	qs := runtime.Values(r.URL.Query())
 
+	qCause, qhkCause, _ := qs.GetOK("cause")
+	if err := o.bindCause(qCause, qhkCause, route.Formats); err != nil {
+		res = append(res, err)
+	}
+
+	qPage, qhkPage, _ := qs.GetOK("page")
+	if err := o.bindPage(qPage, qhkPage, route.Formats); err != nil {
+		res = append(res, err)
+	}
+
 	rProjectID, rhkProjectID, _ := route.Params.GetOK("projectID")
 	if err := o.bindProjectID(rProjectID, rhkProjectID, route.Formats); err != nil {
+		res = append(res, err)
+	}
+
+	qSize, qhkSize, _ := qs.GetOK("size")
+	if err := o.bindSize(qSize, qhkSize, route.Formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -68,6 +113,75 @@ func (o *FindExecutionsParams) BindRequest(r *http.Request, route *middleware.Ma
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+// bindCause binds and validates parameter Cause from query.
+func (o *FindExecutionsParams) bindCause(rawData []string, hasKey bool, formats strfmt.Registry) error {
+	var raw string
+	if len(rawData) > 0 {
+		raw = rawData[len(rawData)-1]
+	}
+
+	// Required: false
+	// AllowEmptyValue: false
+	if raw == "" { // empty values pass all other validations
+		return nil
+	}
+
+	o.Cause = &raw
+
+	if err := o.validateCause(formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// validateCause carries on validations for parameter Cause
+func (o *FindExecutionsParams) validateCause(formats strfmt.Registry) error {
+
+	if err := validate.Enum("cause", "query", *o.Cause, []interface{}{"manual", "schedule", "hook", "unknown"}); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// bindPage binds and validates parameter Page from query.
+func (o *FindExecutionsParams) bindPage(rawData []string, hasKey bool, formats strfmt.Registry) error {
+	var raw string
+	if len(rawData) > 0 {
+		raw = rawData[len(rawData)-1]
+	}
+
+	// Required: false
+	// AllowEmptyValue: false
+	if raw == "" { // empty values pass all other validations
+		// Default values have been previously initialized by NewFindExecutionsParams()
+		return nil
+	}
+
+	value, err := swag.ConvertInt32(raw)
+	if err != nil {
+		return errors.InvalidType("page", "query", "int32", raw)
+	}
+	o.Page = &value
+
+	if err := o.validatePage(formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// validatePage carries on validations for parameter Page
+func (o *FindExecutionsParams) validatePage(formats strfmt.Registry) error {
+
+	if err := validate.MinimumInt("page", "query", int64(*o.Page), 1, false); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -100,6 +214,47 @@ func (o *FindExecutionsParams) validateProjectID(formats strfmt.Registry) error 
 	return nil
 }
 
+// bindSize binds and validates parameter Size from query.
+func (o *FindExecutionsParams) bindSize(rawData []string, hasKey bool, formats strfmt.Registry) error {
+	var raw string
+	if len(rawData) > 0 {
+		raw = rawData[len(rawData)-1]
+	}
+
+	// Required: false
+	// AllowEmptyValue: false
+	if raw == "" { // empty values pass all other validations
+		// Default values have been previously initialized by NewFindExecutionsParams()
+		return nil
+	}
+
+	value, err := swag.ConvertInt32(raw)
+	if err != nil {
+		return errors.InvalidType("size", "query", "int32", raw)
+	}
+	o.Size = &value
+
+	if err := o.validateSize(formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// validateSize carries on validations for parameter Size
+func (o *FindExecutionsParams) validateSize(formats strfmt.Registry) error {
+
+	if err := validate.MinimumInt("size", "query", int64(*o.Size), 1, false); err != nil {
+		return err
+	}
+
+	if err := validate.MaximumInt("size", "query", int64(*o.Size), 100, false); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // bindStatus binds and validates parameter Status from query.
 func (o *FindExecutionsParams) bindStatus(rawData []string, hasKey bool, formats strfmt.Registry) error {
 	var raw string
@@ -108,12 +263,12 @@ func (o *FindExecutionsParams) bindStatus(rawData []string, hasKey bool, formats
 	}
 
 	// Required: false
-	// AllowEmptyValue: true
+	// AllowEmptyValue: false
 	if raw == "" { // empty values pass all other validations
 		return nil
 	}
 
-	o.Status = raw
+	o.Status = &raw
 
 	if err := o.validateStatus(formats); err != nil {
 		return err
@@ -125,7 +280,7 @@ func (o *FindExecutionsParams) bindStatus(rawData []string, hasKey bool, formats
 // validateStatus carries on validations for parameter Status
 func (o *FindExecutionsParams) validateStatus(formats strfmt.Registry) error {
 
-	if err := validate.Enum("status", "query", o.Status, []interface{}{"unknown", "queued", "running", "completed", "cancelled", "errored"}); err != nil {
+	if err := validate.Enum("status", "query", *o.Status, []interface{}{"unknown", "queued", "running", "completed", "cancelled", "errored"}); err != nil {
 		return err
 	}
 

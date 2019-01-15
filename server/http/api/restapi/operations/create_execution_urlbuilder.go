@@ -16,8 +16,6 @@ import (
 type CreateExecutionURL struct {
 	ProjectID string
 
-	Status string
-
 	_basePath string
 	// avoid unkeyed usage
 	_ struct{}
@@ -53,15 +51,6 @@ func (o *CreateExecutionURL) Build() (*url.URL, error) {
 
 	_basePath := o._basePath
 	_result.Path = golangswaggerpaths.Join(_basePath, _path)
-
-	qs := make(url.Values)
-
-	status := o.Status
-	if status != "" {
-		qs.Set("status", status)
-	}
-
-	_result.RawQuery = qs.Encode()
 
 	return &_result, nil
 }

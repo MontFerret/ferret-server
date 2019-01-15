@@ -205,11 +205,6 @@ func init() {
       "get": {
         "summary": "Get Data",
         "operationId": "getScriptData",
-        "parameters": [
-          {
-            "$ref": "#/parameters/scriptID"
-          }
-        ],
         "responses": {
           "200": {
             "schema": {
@@ -228,9 +223,6 @@ func init() {
             "schema": {
               "$ref": "#/definitions/data-update"
             }
-          },
-          {
-            "$ref": "#/parameters/scriptID"
           }
         ],
         "responses": {
@@ -244,11 +236,6 @@ func init() {
       "delete": {
         "summary": "Delete Data",
         "operationId": "deleteScriptData",
-        "parameters": [
-          {
-            "$ref": "#/parameters/scriptID"
-          }
-        ],
         "responses": {
           "204": {}
         }
@@ -278,6 +265,20 @@ func init() {
       "get": {
         "summary": "List Execution",
         "operationId": "findExecutions",
+        "parameters": [
+          {
+            "$ref": "#/parameters/page"
+          },
+          {
+            "$ref": "#/parameters/size"
+          },
+          {
+            "$ref": "#/parameters/status"
+          },
+          {
+            "$ref": "#/parameters/cause"
+          }
+        ],
         "responses": {
           "200": {
             "schema": {
@@ -312,9 +313,6 @@ func init() {
       "parameters": [
         {
           "$ref": "#/parameters/projectID"
-        },
-        {
-          "$ref": "#/parameters/status"
         }
       ]
     },
@@ -872,6 +870,18 @@ func init() {
     }
   },
   "parameters": {
+    "cause": {
+      "enum": [
+        "manual",
+        "schedule",
+        "hook",
+        "unknown"
+      ],
+      "type": "string",
+      "description": "Script execution cause",
+      "name": "cause",
+      "in": "query"
+    },
     "page": {
       "minimum": 1,
       "type": "integer",
@@ -916,8 +926,7 @@ func init() {
       ],
       "type": "string",
       "name": "status",
-      "in": "query",
-      "allowEmptyValue": true
+      "in": "query"
     }
   },
   "responses": {
@@ -1493,15 +1502,6 @@ func init() {
       "get": {
         "summary": "Get Data",
         "operationId": "getScriptData",
-        "parameters": [
-          {
-            "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
-            "type": "string",
-            "name": "scriptID",
-            "in": "path",
-            "required": true
-          }
-        ],
         "responses": {
           "200": {
             "schema": {
@@ -1600,13 +1600,6 @@ func init() {
                 }
               }
             }
-          },
-          {
-            "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
-            "type": "string",
-            "name": "scriptID",
-            "in": "path",
-            "required": true
           }
         ],
         "responses": {
@@ -1654,15 +1647,6 @@ func init() {
       "delete": {
         "summary": "Delete Data",
         "operationId": "deleteScriptData",
-        "parameters": [
-          {
-            "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
-            "type": "string",
-            "name": "scriptID",
-            "in": "path",
-            "required": true
-          }
-        ],
         "responses": {
           "204": {}
         }
@@ -1692,6 +1676,52 @@ func init() {
       "get": {
         "summary": "List Execution",
         "operationId": "findExecutions",
+        "parameters": [
+          {
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "default": 1,
+            "description": "Page number for queries",
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "maximum": 100,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "default": 10,
+            "description": "Page size",
+            "name": "size",
+            "in": "query"
+          },
+          {
+            "enum": [
+              "unknown",
+              "queued",
+              "running",
+              "completed",
+              "cancelled",
+              "errored"
+            ],
+            "type": "string",
+            "name": "status",
+            "in": "query"
+          },
+          {
+            "enum": [
+              "manual",
+              "schedule",
+              "hook",
+              "unknown"
+            ],
+            "type": "string",
+            "description": "Script execution cause",
+            "name": "cause",
+            "in": "query"
+          }
+        ],
         "responses": {
           "200": {
             "schema": {
@@ -1802,20 +1832,6 @@ func init() {
           "name": "projectID",
           "in": "path",
           "required": true
-        },
-        {
-          "enum": [
-            "unknown",
-            "queued",
-            "running",
-            "completed",
-            "cancelled",
-            "errored"
-          ],
-          "type": "string",
-          "name": "status",
-          "in": "query",
-          "allowEmptyValue": true
         }
       ]
     },
@@ -3597,6 +3613,18 @@ func init() {
     }
   },
   "parameters": {
+    "cause": {
+      "enum": [
+        "manual",
+        "schedule",
+        "hook",
+        "unknown"
+      ],
+      "type": "string",
+      "description": "Script execution cause",
+      "name": "cause",
+      "in": "query"
+    },
     "page": {
       "minimum": 1,
       "type": "integer",
@@ -3641,8 +3669,7 @@ func init() {
       ],
       "type": "string",
       "name": "status",
-      "in": "query",
-      "allowEmptyValue": true
+      "in": "query"
     }
   },
   "responses": {

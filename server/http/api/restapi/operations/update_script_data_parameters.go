@@ -11,7 +11,6 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/go-openapi/validate"
 
 	strfmt "github.com/go-openapi/strfmt"
 )
@@ -48,7 +47,6 @@ type UpdateScriptDataParams struct {
 	ProjectID string
 	/*
 	  Required: true
-	  Pattern: [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}
 	  In: path
 	*/
 	ScriptID string
@@ -141,20 +139,6 @@ func (o *UpdateScriptDataParams) bindScriptID(rawData []string, hasKey bool, for
 	// Parameter is provided by construction from the route
 
 	o.ScriptID = raw
-
-	if err := o.validateScriptID(formats); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// validateScriptID carries on validations for parameter ScriptID
-func (o *UpdateScriptDataParams) validateScriptID(formats strfmt.Registry) error {
-
-	if err := validate.Pattern("scriptID", "path", o.ScriptID, `[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`); err != nil {
-		return err
-	}
 
 	return nil
 }

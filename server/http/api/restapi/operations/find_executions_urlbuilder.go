@@ -10,13 +10,18 @@ import (
 	"net/url"
 	golangswaggerpaths "path"
 	"strings"
+
+	"github.com/go-openapi/swag"
 )
 
 // FindExecutionsURL generates an URL for the find executions operation
 type FindExecutionsURL struct {
 	ProjectID string
 
-	Status string
+	Cause  *string
+	Page   *int32
+	Size   *int32
+	Status *string
 
 	_basePath string
 	// avoid unkeyed usage
@@ -56,7 +61,34 @@ func (o *FindExecutionsURL) Build() (*url.URL, error) {
 
 	qs := make(url.Values)
 
-	status := o.Status
+	var cause string
+	if o.Cause != nil {
+		cause = *o.Cause
+	}
+	if cause != "" {
+		qs.Set("cause", cause)
+	}
+
+	var page string
+	if o.Page != nil {
+		page = swag.FormatInt32(*o.Page)
+	}
+	if page != "" {
+		qs.Set("page", page)
+	}
+
+	var size string
+	if o.Size != nil {
+		size = swag.FormatInt32(*o.Size)
+	}
+	if size != "" {
+		qs.Set("size", size)
+	}
+
+	var status string
+	if o.Status != nil {
+		status = *o.Status
+	}
 	if status != "" {
 		qs.Set("status", status)
 	}

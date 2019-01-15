@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"bytes"
 	"context"
 	"github.com/MontFerret/ferret-server/pkg/common"
 	"github.com/MontFerret/ferret-server/pkg/common/dal"
@@ -94,4 +95,57 @@ func ensureSkipListIndexes(ctx context.Context, collection driver.Collection, in
 	}
 
 	return nil
+}
+
+func compileQuery(collectionName string, q dal.Query) dal.CompiledQuery {
+	var qs bytes.Buffer
+	params := map[string]interface{}{}
+
+	varName := "i"
+	qs.WriteString("FOR ")
+	qs.WriteString(varName)
+	qs.WriteString(" IN ")
+	qs.WriteString(collectionName)
+
+	if q.Filtering.Fields != nil && len(q.Filtering.Fields) > 0 {
+		qs.WriteString("\n")
+		qs.WriteString("FILTER ")
+
+		lastIndex := len(q.Filtering.Fields) - 1
+		for i, f := range q.Filtering.Fields {
+			paramName := f.Name
+			qs.WriteString(varName)
+			qs.WriteString(".")
+			qs.WriteString(f.Name)
+			qs.WriteString(" ")
+			qs.WriteString(f.Comparator.String())
+			qs.WriteString(" ")
+			qs.WriteString("@")
+			qs.WriteString(paramName)
+
+			params[paramName] = f.Value
+
+			if i != lastIndex {
+				qs.WriteString(" ")
+				qs.WriteString(q.Filtering.Operator.String())
+				qs.WriteString(" ")
+			}
+		}
+	}
+
+	if q.Pagination.Page > 0 {
+		qs.WriteString("\n")
+		qs.WriteString("LIMIT @offset, @count")
+
+		params["offset"] = q.Pagination.Size * (q.Pagination.Page - 1)
+		params["count"] = q.Pagination.Size
+	}
+
+	qs.WriteString("\n")
+	qs.WriteString("RETURN i")
+
+	return dal.CompiledQuery{
+		String: qs.String(),
+		Params: params,
+	}
 }
