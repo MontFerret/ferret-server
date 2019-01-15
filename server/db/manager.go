@@ -26,11 +26,11 @@ type (
 	Manager struct {
 		client    driver.Client
 		systemDB  driver.Database
-		databases sync.Map
+		databases *sync.Map
 		projects  projects.Repository
-		scripts   sync.Map
-		histories sync.Map
-		data      sync.Map
+		scripts   *sync.Map
+		histories *sync.Map
+		data      *sync.Map
 	}
 )
 
@@ -85,8 +85,9 @@ func New(settings Settings) (*Manager, error) {
 	manager.client = client
 	manager.systemDB = db
 	manager.projects = proj
-	manager.scripts = sync.Map{}
-	manager.data = sync.Map{}
+	manager.databases = new(sync.Map)
+	manager.scripts = new(sync.Map)
+	manager.data = new(sync.Map)
 
 	return manager, nil
 }
@@ -131,7 +132,7 @@ func (manager *Manager) GetDataRepository(projectID string) (persistence.Reposit
 	return repo.(persistence.Repository), nil
 }
 
-func (manager *Manager) resolveRepo(projectID string, collectionName string, cache sync.Map, f factory) (interface{}, error) {
+func (manager *Manager) resolveRepo(projectID string, collectionName string, cache *sync.Map, f factory) (interface{}, error) {
 	repo, exists := cache.Load(projectID)
 
 	if !exists {
