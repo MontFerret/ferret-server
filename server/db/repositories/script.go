@@ -26,10 +26,25 @@ type (
 )
 
 func NewScriptRepository(db driver.Database, collectionName string) (*ScriptRepository, error) {
-	collection, err := initCollection(db, collectionName)
+	ctx := context.Background()
+
+	collection, err := initCollection(ctx, db, collectionName)
 
 	if err != nil {
 		return nil, err
+	}
+
+	err = ensureSkipListIndexes(ctx, collection, []skipListIndex{
+		{
+			fields: []string{"name"},
+			opts: &driver.EnsureSkipListIndexOptions{
+				Unique: true,
+			},
+		},
+	})
+
+	if err != nil {
+		return nil, errors.Wrap(err, "create indexes")
 	}
 
 	return &ScriptRepository{collection}, nil

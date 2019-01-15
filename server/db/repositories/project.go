@@ -27,10 +27,25 @@ type (
 )
 
 func NewProjectRepository(client driver.Client, db driver.Database, collectionName string) (*ProjectRepository, error) {
-	collection, err := initCollection(db, collectionName)
+	ctx := context.Background()
+
+	collection, err := initCollection(ctx, db, collectionName)
 
 	if err != nil {
 		return nil, err
+	}
+
+	err = ensureSkipListIndexes(ctx, collection, []skipListIndex{
+		{
+			fields: []string{"name"},
+			opts: &driver.EnsureSkipListIndexOptions{
+				Unique: true,
+			},
+		},
+	})
+
+	if err != nil {
+		return nil, errors.Wrap(err, "create indexes")
 	}
 
 	return &ProjectRepository{client, collection}, nil

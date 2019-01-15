@@ -8,6 +8,7 @@ import (
 	"github.com/MontFerret/ferret-server/pkg/history"
 	"github.com/MontFerret/ferret-server/server/db/repositories/queries"
 	"github.com/arangodb/go-driver"
+	"github.com/pkg/errors"
 	"time"
 )
 
@@ -24,10 +25,43 @@ type (
 )
 
 func NewHistoryRepository(db driver.Database, collectionName string) (*HistoryRepository, error) {
-	collection, err := initCollection(db, collectionName)
+	ctx := context.Background()
+	collection, err := initCollection(ctx, db, collectionName)
 
 	if err != nil {
 		return nil, err
+	}
+
+	err = ensureHashIndexes(ctx, collection, []hashIndex{
+		{
+			fields: []string{"script_id"},
+		},
+		{
+			fields: []string{"job_id"},
+		},
+		{
+			fields: []string{"status"},
+		},
+		{
+			fields: []string{"cause"},
+		},
+	})
+
+	if err != nil {
+		return nil, errors.Wrap(err, "create indexes")
+	}
+
+	err = ensureSkipListIndexes(ctx, collection, []skipListIndex{
+		{
+			fields: []string{"started_at"},
+		},
+		{
+			fields: []string{"ended_at"},
+		},
+	})
+
+	if err != nil {
+		return nil, errors.Wrap(err, "create indexes")
 	}
 
 	return &HistoryRepository{collection}, nil

@@ -28,7 +28,7 @@ func NewService(db DbContext) (*Service, error) {
 	return &Service{db: db}, nil
 }
 
-func (service *Service) CreateRecord(ctx context.Context, job execution.Job, data []byte) (dal.Entity, error) {
+func (service *Service) CreateRecord(ctx context.Context, job execution.Job, data interface{}) (dal.Entity, error) {
 	if job.Script.Persistence.Enabled == false {
 		return dal.Entity{}, errors.Errorf(
 			"persistence is disabled for a given script: %s rev %s",

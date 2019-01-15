@@ -25,10 +25,31 @@ type (
 )
 
 func NewPersistenceRepository(db driver.Database, collectionName string) (*PersistenceRepository, error) {
-	collection, err := initCollection(db, collectionName)
+	ctx := context.Background()
+
+	collection, err := initCollection(ctx, db, collectionName)
 
 	if err != nil {
 		return nil, err
+	}
+
+	err = ensureHashIndexes(ctx, collection, []hashIndex{
+		{
+			fields: []string{"script_id"},
+			opts: &driver.EnsureHashIndexOptions{
+				Sparse: true,
+			},
+		},
+		{
+			fields: []string{"job_id"},
+			opts: &driver.EnsureHashIndexOptions{
+				Sparse: true,
+			},
+		},
+	})
+
+	if err != nil {
+		return nil, errors.Wrap(err, "create indexes")
 	}
 
 	return &PersistenceRepository{collection: collection}, nil

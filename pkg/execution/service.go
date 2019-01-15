@@ -126,6 +126,7 @@ func (service *Service) Start(ctx context.Context, event Event) (string, error) 
 		ID:        jobID,
 		ProjectID: event.ProjectID,
 		Script:    entity,
+		CausedBy:  event.CausedBy,
 	}
 
 	err = service.state.Write(State{

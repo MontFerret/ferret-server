@@ -9,6 +9,18 @@ import (
 	"time"
 )
 
+type (
+	hashIndex struct {
+		fields []string
+		opts   *driver.EnsureHashIndexOptions
+	}
+
+	skipListIndex struct {
+		fields []string
+		opts   *driver.EnsureSkipListIndexOptions
+	}
+)
+
 func createdEntity(meta driver.DocumentMeta, time time.Time) dal.Entity {
 	return dal.Entity{
 		ID:  meta.Key,
@@ -26,7 +38,7 @@ func updatedEntity(meta driver.DocumentMeta, createdAt, updatedAt time.Time) dal
 	return res
 }
 
-func initCollection(db driver.Database, collectionName string) (driver.Collection, error) {
+func initCollection(ctx context.Context, db driver.Database, collectionName string) (driver.Collection, error) {
 	if db == nil {
 		return nil, common.Error(common.ErrMissedArgument, "database")
 	}
@@ -34,8 +46,6 @@ func initCollection(db driver.Database, collectionName string) (driver.Collectio
 	if collectionName == "" {
 		return nil, common.Error(common.ErrMissedArgument, "collectionName")
 	}
-
-	ctx := context.Background()
 
 	exists, err := db.CollectionExists(ctx, collectionName)
 
@@ -60,4 +70,28 @@ func initCollection(db driver.Database, collectionName string) (driver.Collectio
 	}
 
 	return c, nil
+}
+
+func ensureHashIndexes(ctx context.Context, collection driver.Collection, indexes []hashIndex) error {
+	for _, i := range indexes {
+		_, _, err := collection.EnsureHashIndex(ctx, i.fields, i.opts)
+
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func ensureSkipListIndexes(ctx context.Context, collection driver.Collection, indexes []skipListIndex) error {
+	for _, i := range indexes {
+		_, _, err := collection.EnsureSkipListIndex(ctx, i.fields, i.opts)
+
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
