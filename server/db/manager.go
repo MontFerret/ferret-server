@@ -85,6 +85,7 @@ func New(settings Settings) (*Manager, error) {
 	manager.client = client
 	manager.systemDB = db
 	manager.projects = proj
+	manager.histories = new(sync.Map)
 	manager.databases = new(sync.Map)
 	manager.scripts = new(sync.Map)
 	manager.data = new(sync.Map)
@@ -122,7 +123,7 @@ func (manager *Manager) GetHistoryRepository(projectID string) (history.Reposito
 
 func (manager *Manager) GetDataRepository(projectID string) (persistence.Repository, error) {
 	repo, err := manager.resolveRepo(projectID, dataCollection, manager.data, func(db driver.Database, name string) (interface{}, error) {
-		return repositories.NewDataRepository(db, name)
+		return repositories.NewPersistenceRepository(db, name)
 	})
 
 	if err != nil {

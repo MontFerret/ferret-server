@@ -130,6 +130,10 @@ func (app *Application) Run() error {
 		return errors.Wrap(err, "configure execution controller")
 	}
 
+	if err := app.configurePersistenceController(); err != nil {
+		return errors.Wrap(err, "configure persistence controller")
+	}
+
 	return app.server.Run()
 }
 
@@ -181,7 +185,7 @@ func (app *Application) configureExecutionController() error {
 }
 
 func (app *Application) configurePersistenceController() error {
-	ctl, err := controllers.NewDataController(app.persistence)
+	ctl, err := controllers.NewPersistenceController(app.persistence)
 
 	if err != nil {
 		return errors.Wrap(err, "new persistence controller")

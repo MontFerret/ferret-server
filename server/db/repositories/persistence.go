@@ -13,29 +13,29 @@ import (
 )
 
 type (
-	dataRecord struct {
+	persistenceRecord struct {
 		Key string `json:"_key"`
 		dal.Metadata
 		persistence.Record
 	}
 
-	DataRepository struct {
+	PersistenceRepository struct {
 		collection driver.Collection
 	}
 )
 
-func NewDataRepository(db driver.Database, collectionName string) (*DataRepository, error) {
+func NewPersistenceRepository(db driver.Database, collectionName string) (*PersistenceRepository, error) {
 	collection, err := initCollection(db, collectionName)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return &DataRepository{collection: collection}, nil
+	return &PersistenceRepository{collection: collection}, nil
 }
 
-func (repo *DataRepository) Create(ctx context.Context, record persistence.Record) (dal.Entity, error) {
-	data := dataRecord{}
+func (repo *PersistenceRepository) Create(ctx context.Context, record persistence.Record) (dal.Entity, error) {
+	data := persistenceRecord{}
 	data.Key = record.JobID
 	data.Metadata.CreatedAt = time.Now()
 	data.Record = record
@@ -52,7 +52,7 @@ func (repo *DataRepository) Create(ctx context.Context, record persistence.Recor
 	}, nil
 }
 
-func (repo *DataRepository) Update(ctx context.Context, record persistence.Record) (dal.Entity, error) {
+func (repo *PersistenceRepository) Update(ctx context.Context, record persistence.Record) (dal.Entity, error) {
 	if record.JobID == "" {
 		return dal.Entity{}, common.Error(common.ErrInvalidOperation, "data record does not have ID")
 	}
@@ -61,7 +61,7 @@ func (repo *DataRepository) Update(ctx context.Context, record persistence.Recor
 
 	old := persistence.RecordEntity{}
 	updateCtx := driver.WithMergeObjects(driver.WithReturnOld(ctx, &old), false)
-	meta, err := repo.collection.UpdateDocument(updateCtx, record.JobID, &dataRecord{
+	meta, err := repo.collection.UpdateDocument(updateCtx, record.JobID, &persistenceRecord{
 		Record: record,
 		Metadata: dal.Metadata{
 			UpdateAt: updatedAt,
@@ -75,8 +75,8 @@ func (repo *DataRepository) Update(ctx context.Context, record persistence.Recor
 	return updatedEntity(meta, old.CreatedAt, updatedAt), nil
 }
 
-func (repo *DataRepository) Get(ctx context.Context, id string) (persistence.RecordEntity, error) {
-	record := dataRecord{}
+func (repo *PersistenceRepository) Get(ctx context.Context, id string) (persistence.RecordEntity, error) {
+	record := persistenceRecord{}
 	meta, err := repo.collection.ReadDocument(ctx, id, &record)
 
 	if err != nil {
@@ -86,7 +86,7 @@ func (repo *DataRepository) Get(ctx context.Context, id string) (persistence.Rec
 	return repo.fromRecord(meta, record), nil
 }
 
-func (repo *DataRepository) Delete(ctx context.Context, id string) error {
+func (repo *PersistenceRepository) Delete(ctx context.Context, id string) error {
 	_, err := repo.collection.RemoveDocument(ctx, id)
 
 	if err != nil {
@@ -96,7 +96,7 @@ func (repo *DataRepository) Delete(ctx context.Context, id string) error {
 	return nil
 }
 
-func (repo *DataRepository) Find(ctx context.Context, q dal.Query) ([]persistence.RecordEntity, error) {
+func (repo *PersistenceRepository) Find(ctx context.Context, q dal.Query) ([]persistence.RecordEntity, error) {
 	cursor, err := repo.collection.Database().Query(
 		ctx,
 		fmt.Sprintf(queries.FindAll, repo.collection.Name()),
@@ -115,7 +115,7 @@ func (repo *DataRepository) Find(ctx context.Context, q dal.Query) ([]persistenc
 	defer cursor.Close()
 
 	for cursor.HasMore() {
-		record := dataRecord{}
+		record := persistenceRecord{}
 
 		meta, err := cursor.ReadDocument(ctx, &record)
 
@@ -129,7 +129,7 @@ func (repo *DataRepository) Find(ctx context.Context, q dal.Query) ([]persistenc
 	return result, nil
 }
 
-func (repo *DataRepository) FindByScriptID(ctx context.Context, scriptID string, q dal.Query) ([]persistence.RecordEntity, error) {
+func (repo *PersistenceRepository) FindByScriptID(ctx context.Context, scriptID string, q dal.Query) ([]persistence.RecordEntity, error) {
 	cursor, err := repo.collection.Database().Query(
 		ctx,
 		fmt.Sprintf(queries.FindAllByScriptID, repo.collection.Name()),
@@ -149,7 +149,7 @@ func (repo *DataRepository) FindByScriptID(ctx context.Context, scriptID string,
 	defer cursor.Close()
 
 	for cursor.HasMore() {
-		record := dataRecord{}
+		record := persistenceRecord{}
 
 		meta, err := cursor.ReadDocument(ctx, &record)
 
@@ -163,7 +163,7 @@ func (repo *DataRepository) FindByScriptID(ctx context.Context, scriptID string,
 	return result, nil
 }
 
-func (repo *DataRepository) fromRecord(meta driver.DocumentMeta, record dataRecord) persistence.RecordEntity {
+func (repo *PersistenceRepository) fromRecord(meta driver.DocumentMeta, record persistenceRecord) persistence.RecordEntity {
 	return persistence.RecordEntity{
 		Entity: dal.Entity{
 			ID:       meta.Key,

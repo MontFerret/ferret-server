@@ -13,19 +13,19 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 )
 
-type DataController struct {
+type PersistenceController struct {
 	service *persistence.Service
 }
 
-func NewDataController(service *persistence.Service) (*DataController, error) {
+func NewPersistenceController(service *persistence.Service) (*PersistenceController, error) {
 	if service == nil {
 		return nil, common.Error(common.ErrMissedArgument, "persistence service")
 	}
 
-	return &DataController{service}, nil
+	return &PersistenceController{service}, nil
 }
 
-func (ctl *DataController) FindAll(params operations.FindProjectDataParams) middleware.Responder {
+func (ctl *PersistenceController) FindAll(params operations.FindProjectDataParams) middleware.Responder {
 	logger := logging.FromRequest(params.HTTPRequest)
 
 	var size uint = 10
@@ -78,7 +78,7 @@ func (ctl *DataController) FindAll(params operations.FindProjectDataParams) midd
 	return operations.NewFindProjectDataOK().WithPayload(payload)
 }
 
-func (ctl *DataController) Find(params operations.FindScriptDataParams) middleware.Responder {
+func (ctl *PersistenceController) Find(params operations.FindScriptDataParams) middleware.Responder {
 	logger := logging.FromRequest(params.HTTPRequest)
 
 	var size uint = 10
@@ -135,7 +135,7 @@ func (ctl *DataController) Find(params operations.FindScriptDataParams) middlewa
 	return operations.NewFindScriptDataOK().WithPayload(payload)
 }
 
-func (ctl *DataController) Get(params operations.GetScriptDataParams) middleware.Responder {
+func (ctl *PersistenceController) Get(params operations.GetScriptDataParams) middleware.Responder {
 	logger := logging.FromRequest(params.HTTPRequest)
 
 	ctx := context.Background()
@@ -174,7 +174,7 @@ func (ctl *DataController) Get(params operations.GetScriptDataParams) middleware
 	})
 }
 
-func (ctl *DataController) Update(params operations.UpdateScriptDataParams) middleware.Responder {
+func (ctl *PersistenceController) Update(params operations.UpdateScriptDataParams) middleware.Responder {
 	logger := logging.FromRequest(params.HTTPRequest)
 	ctx := context.Background()
 
@@ -204,7 +204,7 @@ func (ctl *DataController) Update(params operations.UpdateScriptDataParams) midd
 	})
 }
 
-func (ctl *DataController) Delete(params operations.DeleteScriptDataParams) middleware.Responder {
+func (ctl *PersistenceController) Delete(params operations.DeleteScriptDataParams) middleware.Responder {
 	logger := logging.FromRequest(params.HTTPRequest)
 	ctx := context.Background()
 
