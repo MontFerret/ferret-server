@@ -8,11 +8,12 @@ os:
 go:
 - "1.10.x"
 - "1.11.x"
-- master
+- stable
 
 before_install:
 - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 - go get -u github.com/mgechev/revive
+- go get -u github.com/go-swagger/go-swagger/cmd/swagger
 
 install:
 - make install
