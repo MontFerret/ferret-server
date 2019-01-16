@@ -58,7 +58,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:efd99b2053154961c938d9aa0b8ac6a464e476b1802fb8e040526d92b5d7f9d3"
+  digest = "1:9e5470b32e36e90f9a18dfcbd16108726f25b0728d34c5f7b629975b2147871a"
   name = "github.com/arangodb/go-driver"
   packages = [
     ".",
@@ -67,7 +67,7 @@
     "util",
   ]
   pruneopts = "UT"
-  revision = "b1a864427d13f052ed90257c5fb6062439d80e11"
+  revision = "a903409d8f546fc3e9716c3f36b32931f46ea0fe"
 
 [[projects]]
   branch = "master"
