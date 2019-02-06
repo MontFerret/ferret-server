@@ -20,7 +20,8 @@
 	</a>
 </p>
 
-Server for advanced web scraping.
+Server for advanced web scraping.    
+[Open API defintion.](https://next.stoplight.io/montferret/ferret-server/)
 
 # Features
 - Scripts persistence
