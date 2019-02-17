@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+
 	"github.com/MontFerret/ferret-server/pkg/common"
 	"github.com/MontFerret/ferret-server/pkg/common/dal"
 	"github.com/MontFerret/ferret-server/pkg/execution"
@@ -9,15 +10,16 @@ import (
 	"github.com/MontFerret/ferret-server/server/http"
 	"github.com/MontFerret/ferret-server/server/http/api/restapi/operations"
 	"github.com/MontFerret/ferret-server/server/logging"
+
 	"github.com/go-openapi/runtime/middleware"
 )
 
-type ExecutionController struct {
+type Execution struct {
 	exec    *execution.Service
 	history *history.Service
 }
 
-func NewExecutionController(exec *execution.Service, history *history.Service) (*ExecutionController, error) {
+func NewExecution(exec *execution.Service, history *history.Service) (*Execution, error) {
 	if exec == nil {
 		return nil, common.Error(common.ErrMissedArgument, "execution service")
 	}
@@ -26,10 +28,10 @@ func NewExecutionController(exec *execution.Service, history *history.Service) (
 		return nil, common.Error(common.ErrMissedArgument, "history service")
 	}
 
-	return &ExecutionController{exec, history}, nil
+	return &Execution{exec, history}, nil
 }
 
-func (ctl *ExecutionController) Create(params operations.CreateExecutionParams) middleware.Responder {
+func (ctl *Execution) Create(params operations.CreateExecutionParams) middleware.Responder {
 	logger := logging.FromRequest(params.HTTPRequest)
 	ctx := context.Background()
 
@@ -61,7 +63,7 @@ func (ctl *ExecutionController) Create(params operations.CreateExecutionParams) 
 	return operations.NewCreateExecutionOK().WithPayload(id)
 }
 
-func (ctl *ExecutionController) Delete(params operations.DeleteExecutionParams) middleware.Responder {
+func (ctl *Execution) Delete(params operations.DeleteExecutionParams) middleware.Responder {
 	logger := logging.FromRequest(params.HTTPRequest)
 	ctx := context.Background()
 
@@ -86,7 +88,7 @@ func (ctl *ExecutionController) Delete(params operations.DeleteExecutionParams) 
 	return operations.NewDeleteExecutionNoContent()
 }
 
-func (ctl *ExecutionController) Find(params operations.FindExecutionsParams) middleware.Responder {
+func (ctl *Execution) Find(params operations.FindExecutionsParams) middleware.Responder {
 	logger := logging.FromRequest(params.HTTPRequest)
 	ctx := context.Background()
 
@@ -154,7 +156,7 @@ func (ctl *ExecutionController) Find(params operations.FindExecutionsParams) mid
 	return operations.NewFindExecutionsOK().WithPayload(payload)
 }
 
-func (ctl *ExecutionController) Get(params operations.GetExecutionParams) middleware.Responder {
+func (ctl *Execution) Get(params operations.GetExecutionParams) middleware.Responder {
 	logger := logging.FromRequest(params.HTTPRequest)
 
 	found, err := ctl.history.Get(context.Background(), params.ProjectID, params.JobID)

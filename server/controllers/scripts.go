@@ -8,22 +8,23 @@ import (
 	"github.com/MontFerret/ferret-server/server/http"
 	"github.com/MontFerret/ferret-server/server/http/api/restapi/operations"
 	"github.com/MontFerret/ferret-server/server/logging"
+
 	"github.com/go-openapi/runtime/middleware"
 )
 
-type ScriptsController struct {
+type Scripts struct {
 	service *scripts.Service
 }
 
-func NewScriptsController(service *scripts.Service) (*ScriptsController, error) {
+func NewScripts(service *scripts.Service) (*Scripts, error) {
 	if service == nil {
 		return nil, common.Error(common.ErrMissedArgument, "exec")
 	}
 
-	return &ScriptsController{service}, nil
+	return &Scripts{service}, nil
 }
 
-func (ctl *ScriptsController) CreateScript(params operations.CreateScriptParams) middleware.Responder {
+func (ctl *Scripts) CreateScript(params operations.CreateScriptParams) middleware.Responder {
 	logger := logging.FromRequest(params.HTTPRequest)
 
 	entity := scripts.Script{
@@ -63,7 +64,7 @@ func (ctl *ScriptsController) CreateScript(params operations.CreateScriptParams)
 	})
 }
 
-func (ctl *ScriptsController) UpdateScript(params operations.UpdateScriptParams) middleware.Responder {
+func (ctl *Scripts) UpdateScript(params operations.UpdateScriptParams) middleware.Responder {
 	logger := logging.FromRequest(params.HTTPRequest)
 
 	script := scripts.UpdateScript{
@@ -109,7 +110,7 @@ func (ctl *ScriptsController) UpdateScript(params operations.UpdateScriptParams)
 	})
 }
 
-func (ctl *ScriptsController) DeleteScript(params operations.DeleteScriptParams) middleware.Responder {
+func (ctl *Scripts) DeleteScript(params operations.DeleteScriptParams) middleware.Responder {
 	logger := logging.FromRequest(params.HTTPRequest)
 
 	err := ctl.service.DeleteScript(params.HTTPRequest.Context(), params.ProjectID, params.ScriptID)
@@ -134,7 +135,7 @@ func (ctl *ScriptsController) DeleteScript(params operations.DeleteScriptParams)
 	return operations.NewDeleteScriptNoContent()
 }
 
-func (ctl *ScriptsController) GetScript(params operations.GetScriptParams) middleware.Responder {
+func (ctl *Scripts) GetScript(params operations.GetScriptParams) middleware.Responder {
 	logger := logging.FromRequest(params.HTTPRequest)
 
 	out, err := ctl.service.GetScript(params.HTTPRequest.Context(), params.ProjectID, params.ScriptID)
@@ -175,7 +176,7 @@ func (ctl *ScriptsController) GetScript(params operations.GetScriptParams) middl
 	})
 }
 
-func (ctl *ScriptsController) FindScripts(params operations.FindScriptsParams) middleware.Responder {
+func (ctl *Scripts) FindScripts(params operations.FindScriptsParams) middleware.Responder {
 	logger := logging.FromRequest(params.HTTPRequest)
 
 	var size uint = 10
