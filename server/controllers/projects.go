@@ -8,22 +8,23 @@ import (
 	"github.com/MontFerret/ferret-server/server/http"
 	"github.com/MontFerret/ferret-server/server/http/api/restapi/operations"
 	"github.com/MontFerret/ferret-server/server/logging"
+
 	"github.com/go-openapi/runtime/middleware"
 )
 
-type ProjectsController struct {
+type Projects struct {
 	service *projects.Service
 }
 
-func NewProjectsController(service *projects.Service) (*ProjectsController, error) {
+func NewProjects(service *projects.Service) (*Projects, error) {
 	if service == nil {
 		return nil, common.Error(common.ErrMissedArgument, "exec")
 	}
 
-	return &ProjectsController{service}, nil
+	return &Projects{service}, nil
 }
 
-func (ctl *ProjectsController) CreateProject(params operations.CreateProjectParams) middleware.Responder {
+func (ctl *Projects) CreateProject(params operations.CreateProjectParams) middleware.Responder {
 	logger := logging.FromRequest(params.HTTPRequest)
 
 	out, err := ctl.service.CreateProject(params.HTTPRequest.Context(), projects.Project{
@@ -56,7 +57,7 @@ func (ctl *ProjectsController) CreateProject(params operations.CreateProjectPara
 	})
 }
 
-func (ctl *ProjectsController) UpdateProject(params operations.UpdateProjectParams) middleware.Responder {
+func (ctl *Projects) UpdateProject(params operations.UpdateProjectParams) middleware.Responder {
 	logger := logging.FromRequest(params.HTTPRequest)
 
 	out, err := ctl.service.UpdateProject(params.HTTPRequest.Context(), projects.UpdateProject{
@@ -94,7 +95,7 @@ func (ctl *ProjectsController) UpdateProject(params operations.UpdateProjectPara
 	})
 }
 
-func (ctl *ProjectsController) DeleteProject(params operations.DeleteProjectParams) middleware.Responder {
+func (ctl *Projects) DeleteProject(params operations.DeleteProjectParams) middleware.Responder {
 	logger := logging.FromRequest(params.HTTPRequest)
 
 	err := ctl.service.DeleteProject(params.HTTPRequest.Context(), params.ProjectID)
@@ -117,7 +118,7 @@ func (ctl *ProjectsController) DeleteProject(params operations.DeleteProjectPara
 	return operations.NewDeleteProjectNoContent()
 }
 
-func (ctl *ProjectsController) GetProject(params operations.GetProjectParams) middleware.Responder {
+func (ctl *Projects) GetProject(params operations.GetProjectParams) middleware.Responder {
 	logger := logging.FromRequest(params.HTTPRequest)
 
 	out, err := ctl.service.GetProject(params.HTTPRequest.Context(), params.ProjectID)
@@ -150,7 +151,7 @@ func (ctl *ProjectsController) GetProject(params operations.GetProjectParams) mi
 	})
 }
 
-func (ctl *ProjectsController) FindProjects(params operations.FindProjectsParams) middleware.Responder {
+func (ctl *Projects) FindProjects(params operations.FindProjectsParams) middleware.Responder {
 	logger := logging.FromRequest(params.HTTPRequest)
 
 	var size uint = 10

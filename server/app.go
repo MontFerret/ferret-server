@@ -14,6 +14,7 @@ import (
 	"github.com/MontFerret/ferret-server/server/http"
 	"github.com/MontFerret/ferret-server/server/http/api/restapi/operations"
 	"github.com/MontFerret/ferret/pkg/compiler"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 )
@@ -138,7 +139,7 @@ func (app *Application) Run() error {
 }
 
 func (app *Application) configureProjectsController() error {
-	ctl, err := controllers.NewProjectsController(app.projects)
+	ctl, err := controllers.NewProjects(app.projects)
 
 	if err != nil {
 		return errors.Wrap(err, "new projects controller")
@@ -154,7 +155,7 @@ func (app *Application) configureProjectsController() error {
 }
 
 func (app *Application) configureScriptsController() error {
-	ctl, err := controllers.NewScriptsController(app.scripts)
+	ctl, err := controllers.NewScripts(app.scripts)
 
 	if err != nil {
 		return errors.Wrap(err, "new scripts controller")
@@ -170,7 +171,7 @@ func (app *Application) configureScriptsController() error {
 }
 
 func (app *Application) configureExecutionController() error {
-	ctl, err := controllers.NewExecutionController(app.execution, app.history)
+	ctl, err := controllers.NewExecution(app.execution, app.history)
 
 	if err != nil {
 		return errors.Wrap(err, "new execution controller")
@@ -185,7 +186,7 @@ func (app *Application) configureExecutionController() error {
 }
 
 func (app *Application) configurePersistenceController() error {
-	ctl, err := controllers.NewPersistenceController(app.persistence)
+	ctl, err := controllers.NewPersistence(app.persistence)
 
 	if err != nil {
 		return errors.Wrap(err, "new persistence controller")
