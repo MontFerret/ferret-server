@@ -229,12 +229,16 @@ func TestPool(t *testing.T) {
 
 			time.Sleep(time.Duration(1000) * time.Millisecond)
 
+			sw.mu.Lock()
 			completedStatuses := sw.jobs[completedJob.ID]
+			sw.mu.Unlock()
 
 			So(completedStatuses[0], ShouldEqual, execution.StatusRunning)
 			So(completedStatuses[1], ShouldEqual, execution.StatusCompleted)
 
+			sw.mu.Lock()
 			failedStatuses := sw.jobs[failedJob.ID]
+			sw.mu.Unlock()
 
 			So(failedStatuses[0], ShouldEqual, execution.StatusRunning)
 			So(failedStatuses[1], ShouldEqual, execution.StatusErrored)
@@ -282,7 +286,9 @@ func TestPool(t *testing.T) {
 
 			time.Sleep(time.Duration(100) * time.Millisecond)
 
+			sw.mu.Lock()
 			statuses := sw.jobs[j.ID]
+			sw.mu.Unlock()
 
 			So(statuses[0], ShouldEqual, execution.StatusRunning)
 			So(statuses[1], ShouldEqual, execution.StatusCancelled)
