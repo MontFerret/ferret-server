@@ -52,10 +52,18 @@ func (w *FQLWorker) Process() ([]byte, error) {
 		return nil, err
 	}
 
+	params := make(map[string]interface{}, len(w.job.Script.Execution.Params))
+
+	w.mu.Lock()
+	for k, v := range w.job.Script.Execution.Params {
+		params[k] = v
+	}
+	w.mu.Unlock()
+
 	out, err := program.Run(
 		ctx,
 		runtime.WithLog(w.log),
-		runtime.WithParams(w.job.Script.Execution.Params),
+		runtime.WithParams(params),
 	)
 
 	if err != nil {
