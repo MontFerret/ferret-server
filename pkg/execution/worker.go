@@ -40,6 +40,7 @@ func (w *FQLWorker) Process() ([]byte, error) {
 	w.mu.Lock()
 
 	if w.cancel != nil {
+		w.mu.Unlock()
 		return nil, ErrWorkerAlreadyRunning
 	}
 	ctx, cancelFn := context.WithCancel(context.Background())
