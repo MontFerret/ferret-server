@@ -137,5 +137,24 @@ func TestWorker(t *testing.T) {
 			w.Process()
 			So(w.IsRunning(), ShouldBeFalse)
 		})
+
+		Convey("Should return error when a worker is running", func() {
+			w := createWorker(`
+					WAIT(1000)
+					RETURN TRUE
+				`, map[string]interface{}{
+				"size": 1000,
+			})
+
+			go func() {
+				w.Process()
+			}()
+
+			time.Sleep(time.Millisecond)
+
+			res, err := w.Process()
+			So(err, ShouldEqual, execution.ErrWorkerAlreadyRunning)
+			So(res, ShouldBeNil)
+		})
 	})
 }
