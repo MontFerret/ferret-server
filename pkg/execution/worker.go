@@ -38,16 +38,13 @@ func (w *FQLWorker) IsRunning() bool {
 
 func (w *FQLWorker) Process() ([]byte, error) {
 	w.mu.Lock()
-	isRunning := w.cancel != nil
-	w.mu.Unlock()
 
-	if isRunning {
+	if w.cancel != nil {
 		return nil, ErrWorkerAlreadyRunning
 	}
-
-	w.mu.Lock()
 	ctx, cancelFn := context.WithCancel(context.Background())
 	w.cancel = cancelFn
+
 	w.mu.Unlock()
 
 	defer func() {
