@@ -7,7 +7,10 @@ import (
 
 	"github.com/MontFerret/ferret/pkg/compiler"
 	"github.com/MontFerret/ferret/pkg/runtime"
+	"github.com/pkg/errors"
 )
+
+var ErrWorkerAlreadyRunning = errors.New("worker already running")
 
 type FQLWorker struct {
 	mu       sync.Mutex
@@ -35,8 +38,14 @@ func (w *FQLWorker) IsRunning() bool {
 
 func (w *FQLWorker) Process() ([]byte, error) {
 	w.mu.Lock()
+
+	if w.cancel != nil {
+		w.mu.Unlock()
+		return nil, ErrWorkerAlreadyRunning
+	}
 	ctx, cancelFn := context.WithCancel(context.Background())
 	w.cancel = cancelFn
+
 	w.mu.Unlock()
 
 	defer func() {
