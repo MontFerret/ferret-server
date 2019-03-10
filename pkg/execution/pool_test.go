@@ -17,8 +17,7 @@ type (
 	NoopStatusWriter struct{}
 
 	MockedStatusWriter struct {
-		mu   sync.Mutex
-		jobs map[string][]execution.Status
+		jobs sync.Map
 	}
 
 	MockedWorker struct {
@@ -75,15 +74,13 @@ func (nw *MockedWorker) Interrupt() {
 }
 
 func (sw *MockedStatusWriter) Write(state execution.State) error {
-	sw.mu.Lock()
-	defer sw.mu.Unlock()
-
-	found, ok := sw.jobs[state.Job.ID]
+	found, ok := sw.jobs.Load(state.Job.ID)
 	if !ok {
 		found = make([]execution.Status, 0, 5)
 	}
 
-	sw.jobs[state.Job.ID] = append(found, state.Status)
+	statuses := found.([]execution.Status)
+	sw.jobs.Store(state.Job.ID, append(statuses, state.Status))
 
 	return nil
 }
@@ -109,7 +106,7 @@ func NewMockedWorker(job execution.Job, data func() []byte, err func() error) ex
 
 func NewMockedStatusWriter() *MockedStatusWriter {
 	sw := new(MockedStatusWriter)
-	sw.jobs = make(map[string][]execution.Status)
+	sw.jobs = sync.Map{}
 
 	return sw
 }
@@ -229,16 +226,14 @@ func TestPool(t *testing.T) {
 
 			time.Sleep(time.Duration(1000) * time.Millisecond)
 
-			sw.mu.Lock()
-			completedStatuses := sw.jobs[completedJob.ID]
-			sw.mu.Unlock()
+			completed, _ := sw.jobs.Load(completedJob.ID)
+			completedStatuses := completed.([]execution.Status)
 
 			So(completedStatuses[0], ShouldEqual, execution.StatusRunning)
 			So(completedStatuses[1], ShouldEqual, execution.StatusCompleted)
 
-			sw.mu.Lock()
-			failedStatuses := sw.jobs[failedJob.ID]
-			sw.mu.Unlock()
+			failed, _ := sw.jobs.Load(failedJob.ID)
+			failedStatuses := failed.([]execution.Status)
 
 			So(failedStatuses[0], ShouldEqual, execution.StatusRunning)
 			So(failedStatuses[1], ShouldEqual, execution.StatusErrored)
@@ -286,9 +281,8 @@ func TestPool(t *testing.T) {
 
 			time.Sleep(time.Duration(100) * time.Millisecond)
 
-			sw.mu.Lock()
-			statuses := sw.jobs[j.ID]
-			sw.mu.Unlock()
+			val, _ := sw.jobs.Load(j.ID)
+			statuses := val.([]execution.Status)
 
 			So(statuses[0], ShouldEqual, execution.StatusRunning)
 			So(statuses[1], ShouldEqual, execution.StatusCancelled)
