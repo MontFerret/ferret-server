@@ -325,7 +325,7 @@
     "netutil",
   ]
   pruneopts = "UT"
-  revision = "d8887717615a059821345a5c23649351b52a1c0b"
+  revision = "9f648a60d9775ef5c977e7669d1673a7a67bef33"
 
 [[projects]]
   digest = "1:0c56024909189aee3364b7f21a95a27459f718aa7c199a5c111c36cfffd9eaef"
