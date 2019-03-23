@@ -2,11 +2,16 @@
 
 
 [[projects]]
-  digest = "1:85525c43d64916622ef291798b728a3871f1d98e842400cf414ad844a8df2d86"
+  digest = "1:dca4704a0ae555931588d123999e89a976710a90bc08d24bc5b516edb275e720"
   name = "github.com/MontFerret/ferret"
   packages = [
     "pkg/compiler",
     "pkg/drivers",
+    "pkg/drivers/cdp",
+    "pkg/drivers/cdp/eval",
+    "pkg/drivers/cdp/events",
+    "pkg/drivers/cdp/templates",
+    "pkg/drivers/common",
     "pkg/parser",
     "pkg/parser/fql",
     "pkg/runtime",
@@ -18,6 +23,7 @@
     "pkg/runtime/expressions/operators",
     "pkg/runtime/logging",
     "pkg/runtime/values",
+    "pkg/runtime/values/types",
     "pkg/stdlib",
     "pkg/stdlib/arrays",
     "pkg/stdlib/collections",
@@ -29,8 +35,16 @@
     "pkg/stdlib/utils",
   ]
   pruneopts = "UT"
-  revision = "38e7798cea2976879ac29479c820a1f543ab224c"
-  version = "v0.6.0"
+  revision = "e951b914a5f0b120db2804efe0e59884d5c9b71a"
+  version = "v0.7.0"
+
+[[projects]]
+  digest = "1:573fa46f8d413d4bc3f7cc5e86b2c43cb21559f4fb0a19d9874d228e28fdc07c"
+  name = "github.com/PuerkitoBio/goquery"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "2d2796f41742ece03e8086188fa4db16a3a0b458"
+  version = "v1.5.0"
 
 [[projects]]
   digest = "1:d1665c44bd5db19aaee18d1b6233c99b0b9a986e8bccb24ef54747547a48027f"
@@ -47,6 +61,14 @@
   packages = ["."]
   pruneopts = "UT"
   revision = "de5bf2ad457846296e2031421a34e2568e304e35"
+
+[[projects]]
+  digest = "1:66b3310cf22cdc96c35ef84ede4f7b9b370971c4025f394c89a2638729653b11"
+  name = "github.com/andybalholm/cascadia"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "901648c87902174f774fac311d7f176f8647bdaa"
+  version = "v1.0.0"
 
 [[projects]]
   digest = "1:d04889482897652dedae6d8575b479c06fa3eb3c3abe248163b25d3df5fab43e"
@@ -92,6 +114,14 @@
   pruneopts = "UT"
   revision = "c6a59be0ce122566695fbd5e48a77f8f10c8a63a"
   version = "v1.0.0"
+
+[[projects]]
+  digest = "1:86909a5b1e4522ad763f86327cfa65e51d7eb838d4adb3d6f68069fede181122"
+  name = "github.com/corpix/uarand"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "37c9140f52f6bf4998ff7617c456d554d6a2dc2f"
+  version = "v0.0.0"
 
 [[projects]]
   digest = "1:6f82cacd0af5921e99bf3f46748705239b36489464f4529a1589bc895764fb18"
@@ -221,6 +251,22 @@
   revision = "d547d1d9531ed93dbdebcbff7f83e7c876a1e0ee"
 
 [[projects]]
+  digest = "1:fc51ecee8f31d03436c1a0167eb1e383ad0a241d02272541853f3995374a08f1"
+  name = "github.com/gorilla/css"
+  packages = ["scanner"]
+  pruneopts = "UT"
+  revision = "398b0b046082ecb3694c01bec6b336a06a4e530a"
+  version = "v1.0.0"
+
+[[projects]]
+  digest = "1:7b5c6e2eeaa9ae5907c391a91c132abfd5c9e8a784a341b5625e750c67e6825d"
+  name = "github.com/gorilla/websocket"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "66b9c49e59c6c48f0ffce28c2d8b8a5678502c6d"
+  version = "v1.4.0"
+
+[[projects]]
   digest = "1:a2cff208d4759f6ba1b1cd228587b0a1869f95f22542ec9cd17fff64430113c7"
   name = "github.com/jessevdk/go-flags"
   packages = ["."]
@@ -235,6 +281,64 @@
   pruneopts = "UT"
   revision = "b4936e06046bbecbb94cae9c18127ebe510a2cb9"
   version = "v4.20"
+
+[[projects]]
+  digest = "1:f26f5b4929a60527dfb6d4e4a42cc088a2b837aa1dc43b64388a0ff02e3f0e3c"
+  name = "github.com/mafredri/cdp"
+  packages = [
+    ".",
+    "devtool",
+    "internal/errors",
+    "protocol/accessibility",
+    "protocol/animation",
+    "protocol/applicationcache",
+    "protocol/audits",
+    "protocol/backgroundservice",
+    "protocol/browser",
+    "protocol/cachestorage",
+    "protocol/cast",
+    "protocol/console",
+    "protocol/css",
+    "protocol/database",
+    "protocol/debugger",
+    "protocol/deviceorientation",
+    "protocol/dom",
+    "protocol/domdebugger",
+    "protocol/domsnapshot",
+    "protocol/domstorage",
+    "protocol/emulation",
+    "protocol/fetch",
+    "protocol/headlessexperimental",
+    "protocol/heapprofiler",
+    "protocol/indexeddb",
+    "protocol/input",
+    "protocol/inspector",
+    "protocol/internal",
+    "protocol/io",
+    "protocol/layertree",
+    "protocol/log",
+    "protocol/memory",
+    "protocol/network",
+    "protocol/overlay",
+    "protocol/page",
+    "protocol/performance",
+    "protocol/profiler",
+    "protocol/runtime",
+    "protocol/schema",
+    "protocol/security",
+    "protocol/serviceworker",
+    "protocol/storage",
+    "protocol/systeminfo",
+    "protocol/target",
+    "protocol/testing",
+    "protocol/tethering",
+    "protocol/tracing",
+    "rpcc",
+    "session",
+  ]
+  pruneopts = "UT"
+  revision = "a32ee055312ea497858e6f187facb239cb56048a"
+  version = "v0.22.0"
 
 [[projects]]
   branch = "master"
@@ -318,14 +422,24 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:bbd232f46e33dfb01068e0f4193a3da2d662a350873804bc964f697de5f39ac7"
+  digest = "1:8bd8219d09251b4e4e0b15c4b5f12d17aafbb28ec58bc4fafefe6e482ff3e48d"
   name = "golang.org/x/net"
   packages = [
+    "html",
+    "html/atom",
     "idna",
     "netutil",
   ]
   pruneopts = "UT"
   revision = "1272bf9dcd53ea65c09668fb4c76e65deb740072"
+
+[[projects]]
+  branch = "master"
+  digest = "1:b521f10a2d8fa85c04a8ef4e62f2d1e14d303599a55d64dabf9f5a02f84d35eb"
+  name = "golang.org/x/sync"
+  packages = ["errgroup"]
+  pruneopts = "UT"
+  revision = "e225da77a7e68af35c70ccbf71af2b83e6acac3c"
 
 [[projects]]
   digest = "1:0c56024909189aee3364b7f21a95a27459f718aa7c199a5c111c36cfffd9eaef"
