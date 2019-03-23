@@ -123,6 +123,7 @@ $RECYCLE.BIN/
 # Dep
 
 vendor
+.vendor-new
 bin
 *.log
 *.orig

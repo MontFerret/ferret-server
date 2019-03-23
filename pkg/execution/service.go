@@ -2,6 +2,9 @@ package execution
 
 import (
 	"context"
+	"runtime"
+	"time"
+
 	"github.com/MontFerret/ferret-server/pkg/common"
 	"github.com/MontFerret/ferret-server/pkg/common/dal"
 	"github.com/MontFerret/ferret-server/pkg/scripts"
@@ -9,8 +12,6 @@ import (
 	"github.com/gofrs/uuid"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
-	"runtime"
-	"time"
 )
 
 type (

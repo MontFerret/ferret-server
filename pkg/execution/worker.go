@@ -6,6 +6,9 @@ import (
 	"sync"
 
 	"github.com/MontFerret/ferret/pkg/compiler"
+	"github.com/MontFerret/ferret/pkg/drivers"
+	"github.com/MontFerret/ferret/pkg/drivers/cdp"
+	"github.com/MontFerret/ferret/pkg/drivers/http"
 	"github.com/MontFerret/ferret/pkg/runtime"
 	"github.com/pkg/errors"
 )
@@ -44,6 +47,8 @@ func (w *FQLWorker) Process() ([]byte, error) {
 		return nil, ErrWorkerAlreadyRunning
 	}
 	ctx, cancelFn := context.WithCancel(context.Background())
+	ctx = drivers.WithContext(ctx, http.NewDriver(), drivers.AsDefault())
+	ctx = drivers.WithContext(ctx, cdp.NewDriver())
 	w.cancel = cancelFn
 
 	w.mu.Unlock()
