@@ -188,7 +188,8 @@ func (ctl *Projects) FindProjects(params operations.FindProjectsParams) middlewa
 		createdAt, updatedAt := dto.ToMetadataDates(p.Metadata)
 
 		res = append(res, &operations.FindProjectsOKBodyItems0{
-			Name: &p.Name,
+			Name:        &p.Name,
+			Description: p.Description,
 			FindProjectsOKBodyItems0AllOf0: operations.FindProjectsOKBodyItems0AllOf0{
 				ID:        &p.ID,
 				Rev:       &p.Rev,

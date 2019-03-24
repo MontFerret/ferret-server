@@ -24,19 +24,22 @@ func init() {
   "produces": [
     "application/json"
   ],
+  "schemes": [
+    "http"
+  ],
   "swagger": "2.0",
   "info": {
     "description": "API of Ferret Server",
     "title": "Ferret Server API",
     "contact": {
-      "name": "Tim Voronov",
-      "url": "https://github.com/ziflex",
-      "email": "ziflex@gmail.com"
+      "name": "MontFerret Project Group",
+      "url": "https://github.com/MontFerret",
+      "email": "mont.ferret@gmail.com"
     },
     "license": {
       "name": "MIT"
     },
-    "version": "0.1"
+    "version": "1.0.0-rc.1"
   },
   "paths": {
     "/projects": {
@@ -745,6 +748,9 @@ func init() {
             "name"
           ],
           "properties": {
+            "description": {
+              "type": "string"
+            },
             "name": {
               "type": "string"
             }
@@ -945,19 +951,22 @@ func init() {
   "produces": [
     "application/json"
   ],
+  "schemes": [
+    "http"
+  ],
   "swagger": "2.0",
   "info": {
     "description": "API of Ferret Server",
     "title": "Ferret Server API",
     "contact": {
-      "name": "Tim Voronov",
-      "url": "https://github.com/ziflex",
-      "email": "ziflex@gmail.com"
+      "name": "MontFerret Project Group",
+      "url": "https://github.com/MontFerret",
+      "email": "mont.ferret@gmail.com"
     },
     "license": {
       "name": "MIT"
     },
-    "version": "0.1"
+    "version": "1.0.0-rc.1"
   },
   "paths": {
     "/projects": {
@@ -1036,6 +1045,9 @@ func init() {
                       "name"
                     ],
                     "properties": {
+                      "description": {
+                        "type": "string"
+                      },
                       "name": {
                         "type": "string"
                       }
@@ -3081,6 +3093,9 @@ func init() {
             "name"
           ],
           "properties": {
+            "description": {
+              "type": "string"
+            },
             "name": {
               "type": "string"
             }

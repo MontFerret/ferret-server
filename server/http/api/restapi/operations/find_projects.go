@@ -68,6 +68,9 @@ func (o *FindProjects) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 type FindProjectsOKBodyItems0 struct {
 	FindProjectsOKBodyItems0AllOf0
 
+	// description
+	Description string `json:"description,omitempty"`
+
 	// name
 	// Required: true
 	Name *string `json:"name"`
@@ -84,11 +87,15 @@ func (o *FindProjectsOKBodyItems0) UnmarshalJSON(raw []byte) error {
 
 	// AO1
 	var dataAO1 struct {
+		Description string `json:"description,omitempty"`
+
 		Name *string `json:"name"`
 	}
 	if err := swag.ReadJSON(raw, &dataAO1); err != nil {
 		return err
 	}
+
+	o.Description = dataAO1.Description
 
 	o.Name = dataAO1.Name
 
@@ -106,8 +113,12 @@ func (o FindProjectsOKBodyItems0) MarshalJSON() ([]byte, error) {
 	_parts = append(_parts, aO0)
 
 	var dataAO1 struct {
+		Description string `json:"description,omitempty"`
+
 		Name *string `json:"name"`
 	}
+
+	dataAO1.Description = o.Description
 
 	dataAO1.Name = o.Name
 

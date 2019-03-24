@@ -9,9 +9,9 @@ API of Ferret Server
       http
     Host: localhost
     BasePath: /
-    Version: 0.1
+    Version: 1.0.0-rc.1
     License: MIT
-    Contact: Tim Voronov<ziflex@gmail.com> https://github.com/ziflex
+    Contact: MontFerret Project Group<mont.ferret@gmail.com> https://github.com/MontFerret
 
     Consumes:
     - application/json
