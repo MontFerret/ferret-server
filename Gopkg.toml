@@ -47,7 +47,7 @@
 
 [[constraint]]
   name = "github.com/go-openapi/runtime"
-  version = "0.18.0"
+  version = "0.19.0"
 
 [[constraint]]
   name = "github.com/go-openapi/spec"
