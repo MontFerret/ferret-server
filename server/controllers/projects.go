@@ -185,14 +185,15 @@ func (ctl *Projects) FindProjects(params operations.FindProjectsParams) middlewa
 	res := make([]*operations.FindProjectsOKBodyItems0, 0, len(out))
 
 	for _, p := range out {
-		createdAt, updatedAt := dto.ToMetadataDates(p.Metadata)
+		project := p
+		createdAt, updatedAt := dto.ToMetadataDates(project.Metadata)
 
 		res = append(res, &operations.FindProjectsOKBodyItems0{
-			Name:        &p.Name,
-			Description: p.Description,
+			Name:        &project.Name,
+			Description: project.Description,
 			FindProjectsOKBodyItems0AllOf0: operations.FindProjectsOKBodyItems0AllOf0{
-				ID:        &p.ID,
-				Rev:       &p.Rev,
+				ID:        &project.ID,
+				Rev:       &project.Rev,
 				CreatedAt: &createdAt,
 				UpdatedAt: updatedAt,
 			},
