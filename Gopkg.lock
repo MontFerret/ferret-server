@@ -184,7 +184,7 @@
   packages = ["."]
   pruneopts = "UT"
   revision = "74628589c3b94e3526a842d24f46589980f5ab22"
-  version = "v0.18.0"
+  version = "v0.19.0"
 
 [[projects]]
   digest = "1:f5c66899b3abc5bfcfd52f32065542c1c1cde7b67647b655da228dcb3112cef0"
