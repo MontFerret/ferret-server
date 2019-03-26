@@ -845,6 +845,9 @@ func init() {
             "name"
           ],
           "properties": {
+            "description": {
+              "type": "string"
+            },
             "name": {
               "type": "string"
             }
@@ -2045,6 +2048,9 @@ func init() {
                       "name"
                     ],
                     "properties": {
+                      "description": {
+                        "type": "string"
+                      },
                       "name": {
                         "type": "string"
                       }
@@ -3457,6 +3463,9 @@ func init() {
             "name"
           ],
           "properties": {
+            "description": {
+              "type": "string"
+            },
             "name": {
               "type": "string"
             }

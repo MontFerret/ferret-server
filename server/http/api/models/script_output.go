@@ -20,6 +20,9 @@ import (
 type ScriptOutput struct {
 	ScriptOutputAllOf0
 
+	// description
+	Description string `json:"description,omitempty"`
+
 	// name
 	// Required: true
 	Name *string `json:"name"`
@@ -36,11 +39,15 @@ func (m *ScriptOutput) UnmarshalJSON(raw []byte) error {
 
 	// AO1
 	var dataAO1 struct {
+		Description string `json:"description,omitempty"`
+
 		Name *string `json:"name"`
 	}
 	if err := swag.ReadJSON(raw, &dataAO1); err != nil {
 		return err
 	}
+
+	m.Description = dataAO1.Description
 
 	m.Name = dataAO1.Name
 
@@ -58,8 +65,12 @@ func (m ScriptOutput) MarshalJSON() ([]byte, error) {
 	_parts = append(_parts, aO0)
 
 	var dataAO1 struct {
+		Description string `json:"description,omitempty"`
+
 		Name *string `json:"name"`
 	}
+
+	dataAO1.Description = m.Description
 
 	dataAO1.Name = m.Name
 

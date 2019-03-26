@@ -221,7 +221,8 @@ func (ctl *Scripts) FindScripts(params operations.FindScriptsParams) middleware.
 				CreatedAt: &createdAt,
 				UpdatedAt: updatedAt,
 			},
-			Name: &p.Name,
+			Name:        &p.Name,
+			Description: p.Description,
 		})
 	}
 
