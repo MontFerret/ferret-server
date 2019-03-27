@@ -431,7 +431,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:5dc79bc188dc35c74612ded0b336fc491928996c7f58200c2ed438cfb99d451f"
+  digest = "1:a5ef95bac88ba133e6d93306f81b9de2fe771b1e5491de3ea7a4a53069330e04"
   name = "golang.org/x/net"
   packages = [
     "html",
@@ -440,7 +440,7 @@
     "netutil",
   ]
   pruneopts = "UT"
-  revision = "e3b2ff56ed879efa686c9d09ed74f9bfe42f1a1d"
+  revision = "74e053c68e2965fe54b49e4d18cb37db34288db2"
 
 [[projects]]
   branch = "master"
