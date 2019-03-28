@@ -440,7 +440,7 @@
     "netutil",
   ]
   pruneopts = "UT"
-  revision = "74e053c68e2965fe54b49e4d18cb37db34288db2"
+  revision = "63eda1eb0650888965ead1296efd04d0b2b61128"
 
 [[projects]]
   branch = "master"
