@@ -6,17 +6,14 @@ os:
 - linux
 
 go:
-- "1.10.x"
 - "1.11.x"
+- "1.12.x"
 - stable
 
-before_install:
-- curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+install:
+- export GO111MODULE=on
 - go get -u github.com/mgechev/revive
 - go get -u github.com/go-swagger/go-swagger/cmd/swagger
-
-install:
-- make install
 
 stages:
 - lint

@@ -1,4 +1,4 @@
-.PHONY: build install test doc fmt lint vet
+.PHONY: build test doc fmt lint vet
 
 export GOPATH
 
@@ -14,15 +14,12 @@ default: build
 start:
 	./bin/ferret-server
 
-build: install vet generate test compile
+build: vet generate test compile
 
 compile:
 	go build -v -o ${DIR_BIN}/ferret-server \
 	-ldflags "-X main.version=${VERSION}" \
 	./main.go
-
-install:
-	dep ensure
 
 test:
 	go test ${DIR_PKG}/...
