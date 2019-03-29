@@ -11,6 +11,7 @@ go:
 - stable
 
 install:
+- export GO111MODULE=on
 - go get -u github.com/mgechev/revive
 - go get -u github.com/go-swagger/go-swagger/cmd/swagger
 
