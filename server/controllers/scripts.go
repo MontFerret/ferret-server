@@ -34,6 +34,9 @@ func (ctl *Scripts) CreateScript(params operations.CreateScriptParams) middlewar
 			Query:  *params.Body.Execution.Query,
 			Params: params.Body.Execution.Params,
 		},
+		Persistence: scripts.Persistence{
+			Enabled: *params.Body.Persistence.Enabled,
+		},
 	}
 
 	out, err := ctl.service.CreateScript(params.HTTPRequest.Context(), params.ProjectID, entity)
@@ -74,6 +77,9 @@ func (ctl *Scripts) UpdateScript(params operations.UpdateScriptParams) middlewar
 			Execution: scripts.Execution{
 				Query:  *params.Body.Execution.Query,
 				Params: params.Body.Execution.Params,
+			},
+			Persistence: scripts.Persistence{
+				Enabled: *params.Body.Persistence.Enabled,
 			},
 		},
 		ID: params.ScriptID,
