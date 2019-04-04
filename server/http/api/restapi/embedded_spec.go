@@ -39,7 +39,7 @@ func init() {
     "license": {
       "name": "MIT"
     },
-    "version": "1.0.0-rc.1"
+    "version": "1.0.0-rc.2"
   },
   "paths": {
     "/projects": {
@@ -48,19 +48,34 @@ func init() {
         "operationId": "findProjects",
         "parameters": [
           {
-            "$ref": "#/parameters/page"
+            "$ref": "#/parameters/cursor"
           },
           {
-            "$ref": "#/parameters/size"
+            "$ref": "#/parameters/count"
           }
         ],
         "responses": {
           "200": {
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/project-output"
-              }
+              "allOf": [
+                {
+                  "$ref": "#/definitions/search-result"
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/project-output"
+                      }
+                    }
+                  }
+                }
+              ]
             }
           }
         }
@@ -137,19 +152,34 @@ func init() {
         "operationId": "findProjectData",
         "parameters": [
           {
-            "$ref": "#/parameters/page"
+            "$ref": "#/parameters/cursor"
           },
           {
-            "$ref": "#/parameters/size"
+            "$ref": "#/parameters/count"
           }
         ],
         "responses": {
           "200": {
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/data-output"
-              }
+              "allOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/search-result"
+                  }
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/data-output"
+                      }
+                    }
+                  }
+                }
+              ]
             }
           }
         }
@@ -169,10 +199,10 @@ func init() {
         "operationId": "findScriptData",
         "parameters": [
           {
-            "$ref": "#/parameters/page"
+            "$ref": "#/parameters/cursor"
           },
           {
-            "$ref": "#/parameters/size"
+            "$ref": "#/parameters/count"
           },
           {
             "$ref": "#/parameters/scriptID"
@@ -181,10 +211,25 @@ func init() {
         "responses": {
           "200": {
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/data-output"
-              }
+              "allOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/search-result"
+                  }
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/data-output"
+                      }
+                    }
+                  }
+                }
+              ]
             }
           }
         }
@@ -270,10 +315,10 @@ func init() {
         "operationId": "findExecutions",
         "parameters": [
           {
-            "$ref": "#/parameters/page"
+            "$ref": "#/parameters/cursor"
           },
           {
-            "$ref": "#/parameters/size"
+            "$ref": "#/parameters/count"
           },
           {
             "$ref": "#/parameters/status"
@@ -285,10 +330,22 @@ func init() {
         "responses": {
           "200": {
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/execution-output"
-              }
+              "allOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/execution-output"
+                      }
+                    }
+                  }
+                },
+                {
+                  "$ref": "#/definitions/search-result"
+                }
+              ]
             }
           }
         }
@@ -356,19 +413,31 @@ func init() {
         "operationId": "findScripts",
         "parameters": [
           {
-            "$ref": "#/parameters/page"
+            "$ref": "#/parameters/cursor"
           },
           {
-            "$ref": "#/parameters/size"
+            "$ref": "#/parameters/count"
           }
         ],
         "responses": {
           "200": {
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/script-output"
-              }
+              "allOf": [
+                {
+                  "$ref": "#/definitions/search-result"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/script-output"
+                      }
+                    }
+                  }
+                }
+              ]
             }
           }
         }
@@ -876,6 +945,38 @@ func init() {
       "description": "The properties that are allowed when updating a Script.",
       "title": "Script Update",
       "$ref": "#/definitions/script-common"
+    },
+    "search-result": {
+      "type": "object",
+      "title": "SearchResult",
+      "required": [
+        "paging"
+      ],
+      "properties": {
+        "paging": {
+          "type": "object",
+          "required": [
+            "cursors",
+            "count"
+          ],
+          "properties": {
+            "count": {
+              "type": "number"
+            },
+            "cursors": {
+              "type": "object",
+              "properties": {
+                "after": {
+                  "type": "string"
+                },
+                "before": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "parameters": {
@@ -891,13 +992,20 @@ func init() {
       "name": "cause",
       "in": "query"
     },
-    "page": {
+    "count": {
+      "maximum": 100,
       "minimum": 1,
       "type": "integer",
       "format": "int32",
-      "default": 1,
-      "description": "Page number for queries",
-      "name": "page",
+      "default": 10,
+      "description": "Count of items to return",
+      "name": "count",
+      "in": "query"
+    },
+    "cursor": {
+      "type": "string",
+      "description": "Pagination cursor",
+      "name": "cursor",
       "in": "query"
     },
     "projectID": {
@@ -913,16 +1021,6 @@ func init() {
       "name": "scriptID",
       "in": "path",
       "required": true
-    },
-    "size": {
-      "maximum": 100,
-      "minimum": 1,
-      "type": "integer",
-      "format": "int32",
-      "default": 10,
-      "description": "Page size",
-      "name": "size",
-      "in": "query"
     },
     "status": {
       "enum": [
@@ -969,7 +1067,7 @@ func init() {
     "license": {
       "name": "MIT"
     },
-    "version": "1.0.0-rc.1"
+    "version": "1.0.0-rc.2"
   },
   "paths": {
     "/projects": {
@@ -978,12 +1076,9 @@ func init() {
         "operationId": "findProjects",
         "parameters": [
           {
-            "minimum": 1,
-            "type": "integer",
-            "format": "int32",
-            "default": 1,
-            "description": "Page number for queries",
-            "name": "page",
+            "type": "string",
+            "description": "Pagination cursor",
+            "name": "cursor",
             "in": "query"
           },
           {
@@ -992,72 +1087,116 @@ func init() {
             "type": "integer",
             "format": "int32",
             "default": 10,
-            "description": "Page size",
-            "name": "size",
+            "description": "Count of items to return",
+            "name": "count",
             "in": "query"
           }
         ],
         "responses": {
           "200": {
             "schema": {
-              "type": "array",
-              "items": {
-                "description": "The properties that are included when fetching a list of Projects.",
-                "title": "Project Output",
-                "allOf": [
-                  {
-                    "description": "Represents a database entity",
-                    "title": "Entity",
-                    "allOf": [
-                      {
-                        "type": "object",
-                        "required": [
-                          "id",
-                          "rev"
-                        ],
-                        "properties": {
-                          "id": {
-                            "type": "string"
-                          },
-                          "rev": {
-                            "type": "string"
+              "allOf": [
+                {
+                  "type": "object",
+                  "title": "SearchResult",
+                  "required": [
+                    "paging"
+                  ],
+                  "properties": {
+                    "paging": {
+                      "type": "object",
+                      "required": [
+                        "cursors",
+                        "count"
+                      ],
+                      "properties": {
+                        "count": {
+                          "type": "number"
+                        },
+                        "cursors": {
+                          "type": "object",
+                          "properties": {
+                            "after": {
+                              "type": "string"
+                            },
+                            "before": {
+                              "type": "string"
+                            }
                           }
                         }
-                      },
-                      {
-                        "description": "Response model for data creation endpoints",
-                        "type": "object",
-                        "title": "Metadata",
-                        "required": [
-                          "created_at"
-                        ],
-                        "properties": {
-                          "created_at": {
-                            "type": "string"
-                          },
-                          "updated_at": {
-                            "type": "string"
-                          }
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "type": "object",
-                    "required": [
-                      "name"
-                    ],
-                    "properties": {
-                      "description": {
-                        "type": "string"
-                      },
-                      "name": {
-                        "type": "string"
                       }
                     }
                   }
-                ]
-              }
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "description": "The properties that are included when fetching a list of Projects.",
+                        "title": "Project Output",
+                        "allOf": [
+                          {
+                            "description": "Represents a database entity",
+                            "title": "Entity",
+                            "allOf": [
+                              {
+                                "type": "object",
+                                "required": [
+                                  "id",
+                                  "rev"
+                                ],
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "rev": {
+                                    "type": "string"
+                                  }
+                                }
+                              },
+                              {
+                                "description": "Response model for data creation endpoints",
+                                "type": "object",
+                                "title": "Metadata",
+                                "required": [
+                                  "created_at"
+                                ],
+                                "properties": {
+                                  "created_at": {
+                                    "type": "string"
+                                  },
+                                  "updated_at": {
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "required": [
+                              "name"
+                            ],
+                            "properties": {
+                              "description": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              ]
             }
           }
         }
@@ -1300,12 +1439,9 @@ func init() {
         "operationId": "findProjectData",
         "parameters": [
           {
-            "minimum": 1,
-            "type": "integer",
-            "format": "int32",
-            "default": 1,
-            "description": "Page number for queries",
-            "name": "page",
+            "type": "string",
+            "description": "Pagination cursor",
+            "name": "cursor",
             "in": "query"
           },
           {
@@ -1314,76 +1450,120 @@ func init() {
             "type": "integer",
             "format": "int32",
             "default": 10,
-            "description": "Page size",
-            "name": "size",
+            "description": "Count of items to return",
+            "name": "count",
             "in": "query"
           }
         ],
         "responses": {
           "200": {
             "schema": {
-              "type": "array",
-              "items": {
-                "description": "The properties that are included when fetching a list of Data.",
-                "title": "Data Output",
-                "allOf": [
-                  {
-                    "description": "Represents a database entity",
-                    "title": "Entity",
-                    "allOf": [
-                      {
-                        "type": "object",
-                        "required": [
-                          "id",
-                          "rev"
-                        ],
-                        "properties": {
-                          "id": {
-                            "type": "string"
-                          },
-                          "rev": {
-                            "type": "string"
-                          }
-                        }
-                      },
-                      {
-                        "description": "Response model for data creation endpoints",
-                        "type": "object",
-                        "title": "Metadata",
-                        "required": [
-                          "created_at"
-                        ],
-                        "properties": {
-                          "created_at": {
-                            "type": "string"
-                          },
-                          "updated_at": {
-                            "type": "string"
-                          }
-                        }
-                      }
-                    ]
-                  },
-                  {
+              "allOf": [
+                {
+                  "type": "array",
+                  "items": {
                     "type": "object",
+                    "title": "SearchResult",
                     "required": [
-                      "job_id",
-                      "script_id"
+                      "paging"
                     ],
                     "properties": {
-                      "job_id": {
-                        "type": "string"
-                      },
-                      "script_id": {
-                        "type": "string"
-                      },
-                      "script_rev": {
-                        "type": "string"
+                      "paging": {
+                        "type": "object",
+                        "required": [
+                          "cursors",
+                          "count"
+                        ],
+                        "properties": {
+                          "count": {
+                            "type": "number"
+                          },
+                          "cursors": {
+                            "type": "object",
+                            "properties": {
+                              "after": {
+                                "type": "string"
+                              },
+                              "before": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
                       }
                     }
                   }
-                ]
-              }
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "description": "The properties that are included when fetching a list of Data.",
+                        "title": "Data Output",
+                        "allOf": [
+                          {
+                            "description": "Represents a database entity",
+                            "title": "Entity",
+                            "allOf": [
+                              {
+                                "type": "object",
+                                "required": [
+                                  "id",
+                                  "rev"
+                                ],
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "rev": {
+                                    "type": "string"
+                                  }
+                                }
+                              },
+                              {
+                                "description": "Response model for data creation endpoints",
+                                "type": "object",
+                                "title": "Metadata",
+                                "required": [
+                                  "created_at"
+                                ],
+                                "properties": {
+                                  "created_at": {
+                                    "type": "string"
+                                  },
+                                  "updated_at": {
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "required": [
+                              "job_id",
+                              "script_id"
+                            ],
+                            "properties": {
+                              "job_id": {
+                                "type": "string"
+                              },
+                              "script_id": {
+                                "type": "string"
+                              },
+                              "script_rev": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              ]
             }
           }
         }
@@ -1403,12 +1583,9 @@ func init() {
         "operationId": "findScriptData",
         "parameters": [
           {
-            "minimum": 1,
-            "type": "integer",
-            "format": "int32",
-            "default": 1,
-            "description": "Page number for queries",
-            "name": "page",
+            "type": "string",
+            "description": "Pagination cursor",
+            "name": "cursor",
             "in": "query"
           },
           {
@@ -1417,8 +1594,8 @@ func init() {
             "type": "integer",
             "format": "int32",
             "default": 10,
-            "description": "Page size",
-            "name": "size",
+            "description": "Count of items to return",
+            "name": "count",
             "in": "query"
           },
           {
@@ -1432,68 +1609,112 @@ func init() {
         "responses": {
           "200": {
             "schema": {
-              "type": "array",
-              "items": {
-                "description": "The properties that are included when fetching a list of Data.",
-                "title": "Data Output",
-                "allOf": [
-                  {
-                    "description": "Represents a database entity",
-                    "title": "Entity",
-                    "allOf": [
-                      {
-                        "type": "object",
-                        "required": [
-                          "id",
-                          "rev"
-                        ],
-                        "properties": {
-                          "id": {
-                            "type": "string"
-                          },
-                          "rev": {
-                            "type": "string"
-                          }
-                        }
-                      },
-                      {
-                        "description": "Response model for data creation endpoints",
-                        "type": "object",
-                        "title": "Metadata",
-                        "required": [
-                          "created_at"
-                        ],
-                        "properties": {
-                          "created_at": {
-                            "type": "string"
-                          },
-                          "updated_at": {
-                            "type": "string"
-                          }
-                        }
-                      }
-                    ]
-                  },
-                  {
+              "allOf": [
+                {
+                  "type": "array",
+                  "items": {
                     "type": "object",
+                    "title": "SearchResult",
                     "required": [
-                      "job_id",
-                      "script_id"
+                      "paging"
                     ],
                     "properties": {
-                      "job_id": {
-                        "type": "string"
-                      },
-                      "script_id": {
-                        "type": "string"
-                      },
-                      "script_rev": {
-                        "type": "string"
+                      "paging": {
+                        "type": "object",
+                        "required": [
+                          "cursors",
+                          "count"
+                        ],
+                        "properties": {
+                          "count": {
+                            "type": "number"
+                          },
+                          "cursors": {
+                            "type": "object",
+                            "properties": {
+                              "after": {
+                                "type": "string"
+                              },
+                              "before": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
                       }
                     }
                   }
-                ]
-              }
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "description": "The properties that are included when fetching a list of Data.",
+                        "title": "Data Output",
+                        "allOf": [
+                          {
+                            "description": "Represents a database entity",
+                            "title": "Entity",
+                            "allOf": [
+                              {
+                                "type": "object",
+                                "required": [
+                                  "id",
+                                  "rev"
+                                ],
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "rev": {
+                                    "type": "string"
+                                  }
+                                }
+                              },
+                              {
+                                "description": "Response model for data creation endpoints",
+                                "type": "object",
+                                "title": "Metadata",
+                                "required": [
+                                  "created_at"
+                                ],
+                                "properties": {
+                                  "created_at": {
+                                    "type": "string"
+                                  },
+                                  "updated_at": {
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "required": [
+                              "job_id",
+                              "script_id"
+                            ],
+                            "properties": {
+                              "job_id": {
+                                "type": "string"
+                              },
+                              "script_id": {
+                                "type": "string"
+                              },
+                              "script_rev": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              ]
             }
           }
         }
@@ -1693,12 +1914,9 @@ func init() {
         "operationId": "findExecutions",
         "parameters": [
           {
-            "minimum": 1,
-            "type": "integer",
-            "format": "int32",
-            "default": 1,
-            "description": "Page number for queries",
-            "name": "page",
+            "type": "string",
+            "description": "Pagination cursor",
+            "name": "cursor",
             "in": "query"
           },
           {
@@ -1707,8 +1925,8 @@ func init() {
             "type": "integer",
             "format": "int32",
             "default": 10,
-            "description": "Page size",
-            "name": "size",
+            "description": "Count of items to return",
+            "name": "count",
             "in": "query"
           },
           {
@@ -1740,65 +1958,106 @@ func init() {
         "responses": {
           "200": {
             "schema": {
-              "type": "array",
-              "items": {
-                "description": "The properties that are included when fetching a list of Executions.",
-                "title": "Execution Output",
-                "allOf": [
-                  {
-                    "type": "object"
-                  },
-                  {
-                    "description": "The properties that are shared amongst all versions of the Execution model.",
-                    "type": "object",
-                    "title": "Execution Common",
-                    "required": [
-                      "job_id",
-                      "script_id",
-                      "script_rev",
-                      "status",
-                      "cause"
-                    ],
-                    "properties": {
-                      "cause": {
-                        "description": "Execution cause",
-                        "type": "string",
-                        "title": "Execution Cause",
-                        "enum": [
-                          "unknown",
-                          "manual",
-                          "schedule",
-                          "hook"
-                        ]
-                      },
-                      "job_id": {
-                        "type": "string",
-                        "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
-                      },
-                      "script_id": {
-                        "type": "string",
-                        "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
-                      },
-                      "script_rev": {
-                        "type": "string"
-                      },
-                      "status": {
-                        "description": "Execution stats",
-                        "type": "string",
-                        "title": "Execution Status",
-                        "enum": [
-                          "unknown",
-                          "queued",
-                          "running",
-                          "completed",
-                          "cancelled",
-                          "errored"
+              "allOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "description": "The properties that are included when fetching a list of Executions.",
+                        "title": "Execution Output",
+                        "allOf": [
+                          {
+                            "type": "object"
+                          },
+                          {
+                            "description": "The properties that are shared amongst all versions of the Execution model.",
+                            "type": "object",
+                            "title": "Execution Common",
+                            "required": [
+                              "job_id",
+                              "script_id",
+                              "script_rev",
+                              "status",
+                              "cause"
+                            ],
+                            "properties": {
+                              "cause": {
+                                "description": "Execution cause",
+                                "type": "string",
+                                "title": "Execution Cause",
+                                "enum": [
+                                  "unknown",
+                                  "manual",
+                                  "schedule",
+                                  "hook"
+                                ]
+                              },
+                              "job_id": {
+                                "type": "string",
+                                "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+                              },
+                              "script_id": {
+                                "type": "string",
+                                "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+                              },
+                              "script_rev": {
+                                "type": "string"
+                              },
+                              "status": {
+                                "description": "Execution stats",
+                                "type": "string",
+                                "title": "Execution Status",
+                                "enum": [
+                                  "unknown",
+                                  "queued",
+                                  "running",
+                                  "completed",
+                                  "cancelled",
+                                  "errored"
+                                ]
+                              }
+                            }
+                          }
                         ]
                       }
                     }
                   }
-                ]
-              }
+                },
+                {
+                  "type": "object",
+                  "title": "SearchResult",
+                  "required": [
+                    "paging"
+                  ],
+                  "properties": {
+                    "paging": {
+                      "type": "object",
+                      "required": [
+                        "cursors",
+                        "count"
+                      ],
+                      "properties": {
+                        "count": {
+                          "type": "number"
+                        },
+                        "cursors": {
+                          "type": "object",
+                          "properties": {
+                            "after": {
+                              "type": "string"
+                            },
+                            "before": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
             }
           }
         }
@@ -1978,12 +2237,9 @@ func init() {
         "operationId": "findScripts",
         "parameters": [
           {
-            "minimum": 1,
-            "type": "integer",
-            "format": "int32",
-            "default": 1,
-            "description": "Page number for queries",
-            "name": "page",
+            "type": "string",
+            "description": "Pagination cursor",
+            "name": "cursor",
             "in": "query"
           },
           {
@@ -1992,72 +2248,113 @@ func init() {
             "type": "integer",
             "format": "int32",
             "default": 10,
-            "description": "Page size",
-            "name": "size",
+            "description": "Count of items to return",
+            "name": "count",
             "in": "query"
           }
         ],
         "responses": {
           "200": {
             "schema": {
-              "type": "array",
-              "items": {
-                "description": "The properties that are included when fetching a list of Scripts.",
-                "title": "Script Output",
-                "allOf": [
-                  {
-                    "description": "Represents a database entity",
-                    "title": "Entity",
-                    "allOf": [
-                      {
-                        "type": "object",
-                        "required": [
-                          "id",
-                          "rev"
-                        ],
-                        "properties": {
-                          "id": {
-                            "type": "string"
-                          },
-                          "rev": {
-                            "type": "string"
+              "allOf": [
+                {
+                  "type": "object",
+                  "title": "SearchResult",
+                  "required": [
+                    "paging"
+                  ],
+                  "properties": {
+                    "paging": {
+                      "type": "object",
+                      "required": [
+                        "cursors",
+                        "count"
+                      ],
+                      "properties": {
+                        "count": {
+                          "type": "number"
+                        },
+                        "cursors": {
+                          "type": "object",
+                          "properties": {
+                            "after": {
+                              "type": "string"
+                            },
+                            "before": {
+                              "type": "string"
+                            }
                           }
                         }
-                      },
-                      {
-                        "description": "Response model for data creation endpoints",
-                        "type": "object",
-                        "title": "Metadata",
-                        "required": [
-                          "created_at"
-                        ],
-                        "properties": {
-                          "created_at": {
-                            "type": "string"
-                          },
-                          "updated_at": {
-                            "type": "string"
-                          }
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "type": "object",
-                    "required": [
-                      "name"
-                    ],
-                    "properties": {
-                      "description": {
-                        "type": "string"
-                      },
-                      "name": {
-                        "type": "string"
                       }
                     }
                   }
-                ]
-              }
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "description": "The properties that are included when fetching a list of Scripts.",
+                        "title": "Script Output",
+                        "allOf": [
+                          {
+                            "description": "Represents a database entity",
+                            "title": "Entity",
+                            "allOf": [
+                              {
+                                "type": "object",
+                                "required": [
+                                  "id",
+                                  "rev"
+                                ],
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "rev": {
+                                    "type": "string"
+                                  }
+                                }
+                              },
+                              {
+                                "description": "Response model for data creation endpoints",
+                                "type": "object",
+                                "title": "Metadata",
+                                "required": [
+                                  "created_at"
+                                ],
+                                "properties": {
+                                  "created_at": {
+                                    "type": "string"
+                                  },
+                                  "updated_at": {
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "required": [
+                              "name"
+                            ],
+                            "properties": {
+                              "description": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              ]
             }
           }
         }
@@ -3634,6 +3931,38 @@ func init() {
           }
         }
       }
+    },
+    "search-result": {
+      "type": "object",
+      "title": "SearchResult",
+      "required": [
+        "paging"
+      ],
+      "properties": {
+        "paging": {
+          "type": "object",
+          "required": [
+            "cursors",
+            "count"
+          ],
+          "properties": {
+            "count": {
+              "type": "number"
+            },
+            "cursors": {
+              "type": "object",
+              "properties": {
+                "after": {
+                  "type": "string"
+                },
+                "before": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "parameters": {
@@ -3649,13 +3978,20 @@ func init() {
       "name": "cause",
       "in": "query"
     },
-    "page": {
+    "count": {
+      "maximum": 100,
       "minimum": 1,
       "type": "integer",
       "format": "int32",
-      "default": 1,
-      "description": "Page number for queries",
-      "name": "page",
+      "default": 10,
+      "description": "Count of items to return",
+      "name": "count",
+      "in": "query"
+    },
+    "cursor": {
+      "type": "string",
+      "description": "Pagination cursor",
+      "name": "cursor",
       "in": "query"
     },
     "projectID": {
@@ -3671,16 +4007,6 @@ func init() {
       "name": "scriptID",
       "in": "path",
       "required": true
-    },
-    "size": {
-      "maximum": 100,
-      "minimum": 1,
-      "type": "integer",
-      "format": "int32",
-      "default": 10,
-      "description": "Page size",
-      "name": "size",
-      "in": "query"
     },
     "status": {
       "enum": [

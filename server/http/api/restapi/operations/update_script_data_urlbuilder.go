@@ -48,21 +48,21 @@ func (o *UpdateScriptDataURL) Build() (*url.URL, error) {
 	if dataID != "" {
 		_path = strings.Replace(_path, "{dataId}", dataID, -1)
 	} else {
-		return nil, errors.New("DataID is required on UpdateScriptDataURL")
+		return nil, errors.New("dataId is required on UpdateScriptDataURL")
 	}
 
 	projectID := o.ProjectID
 	if projectID != "" {
 		_path = strings.Replace(_path, "{projectID}", projectID, -1)
 	} else {
-		return nil, errors.New("ProjectID is required on UpdateScriptDataURL")
+		return nil, errors.New("projectId is required on UpdateScriptDataURL")
 	}
 
 	scriptID := o.ScriptID
 	if scriptID != "" {
 		_path = strings.Replace(_path, "{scriptID}", scriptID, -1)
 	} else {
-		return nil, errors.New("ScriptID is required on UpdateScriptDataURL")
+		return nil, errors.New("scriptId is required on UpdateScriptDataURL")
 	}
 
 	_basePath := o._basePath

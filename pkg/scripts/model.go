@@ -33,4 +33,9 @@ type (
 		dal.Entity
 		Script
 	}
+
+	QueryResult struct {
+		dal.QueryResult
+		Data []ScriptEntity
+	}
 )

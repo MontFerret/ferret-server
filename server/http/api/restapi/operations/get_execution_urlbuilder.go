@@ -47,14 +47,14 @@ func (o *GetExecutionURL) Build() (*url.URL, error) {
 	if jobID != "" {
 		_path = strings.Replace(_path, "{jobID}", jobID, -1)
 	} else {
-		return nil, errors.New("JobID is required on GetExecutionURL")
+		return nil, errors.New("jobId is required on GetExecutionURL")
 	}
 
 	projectID := o.ProjectID
 	if projectID != "" {
 		_path = strings.Replace(_path, "{projectID}", projectID, -1)
 	} else {
-		return nil, errors.New("ProjectID is required on GetExecutionURL")
+		return nil, errors.New("projectId is required on GetExecutionURL")
 	}
 
 	_basePath := o._basePath

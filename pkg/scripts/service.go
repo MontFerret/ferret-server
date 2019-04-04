@@ -35,11 +35,11 @@ func (service *Service) GetScript(ctx context.Context, projectID, id string) (Sc
 	return repo.Get(ctx, id)
 }
 
-func (service *Service) FindScripts(ctx context.Context, projectID string, q dal.Query) ([]ScriptEntity, error) {
+func (service *Service) FindScripts(ctx context.Context, projectID string, q dal.Query) (QueryResult, error) {
 	repo, err := service.db.GetScriptsRepository(projectID)
 
 	if err != nil {
-		return nil, errors.Wrapf(err, "%s %s", dal.ErrResolveRepo, "scripts")
+		return QueryResult{}, errors.Wrapf(err, "%s %s", dal.ErrResolveRepo, "scripts")
 	}
 
 	return repo.Find(ctx, q)

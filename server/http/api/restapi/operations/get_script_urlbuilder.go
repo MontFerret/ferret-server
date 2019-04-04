@@ -47,14 +47,14 @@ func (o *GetScriptURL) Build() (*url.URL, error) {
 	if projectID != "" {
 		_path = strings.Replace(_path, "{projectID}", projectID, -1)
 	} else {
-		return nil, errors.New("ProjectID is required on GetScriptURL")
+		return nil, errors.New("projectId is required on GetScriptURL")
 	}
 
 	scriptID := o.ScriptID
 	if scriptID != "" {
 		_path = strings.Replace(_path, "{scriptID}", scriptID, -1)
 	} else {
-		return nil, errors.New("ScriptID is required on GetScriptURL")
+		return nil, errors.New("scriptId is required on GetScriptURL")
 	}
 
 	_basePath := o._basePath

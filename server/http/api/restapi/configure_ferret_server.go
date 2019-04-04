@@ -33,63 +33,101 @@ func configureAPI(api *operations.FerretServerAPI) http.Handler {
 
 	api.JSONProducer = runtime.JSONProducer()
 
-	api.CreateExecutionHandler = operations.CreateExecutionHandlerFunc(func(params operations.CreateExecutionParams) middleware.Responder {
-		return middleware.NotImplemented("operation .CreateExecution has not yet been implemented")
-	})
-	api.CreateProjectHandler = operations.CreateProjectHandlerFunc(func(params operations.CreateProjectParams) middleware.Responder {
-		return middleware.NotImplemented("operation .CreateProject has not yet been implemented")
-	})
-	api.CreateScriptHandler = operations.CreateScriptHandlerFunc(func(params operations.CreateScriptParams) middleware.Responder {
-		return middleware.NotImplemented("operation .CreateScript has not yet been implemented")
-	})
-	api.DeleteExecutionHandler = operations.DeleteExecutionHandlerFunc(func(params operations.DeleteExecutionParams) middleware.Responder {
-		return middleware.NotImplemented("operation .DeleteExecution has not yet been implemented")
-	})
-	api.DeleteProjectHandler = operations.DeleteProjectHandlerFunc(func(params operations.DeleteProjectParams) middleware.Responder {
-		return middleware.NotImplemented("operation .DeleteProject has not yet been implemented")
-	})
-	api.DeleteScriptHandler = operations.DeleteScriptHandlerFunc(func(params operations.DeleteScriptParams) middleware.Responder {
-		return middleware.NotImplemented("operation .DeleteScript has not yet been implemented")
-	})
-	api.DeleteScriptDataHandler = operations.DeleteScriptDataHandlerFunc(func(params operations.DeleteScriptDataParams) middleware.Responder {
-		return middleware.NotImplemented("operation .DeleteScriptData has not yet been implemented")
-	})
-	api.FindExecutionsHandler = operations.FindExecutionsHandlerFunc(func(params operations.FindExecutionsParams) middleware.Responder {
-		return middleware.NotImplemented("operation .FindExecutions has not yet been implemented")
-	})
-	api.FindProjectDataHandler = operations.FindProjectDataHandlerFunc(func(params operations.FindProjectDataParams) middleware.Responder {
-		return middleware.NotImplemented("operation .FindProjectData has not yet been implemented")
-	})
-	api.FindProjectsHandler = operations.FindProjectsHandlerFunc(func(params operations.FindProjectsParams) middleware.Responder {
-		return middleware.NotImplemented("operation .FindProjects has not yet been implemented")
-	})
-	api.FindScriptDataHandler = operations.FindScriptDataHandlerFunc(func(params operations.FindScriptDataParams) middleware.Responder {
-		return middleware.NotImplemented("operation .FindScriptData has not yet been implemented")
-	})
-	api.FindScriptsHandler = operations.FindScriptsHandlerFunc(func(params operations.FindScriptsParams) middleware.Responder {
-		return middleware.NotImplemented("operation .FindScripts has not yet been implemented")
-	})
-	api.GetExecutionHandler = operations.GetExecutionHandlerFunc(func(params operations.GetExecutionParams) middleware.Responder {
-		return middleware.NotImplemented("operation .GetExecution has not yet been implemented")
-	})
-	api.GetProjectHandler = operations.GetProjectHandlerFunc(func(params operations.GetProjectParams) middleware.Responder {
-		return middleware.NotImplemented("operation .GetProject has not yet been implemented")
-	})
-	api.GetScriptHandler = operations.GetScriptHandlerFunc(func(params operations.GetScriptParams) middleware.Responder {
-		return middleware.NotImplemented("operation .GetScript has not yet been implemented")
-	})
-	api.GetScriptDataHandler = operations.GetScriptDataHandlerFunc(func(params operations.GetScriptDataParams) middleware.Responder {
-		return middleware.NotImplemented("operation .GetScriptData has not yet been implemented")
-	})
-	api.UpdateProjectHandler = operations.UpdateProjectHandlerFunc(func(params operations.UpdateProjectParams) middleware.Responder {
-		return middleware.NotImplemented("operation .UpdateProject has not yet been implemented")
-	})
-	api.UpdateScriptHandler = operations.UpdateScriptHandlerFunc(func(params operations.UpdateScriptParams) middleware.Responder {
-		return middleware.NotImplemented("operation .UpdateScript has not yet been implemented")
-	})
-	api.UpdateScriptDataHandler = operations.UpdateScriptDataHandlerFunc(func(params operations.UpdateScriptDataParams) middleware.Responder {
-		return middleware.NotImplemented("operation .UpdateScriptData has not yet been implemented")
-	})
+	if api.CreateExecutionHandler == nil {
+		api.CreateExecutionHandler = operations.CreateExecutionHandlerFunc(func(params operations.CreateExecutionParams) middleware.Responder {
+			return middleware.NotImplemented("operation .CreateExecution has not yet been implemented")
+		})
+	}
+	if api.CreateProjectHandler == nil {
+		api.CreateProjectHandler = operations.CreateProjectHandlerFunc(func(params operations.CreateProjectParams) middleware.Responder {
+			return middleware.NotImplemented("operation .CreateProject has not yet been implemented")
+		})
+	}
+	if api.CreateScriptHandler == nil {
+		api.CreateScriptHandler = operations.CreateScriptHandlerFunc(func(params operations.CreateScriptParams) middleware.Responder {
+			return middleware.NotImplemented("operation .CreateScript has not yet been implemented")
+		})
+	}
+	if api.DeleteExecutionHandler == nil {
+		api.DeleteExecutionHandler = operations.DeleteExecutionHandlerFunc(func(params operations.DeleteExecutionParams) middleware.Responder {
+			return middleware.NotImplemented("operation .DeleteExecution has not yet been implemented")
+		})
+	}
+	if api.DeleteProjectHandler == nil {
+		api.DeleteProjectHandler = operations.DeleteProjectHandlerFunc(func(params operations.DeleteProjectParams) middleware.Responder {
+			return middleware.NotImplemented("operation .DeleteProject has not yet been implemented")
+		})
+	}
+	if api.DeleteScriptHandler == nil {
+		api.DeleteScriptHandler = operations.DeleteScriptHandlerFunc(func(params operations.DeleteScriptParams) middleware.Responder {
+			return middleware.NotImplemented("operation .DeleteScript has not yet been implemented")
+		})
+	}
+	if api.DeleteScriptDataHandler == nil {
+		api.DeleteScriptDataHandler = operations.DeleteScriptDataHandlerFunc(func(params operations.DeleteScriptDataParams) middleware.Responder {
+			return middleware.NotImplemented("operation .DeleteScriptData has not yet been implemented")
+		})
+	}
+	if api.FindExecutionsHandler == nil {
+		api.FindExecutionsHandler = operations.FindExecutionsHandlerFunc(func(params operations.FindExecutionsParams) middleware.Responder {
+			return middleware.NotImplemented("operation .FindExecutions has not yet been implemented")
+		})
+	}
+	if api.FindProjectDataHandler == nil {
+		api.FindProjectDataHandler = operations.FindProjectDataHandlerFunc(func(params operations.FindProjectDataParams) middleware.Responder {
+			return middleware.NotImplemented("operation .FindProjectData has not yet been implemented")
+		})
+	}
+	if api.FindProjectsHandler == nil {
+		api.FindProjectsHandler = operations.FindProjectsHandlerFunc(func(params operations.FindProjectsParams) middleware.Responder {
+			return middleware.NotImplemented("operation .FindProjects has not yet been implemented")
+		})
+	}
+	if api.FindScriptDataHandler == nil {
+		api.FindScriptDataHandler = operations.FindScriptDataHandlerFunc(func(params operations.FindScriptDataParams) middleware.Responder {
+			return middleware.NotImplemented("operation .FindScriptData has not yet been implemented")
+		})
+	}
+	if api.FindScriptsHandler == nil {
+		api.FindScriptsHandler = operations.FindScriptsHandlerFunc(func(params operations.FindScriptsParams) middleware.Responder {
+			return middleware.NotImplemented("operation .FindScripts has not yet been implemented")
+		})
+	}
+	if api.GetExecutionHandler == nil {
+		api.GetExecutionHandler = operations.GetExecutionHandlerFunc(func(params operations.GetExecutionParams) middleware.Responder {
+			return middleware.NotImplemented("operation .GetExecution has not yet been implemented")
+		})
+	}
+	if api.GetProjectHandler == nil {
+		api.GetProjectHandler = operations.GetProjectHandlerFunc(func(params operations.GetProjectParams) middleware.Responder {
+			return middleware.NotImplemented("operation .GetProject has not yet been implemented")
+		})
+	}
+	if api.GetScriptHandler == nil {
+		api.GetScriptHandler = operations.GetScriptHandlerFunc(func(params operations.GetScriptParams) middleware.Responder {
+			return middleware.NotImplemented("operation .GetScript has not yet been implemented")
+		})
+	}
+	if api.GetScriptDataHandler == nil {
+		api.GetScriptDataHandler = operations.GetScriptDataHandlerFunc(func(params operations.GetScriptDataParams) middleware.Responder {
+			return middleware.NotImplemented("operation .GetScriptData has not yet been implemented")
+		})
+	}
+	if api.UpdateProjectHandler == nil {
+		api.UpdateProjectHandler = operations.UpdateProjectHandlerFunc(func(params operations.UpdateProjectParams) middleware.Responder {
+			return middleware.NotImplemented("operation .UpdateProject has not yet been implemented")
+		})
+	}
+	if api.UpdateScriptHandler == nil {
+		api.UpdateScriptHandler = operations.UpdateScriptHandlerFunc(func(params operations.UpdateScriptParams) middleware.Responder {
+			return middleware.NotImplemented("operation .UpdateScript has not yet been implemented")
+		})
+	}
+	if api.UpdateScriptDataHandler == nil {
+		api.UpdateScriptDataHandler = operations.UpdateScriptDataHandlerFunc(func(params operations.UpdateScriptDataParams) middleware.Responder {
+			return middleware.NotImplemented("operation .UpdateScriptData has not yet been implemented")
+		})
+	}
 
 	api.ServerShutdown = func() {}
 

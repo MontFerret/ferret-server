@@ -3,14 +3,16 @@ package repositories
 import (
 	"context"
 	"fmt"
+	"time"
+
+	"github.com/arangodb/go-driver"
+	"github.com/gofrs/uuid"
+	"github.com/pkg/errors"
+
 	"github.com/MontFerret/ferret-server/pkg/common"
 	"github.com/MontFerret/ferret-server/pkg/common/dal"
 	"github.com/MontFerret/ferret-server/pkg/scripts"
 	"github.com/MontFerret/ferret-server/server/db/repositories/queries"
-	"github.com/arangodb/go-driver"
-	"github.com/gofrs/uuid"
-	"github.com/pkg/errors"
-	"time"
 )
 
 type (
@@ -66,21 +68,21 @@ func (repo *ScriptRepository) Get(ctx context.Context, id string) (scripts.Scrip
 	return repo.fromRecord(meta, record), nil
 }
 
-func (repo *ScriptRepository) Find(ctx context.Context, query dal.Query) ([]scripts.ScriptEntity, error) {
+func (repo *ScriptRepository) Find(ctx context.Context, q dal.Query) (scripts.QueryResult, error) {
+	params := map[string]interface{}{}
+	bindPaginationParams(params, q.Pagination)
+
 	cursor, err := repo.collection.Database().Query(
 		ctx,
 		fmt.Sprintf(queries.FindAll, repo.collection.Name()),
-		map[string]interface{}{
-			"offset": query.Pagination.Size * (query.Pagination.Page - 1),
-			"count":  query.Pagination.Size,
-		},
+		params,
 	)
 
 	if err != nil {
-		return nil, err
+		return scripts.QueryResult{}, err
 	}
 
-	result := make([]scripts.ScriptEntity, 0, query.Pagination.Size)
+	data := make([]scripts.ScriptEntity, 0, q.Pagination.Count)
 
 	defer cursor.Close()
 
@@ -90,10 +92,29 @@ func (repo *ScriptRepository) Find(ctx context.Context, query dal.Query) ([]scri
 		meta, err := cursor.ReadDocument(ctx, &record)
 
 		if err != nil {
-			return nil, err
+			return scripts.QueryResult{}, err
 		}
 
-		result = append(result, repo.fromRecord(meta, record))
+		data = append(data, repo.fromRecord(meta, record))
+	}
+
+	result := scripts.QueryResult{
+		QueryResult: dal.QueryResult{
+			Count: uint64(len(data)),
+		},
+		Data: data,
+	}
+
+	length := len(data)
+
+	if length > 0 {
+		first := data[0]
+		result.BeforeCursor = dal.NewCursor(first.CreatedAt)
+
+		if length == int(q.Pagination.Count) {
+			last := data[length-1]
+			result.AfterCursor = dal.NewCursor(last.CreatedAt)
+		}
 	}
 
 	return result, nil

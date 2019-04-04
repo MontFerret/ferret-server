@@ -19,8 +19,8 @@ type FindExecutionsURL struct {
 	ProjectID string
 
 	Cause  *string
-	Page   *int32
-	Size   *int32
+	Count  *int32
+	Cursor *string
 	Status *string
 
 	_basePath string
@@ -53,7 +53,7 @@ func (o *FindExecutionsURL) Build() (*url.URL, error) {
 	if projectID != "" {
 		_path = strings.Replace(_path, "{projectID}", projectID, -1)
 	} else {
-		return nil, errors.New("ProjectID is required on FindExecutionsURL")
+		return nil, errors.New("projectId is required on FindExecutionsURL")
 	}
 
 	_basePath := o._basePath
@@ -69,20 +69,20 @@ func (o *FindExecutionsURL) Build() (*url.URL, error) {
 		qs.Set("cause", cause)
 	}
 
-	var page string
-	if o.Page != nil {
-		page = swag.FormatInt32(*o.Page)
+	var count string
+	if o.Count != nil {
+		count = swag.FormatInt32(*o.Count)
 	}
-	if page != "" {
-		qs.Set("page", page)
+	if count != "" {
+		qs.Set("count", count)
 	}
 
-	var size string
-	if o.Size != nil {
-		size = swag.FormatInt32(*o.Size)
+	var cursor string
+	if o.Cursor != nil {
+		cursor = *o.Cursor
 	}
-	if size != "" {
-		qs.Set("size", size)
+	if cursor != "" {
+		qs.Set("cursor", cursor)
 	}
 
 	var status string

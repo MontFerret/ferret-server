@@ -106,11 +106,11 @@ func (service *Service) Get(ctx context.Context, projectID, jobID string) (Recor
 	return repo.Get(ctx, jobID)
 }
 
-func (service *Service) Find(ctx context.Context, projectID string, q dal.Query) ([]RecordEntity, error) {
+func (service *Service) Find(ctx context.Context, projectID string, q dal.Query) (QueryResult, error) {
 	repo, err := service.db.GetHistoryRepository(projectID)
 
 	if err != nil {
-		return []RecordEntity{}, errors.Wrapf(err, "%s %s", dal.ErrResolveRepo, "history")
+		return QueryResult{}, errors.Wrapf(err, "%s %s", dal.ErrResolveRepo, "history")
 	}
 
 	return repo.Find(ctx, q)

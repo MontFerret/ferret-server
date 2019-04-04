@@ -14,4 +14,9 @@ type (
 		dal.Entity
 		Record
 	}
+
+	QueryResult struct {
+		dal.QueryResult
+		Data []RecordEntity
+	}
 )

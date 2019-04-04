@@ -3,10 +3,10 @@ package dal
 import "fmt"
 
 type Pagination struct {
-	Page uint `json:"page"`
-	Size uint `json:"size"`
+	Cursor Cursor `json:"cursor"`
+	Count  uint64 `json:"count"`
 }
 
 func (p *Pagination) String() string {
-	return fmt.Sprintf("page %d size %d", p.Page, p.Size)
+	return fmt.Sprintf("count %d cursor %s", p.Count, p.Cursor)
 }

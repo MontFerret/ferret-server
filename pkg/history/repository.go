@@ -12,5 +12,5 @@ type Repository interface {
 
 	Get(ctx context.Context, id string) (RecordEntity, error)
 
-	Find(ctx context.Context, q dal.Query) ([]RecordEntity, error)
+	Find(ctx context.Context, q dal.Query) (QueryResult, error)
 }

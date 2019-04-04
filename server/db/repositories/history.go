@@ -3,12 +3,14 @@ package repositories
 import (
 	"context"
 	"fmt"
+	"time"
+
+	"github.com/arangodb/go-driver"
+	"github.com/pkg/errors"
+
 	"github.com/MontFerret/ferret-server/pkg/common"
 	"github.com/MontFerret/ferret-server/pkg/common/dal"
 	"github.com/MontFerret/ferret-server/pkg/history"
-	"github.com/arangodb/go-driver"
-	"github.com/pkg/errors"
-	"time"
 )
 
 type (
@@ -118,7 +120,7 @@ func (repo *HistoryRepository) Get(ctx context.Context, jobID string) (history.R
 	return repo.fromRecord(meta, record), nil
 }
 
-func (repo *HistoryRepository) Find(ctx context.Context, q dal.Query) ([]history.RecordEntity, error) {
+func (repo *HistoryRepository) Find(ctx context.Context, q dal.Query) (history.QueryResult, error) {
 	cq := compileQuery(repo.collection.Name(), q)
 
 	fmt.Println(cq.String)
@@ -130,10 +132,10 @@ func (repo *HistoryRepository) Find(ctx context.Context, q dal.Query) ([]history
 	)
 
 	if err != nil {
-		return nil, err
+		return history.QueryResult{}, err
 	}
 
-	result := make([]history.RecordEntity, 0, q.Pagination.Size)
+	data := make([]history.RecordEntity, 0, q.Pagination.Count)
 
 	defer cursor.Close()
 
@@ -143,10 +145,29 @@ func (repo *HistoryRepository) Find(ctx context.Context, q dal.Query) ([]history
 		meta, err := cursor.ReadDocument(ctx, &record)
 
 		if err != nil {
-			return nil, err
+			return history.QueryResult{}, err
 		}
 
-		result = append(result, repo.fromRecord(meta, record))
+		data = append(data, repo.fromRecord(meta, record))
+	}
+
+	result := history.QueryResult{
+		QueryResult: dal.QueryResult{
+			Count: uint64(len(data)),
+		},
+		Data: data,
+	}
+
+	length := len(data)
+
+	if length > 0 {
+		first := data[0]
+		result.BeforeCursor = dal.NewCursor(first.CreatedAt)
+
+		if length == int(q.Pagination.Count) {
+			last := data[length-1]
+			result.AfterCursor = dal.NewCursor(last.CreatedAt)
+		}
 	}
 
 	return result, nil

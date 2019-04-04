@@ -17,4 +17,9 @@ type (
 		dal.Entity
 		Project
 	}
+
+	QueryResult struct {
+		dal.QueryResult
+		Data []ProjectEntity
+	}
 )
