@@ -55,8 +55,10 @@ func MockScript(query string, params map[string]interface{}) scripts.ScriptEntit
 			},
 		},
 		Script: scripts.Script{
-			Name:        "mock_script",
-			Description: "mock script",
+			Definition: dal.Definition{
+				Name:        "mock_script",
+				Description: "mock script",
+			},
 			Execution: scripts.Execution{
 				Query:  query,
 				Params: params,

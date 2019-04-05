@@ -150,8 +150,8 @@ func (ctl *Projects) FindProjects(params operations.FindProjectsParams) middlewa
 		logger.Error().
 			Timestamp().
 			Err(err).
-			//Uint("count", query.Pagination.Count).
-			//Uint("cursor", query.Pagination.Cursor).
+			Uint64("count", query.Pagination.Count).
+			Str("cursor", query.Pagination.Cursor.String()).
 			Msg("failed to find projects")
 
 		return http.InternalError()

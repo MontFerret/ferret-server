@@ -83,8 +83,8 @@ func (ctl *Execution) Delete(params operations.DeleteExecutionParams) middleware
 	logger.Error().
 		Timestamp().
 		Err(err).
-		//Str("project_id", params.ProjectID).
-		//Str("job_id", params.JobID).
+		Str("project_id", params.ProjectID).
+		Str("job_id", params.JobID).
 		Msg("canceled a job")
 
 	return operations.NewDeleteExecutionNoContent()
@@ -121,8 +121,8 @@ func (ctl *Execution) Find(params operations.FindExecutionsParams) middleware.Re
 			Timestamp().
 			Err(err).
 			Str("project_id", params.ProjectID).
-			//Uint("count", query.Pagination.Count).
-			//Uint("cursor", query.Pagination.Cursor).
+			Uint64("count", query.Pagination.Count).
+			Str("cursor", query.Pagination.Cursor.String()).
 			Msg("failed to find jobs")
 
 		return http.InternalError()
@@ -155,8 +155,8 @@ func (ctl *Execution) Get(params operations.GetExecutionParams) middleware.Respo
 		logger.Error().
 			Timestamp().
 			Err(err).
-			//Str("project_id", params.ProjectID).
-			//Str("job_id", params.JobID).
+			Str("project_id", params.ProjectID).
+			Str("job_id", params.JobID).
 			Msg("failed to find a job")
 
 		return http.InternalError()

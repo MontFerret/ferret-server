@@ -42,6 +42,8 @@ func (ctl *Persistence) FindAll(params operations.FindProjectDataParams) middlew
 			Timestamp().
 			Err(err).
 			Str("project_id", params.ProjectID).
+			Uint64("count", query.Pagination.Count).
+			Str("cursor", query.Pagination.Cursor.String()).
 			Msg("failed to find project data")
 
 		return http.InternalError()
@@ -77,8 +79,8 @@ func (ctl *Persistence) Find(params operations.FindScriptDataParams) middleware.
 			Err(err).
 			Str("project_id", params.ProjectID).
 			Str("script_id", params.ScriptID).
-			//Uint("count", query.Pagination.Count).
-			//Uint("cursor", query.Pagination.Cursor).
+			Uint64("count", query.Pagination.Count).
+			Str("cursor", query.Pagination.Cursor.String()).
 			Msg("failed to find script data")
 
 		return http.InternalError()
