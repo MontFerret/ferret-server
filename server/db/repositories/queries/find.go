@@ -9,7 +9,7 @@ var (
 `
 	FindAllByScriptID = `
 		FOR i IN %s
-			FILTER i.script_id == @` + ParamFilterByScriptId + `
+			FILTER i.script_id == @` + ParamFilterByScriptID + `
 			FILTER @` + ParamPageCursor + ` != NULL ? i.created_at < @` + ParamPageCursor + ` : TRUE == TRUE
 			LIMIT @` + ParamPageCount + `
 			RETURN i

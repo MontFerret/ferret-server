@@ -3,4 +3,4 @@ package queries
 const ParamPageCursor = "cursor"
 const ParamPageCount = "count"
 const ParamFilterByName = "name"
-const ParamFilterByScriptId = "script_id"
+const ParamFilterByScriptID = "script_id"

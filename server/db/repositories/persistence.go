@@ -174,10 +174,11 @@ func (repo *PersistenceRepository) Find(ctx context.Context, q dal.Query) (persi
 func (repo *PersistenceRepository) FindByScriptID(ctx context.Context, scriptID string, q dal.Query) ([]persistence.RecordEntity, error) {
 	params := map[string]interface{}{}
 	bindPaginationParams(params, q.Pagination)
+	params[queries.ParamFilterByScriptID] = scriptID
 
 	cursor, err := repo.collection.Database().Query(
 		ctx,
-		fmt.Sprintf(queries.FindAll, repo.collection.Name()),
+		fmt.Sprintf(queries.FindAllByScriptID, repo.collection.Name()),
 		params,
 	)
 
