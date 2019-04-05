@@ -27,12 +27,7 @@ type Entity struct {
 	// Required: true
 	Rev *string `json:"rev"`
 
-	// created at
-	// Required: true
-	CreatedAt *string `json:"created_at"`
-
-	// updated at
-	UpdatedAt string `json:"updated_at,omitempty"`
+	Metadata
 }
 
 // UnmarshalJSON unmarshals this object from a JSON structure
@@ -52,18 +47,11 @@ func (m *Entity) UnmarshalJSON(raw []byte) error {
 	m.Rev = dataAO0.Rev
 
 	// AO1
-	var dataAO1 struct {
-		CreatedAt *string `json:"created_at"`
-
-		UpdatedAt string `json:"updated_at,omitempty"`
-	}
-	if err := swag.ReadJSON(raw, &dataAO1); err != nil {
+	var aO1 Metadata
+	if err := swag.ReadJSON(raw, &aO1); err != nil {
 		return err
 	}
-
-	m.CreatedAt = dataAO1.CreatedAt
-
-	m.UpdatedAt = dataAO1.UpdatedAt
+	m.Metadata = aO1
 
 	return nil
 }
@@ -88,21 +76,11 @@ func (m Entity) MarshalJSON() ([]byte, error) {
 	}
 	_parts = append(_parts, jsonDataAO0)
 
-	var dataAO1 struct {
-		CreatedAt *string `json:"created_at"`
-
-		UpdatedAt string `json:"updated_at,omitempty"`
+	aO1, err := swag.WriteJSON(m.Metadata)
+	if err != nil {
+		return nil, err
 	}
-
-	dataAO1.CreatedAt = m.CreatedAt
-
-	dataAO1.UpdatedAt = m.UpdatedAt
-
-	jsonDataAO1, errAO1 := swag.WriteJSON(dataAO1)
-	if errAO1 != nil {
-		return nil, errAO1
-	}
-	_parts = append(_parts, jsonDataAO1)
+	_parts = append(_parts, aO1)
 
 	return swag.ConcatJSON(_parts...), nil
 }
@@ -119,7 +97,8 @@ func (m *Entity) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
-	if err := m.validateCreatedAt(formats); err != nil {
+	// validation for a type composition with Metadata
+	if err := m.Metadata.Validate(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -141,15 +120,6 @@ func (m *Entity) validateID(formats strfmt.Registry) error {
 func (m *Entity) validateRev(formats strfmt.Registry) error {
 
 	if err := validate.Required("rev", "body", m.Rev); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *Entity) validateCreatedAt(formats strfmt.Registry) error {
-
-	if err := validate.Required("created_at", "body", m.CreatedAt); err != nil {
 		return err
 	}
 

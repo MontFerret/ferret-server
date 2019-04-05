@@ -6,6 +6,7 @@ import (
 	"github.com/MontFerret/ferret-server/pkg/scripts"
 	"github.com/MontFerret/ferret-server/server/controllers/dto"
 	"github.com/MontFerret/ferret-server/server/http"
+	"github.com/MontFerret/ferret-server/server/http/api/models"
 	"github.com/MontFerret/ferret-server/server/http/api/restapi/operations"
 	"github.com/MontFerret/ferret-server/server/logging"
 
@@ -28,15 +29,9 @@ func (ctl *Scripts) CreateScript(params operations.CreateScriptParams) middlewar
 	logger := logging.FromRequest(params.HTTPRequest)
 
 	entity := scripts.Script{
-		Name:        *params.Body.Name,
-		Description: params.Body.Description,
-		Execution: scripts.Execution{
-			Query:  *params.Body.Execution.Query,
-			Params: params.Body.Execution.Params,
-		},
-		Persistence: scripts.Persistence{
-			Enabled: *params.Body.Persistence.Enabled,
-		},
+		Definition:  dto.DefinitionTo(params.Body.Definition),
+		Execution:   *ctl.fromScriptExecutionDto(params.Body.Execution),
+		Persistence: *ctl.fromScriptPersistenceDto(params.Body.Persistence),
 	}
 
 	out, err := ctl.service.CreateScript(params.HTTPRequest.Context(), params.ProjectID, entity)
@@ -58,13 +53,8 @@ func (ctl *Scripts) CreateScript(params operations.CreateScriptParams) middlewar
 		Str("name", *params.Body.Name).
 		Msg("created new script")
 
-	createdAt, _ := dto.ToMetadataDates(out.Metadata)
-
-	return operations.NewCreateScriptCreated().WithPayload(&operations.CreateScriptCreatedBody{
-		ID:        &out.ID,
-		Rev:       &out.Rev,
-		CreatedAt: &createdAt,
-	})
+	e := dto.EntityFrom(out)
+	return operations.NewCreateScriptCreated().WithPayload(&e)
 }
 
 func (ctl *Scripts) UpdateScript(params operations.UpdateScriptParams) middleware.Responder {
@@ -72,15 +62,9 @@ func (ctl *Scripts) UpdateScript(params operations.UpdateScriptParams) middlewar
 
 	script := scripts.UpdateScript{
 		Script: scripts.Script{
-			Name:        *params.Body.Name,
-			Description: params.Body.Description,
-			Execution: scripts.Execution{
-				Query:  *params.Body.Execution.Query,
-				Params: params.Body.Execution.Params,
-			},
-			Persistence: scripts.Persistence{
-				Enabled: *params.Body.Persistence.Enabled,
-			},
+			Definition:  dto.DefinitionTo(params.Body.Definition),
+			Execution:   *ctl.fromScriptExecutionDto(params.Body.Execution),
+			Persistence: *ctl.fromScriptPersistenceDto(params.Body.Persistence),
 		},
 		ID: params.ScriptID,
 	}
@@ -106,14 +90,9 @@ func (ctl *Scripts) UpdateScript(params operations.UpdateScriptParams) middlewar
 		Str("name", *params.Body.Name).
 		Msg("updated script")
 
-	createdAt, updatedAt := dto.ToMetadataDates(out.Metadata)
+	e := dto.EntityFrom(out)
 
-	return operations.NewUpdateScriptOK().WithPayload(&operations.UpdateScriptOKBody{
-		ID:        &out.ID,
-		Rev:       &out.Rev,
-		CreatedAt: &createdAt,
-		UpdatedAt: updatedAt,
-	})
+	return operations.NewUpdateScriptOK().WithPayload(&e)
 }
 
 func (ctl *Scripts) DeleteScript(params operations.DeleteScriptParams) middleware.Responder {
@@ -161,43 +140,18 @@ func (ctl *Scripts) GetScript(params operations.GetScriptParams) middleware.Resp
 		return http.InternalError()
 	}
 
-	createdAt, updatedAt := dto.ToMetadataDates(out.Metadata)
-
-	return operations.NewGetScriptOK().WithPayload(&operations.GetScriptOKBody{
-		GetScriptOKBodyAllOf0: operations.GetScriptOKBodyAllOf0{
-			ID:        &out.ID,
-			Rev:       &out.Rev,
-			CreatedAt: &createdAt,
-			UpdatedAt: updatedAt,
-		},
-		Name:        &out.Name,
-		Description: out.Description,
-		Execution: &operations.GetScriptOKBodyAO1Execution{
-			Query:  &out.Execution.Query,
-			Params: out.Execution.Params,
-		},
-		Persistence: &operations.GetScriptOKBodyAO1Persistence{
-			Enabled: &out.Persistence.Enabled,
+	return operations.NewGetScriptOK().WithPayload(&models.ScriptOutputDetailed{
+		ScriptEntity: models.ScriptEntity{
+			Entity:       dto.EntityFrom(out.Entity),
+			ScriptCommon: ctl.toScriptCommonDto(out),
 		},
 	})
 }
 
 func (ctl *Scripts) FindScripts(params operations.FindScriptsParams) middleware.Responder {
 	logger := logging.FromRequest(params.HTTPRequest)
-
-	var size uint = 10
-	var page uint = 1
-
-	if params.Size != nil {
-		size = uint(*params.Size)
-		page = uint(*params.Page)
-	}
-
 	query := dal.Query{
-		Pagination: dal.Pagination{
-			Size: size,
-			Page: page,
-		},
+		Pagination: dto.PaginationTo(params.Count, params.Cursor),
 	}
 
 	out, err := ctl.service.FindScripts(params.HTTPRequest.Context(), params.ProjectID, query)
@@ -207,30 +161,52 @@ func (ctl *Scripts) FindScripts(params operations.FindScriptsParams) middleware.
 			Timestamp().
 			Err(err).
 			Str("project_id", params.ProjectID).
-			Uint("page", query.Pagination.Page).
-			Uint("size", query.Pagination.Size).
+			//Uint("count", query.Pagination.Count).
+			//Uint("cursor", query.Pagination.Cursor).
 			Msg("failed to find scripts")
 
 		return http.InternalError()
 	}
 
-	res := make([]*operations.FindScriptsOKBodyItems0, 0, len(out))
+	data := make([]*models.ScriptOutput, 0, len(out.Data))
 
-	for _, i := range out {
-		p := i
-		createdAt, updatedAt := dto.ToMetadataDates(p.Metadata)
+	for _, s := range out.Data {
+		script := s
 
-		res = append(res, &operations.FindScriptsOKBodyItems0{
-			FindScriptsOKBodyItems0AllOf0: operations.FindScriptsOKBodyItems0AllOf0{
-				ID:        &p.ID,
-				Rev:       &p.Rev,
-				CreatedAt: &createdAt,
-				UpdatedAt: updatedAt,
-			},
-			Name:        &p.Name,
-			Description: p.Description,
+		data = append(data, &models.ScriptOutput{
+			Entity:     dto.EntityFrom(script.Entity),
+			Definition: dto.DefinitionFrom(script.Definition),
 		})
 	}
 
-	return operations.NewFindScriptsOK().WithPayload(res)
+	return operations.NewFindScriptsOK().WithPayload(&operations.FindScriptsOKBody{
+		Data:         data,
+		SearchResult: dto.SearchResultFrom(out.QueryResult),
+	})
+}
+
+func (ctl *Scripts) toScriptCommonDto(script scripts.ScriptEntity) models.ScriptCommon {
+	return models.ScriptCommon{
+		Definition: dto.DefinitionFrom(script.Definition),
+		Persistence: &models.ScriptPersistence{
+			Enabled: &script.Persistence.Enabled,
+		},
+		Execution: &models.ScriptExecution{
+			Query:  &script.Execution.Query,
+			Params: dto.ExecutionParamsFrom(script.Execution.Params),
+		},
+	}
+}
+
+func (ctl *Scripts) fromScriptExecutionDto(exec *models.ScriptExecution) *scripts.Execution {
+	return &scripts.Execution{
+		Query:  *exec.Query,
+		Params: dto.ExecutionParamsTo(exec.Params),
+	}
+}
+
+func (ctl *Scripts) fromScriptPersistenceDto(exec *models.ScriptPersistence) *scripts.Persistence {
+	return &scripts.Persistence{
+		Enabled: *exec.Enabled,
+	}
 }

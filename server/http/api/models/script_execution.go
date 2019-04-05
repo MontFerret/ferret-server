@@ -20,7 +20,7 @@ import (
 type ScriptExecution struct {
 
 	// params
-	Params map[string]interface{} `json:"params,omitempty"`
+	Params map[string]Any `json:"params,omitempty"`
 
 	// query
 	// Required: true

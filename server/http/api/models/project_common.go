@@ -8,9 +8,7 @@ package models
 import (
 	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
-	"github.com/go-openapi/validate"
 )
 
 // ProjectCommon Project Common
@@ -18,68 +16,36 @@ import (
 // The properties that are shared amongst all versions of the Project model.
 // swagger:model project-common
 type ProjectCommon struct {
+	Definition
+}
 
-	// description
-	// Max Length: 255
-	// Min Length: 10
-	Description string `json:"description,omitempty"`
+// UnmarshalJSON unmarshals this object from a JSON structure
+func (m *ProjectCommon) UnmarshalJSON(raw []byte) error {
+	// AO0
+	var aO0 Definition
+	if err := swag.ReadJSON(raw, &aO0); err != nil {
+		return err
+	}
+	m.Definition = aO0
 
-	// name
-	// Required: true
-	// Max Length: 100
-	// Min Length: 3
-	Name *string `json:"name"`
+	return nil
+}
+
+// MarshalJSON marshals this object to a JSON structure
+func (m ProjectCommon) MarshalJSON() ([]byte, error) {
+	_parts := make([][]byte, 0, 1)
+
+	aO0, err := swag.WriteJSON(m.Definition)
+	if err != nil {
+		return nil, err
+	}
+	_parts = append(_parts, aO0)
+
+	return swag.ConcatJSON(_parts...), nil
 }
 
 // Validate validates this project common
 func (m *ProjectCommon) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.validateDescription(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateName(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *ProjectCommon) validateDescription(formats strfmt.Registry) error {
-
-	if swag.IsZero(m.Description) { // not required
-		return nil
-	}
-
-	if err := validate.MinLength("description", "body", string(m.Description), 10); err != nil {
-		return err
-	}
-
-	if err := validate.MaxLength("description", "body", string(m.Description), 255); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *ProjectCommon) validateName(formats strfmt.Registry) error {
-
-	if err := validate.Required("name", "body", m.Name); err != nil {
-		return err
-	}
-
-	if err := validate.MinLength("name", "body", string(*m.Name), 3); err != nil {
-		return err
-	}
-
-	if err := validate.MaxLength("name", "body", string(*m.Name), 100); err != nil {
-		return err
-	}
-
 	return nil
 }
 

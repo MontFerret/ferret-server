@@ -9,6 +9,8 @@ import (
 	"net/http"
 
 	"github.com/go-openapi/runtime"
+
+	models "github.com/MontFerret/ferret-server/server/http/api/models"
 )
 
 // GetProjectOKCode is the HTTP code returned for type GetProjectOK
@@ -23,7 +25,7 @@ type GetProjectOK struct {
 	/*
 	  In: Body
 	*/
-	Payload *GetProjectOKBody `json:"body,omitempty"`
+	Payload *models.ProjectOutputDetailed `json:"body,omitempty"`
 }
 
 // NewGetProjectOK creates GetProjectOK with default headers values
@@ -33,13 +35,13 @@ func NewGetProjectOK() *GetProjectOK {
 }
 
 // WithPayload adds the payload to the get project o k response
-func (o *GetProjectOK) WithPayload(payload *GetProjectOKBody) *GetProjectOK {
+func (o *GetProjectOK) WithPayload(payload *models.ProjectOutputDetailed) *GetProjectOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the get project o k response
-func (o *GetProjectOK) SetPayload(payload *GetProjectOKBody) {
+func (o *GetProjectOK) SetPayload(payload *models.ProjectOutputDetailed) {
 	o.Payload = payload
 }
 

@@ -2,6 +2,8 @@ package controllers
 
 import (
 	"context"
+	"github.com/MontFerret/ferret-server/server/controllers/dto"
+	"github.com/MontFerret/ferret-server/server/http/api/models"
 
 	"github.com/MontFerret/ferret-server/pkg/common"
 	"github.com/MontFerret/ferret-server/pkg/common/dal"
@@ -81,8 +83,8 @@ func (ctl *Execution) Delete(params operations.DeleteExecutionParams) middleware
 	logger.Error().
 		Timestamp().
 		Err(err).
-		Str("project_id", params.ProjectID).
-		Str("job_id", params.JobID).
+		//Str("project_id", params.ProjectID).
+		//Str("job_id", params.JobID).
 		Msg("canceled a job")
 
 	return operations.NewDeleteExecutionNoContent()
@@ -90,21 +92,8 @@ func (ctl *Execution) Delete(params operations.DeleteExecutionParams) middleware
 
 func (ctl *Execution) Find(params operations.FindExecutionsParams) middleware.Responder {
 	logger := logging.FromRequest(params.HTTPRequest)
-	ctx := context.Background()
-
-	var size uint = 10
-	var page uint = 1
-
-	if params.Size != nil {
-		size = uint(*params.Size)
-		page = uint(*params.Page)
-	}
-
 	query := dal.Query{
-		Pagination: dal.Pagination{
-			Size: size,
-			Page: page,
-		},
+		Pagination: dto.PaginationTo(params.Count, params.Cursor),
 		Filtering: dal.Filtering{
 			Fields: make([]dal.FilteringField, 0, 2),
 		},
@@ -124,6 +113,7 @@ func (ctl *Execution) Find(params operations.FindExecutionsParams) middleware.Re
 		})
 	}
 
+	ctx := context.Background()
 	out, err := ctl.history.Find(ctx, params.ProjectID, query)
 
 	if err != nil {
@@ -131,29 +121,25 @@ func (ctl *Execution) Find(params operations.FindExecutionsParams) middleware.Re
 			Timestamp().
 			Err(err).
 			Str("project_id", params.ProjectID).
+			//Uint("count", query.Pagination.Count).
+			//Uint("cursor", query.Pagination.Cursor).
 			Msg("failed to find jobs")
 
 		return http.InternalError()
 	}
 
-	payload := make([]*operations.FindExecutionsOKBodyItems0, 0, len(out))
+	data := make([]*models.ExecutionOutput, 0, len(out.Data))
 
-	for _, r := range out {
-		el := r
-
-		status := el.Status.String()
-		cause := el.CausedBy.String()
-
-		payload = append(payload, &operations.FindExecutionsOKBodyItems0{
-			ScriptID:  &el.ScriptID,
-			ScriptRev: &el.ScriptRev,
-			JobID:     &el.JobID,
-			Status:    &status,
-			Cause:     &cause,
+	for _, r := range out.Data {
+		data = append(data, &models.ExecutionOutput{
+			ExecutionCommon: ctl.toExecutionCommonDto(r),
 		})
 	}
 
-	return operations.NewFindExecutionsOK().WithPayload(payload)
+	return operations.NewFindExecutionsOK().WithPayload(&operations.FindExecutionsOKBody{
+		Data:         data,
+		SearchResult: dto.SearchResultFrom(out.QueryResult),
+	})
 }
 
 func (ctl *Execution) Get(params operations.GetExecutionParams) middleware.Responder {
@@ -169,23 +155,29 @@ func (ctl *Execution) Get(params operations.GetExecutionParams) middleware.Respo
 		logger.Error().
 			Timestamp().
 			Err(err).
-			Str("project_id", params.ProjectID).
-			Str("job_id", params.JobID).
+			//Str("project_id", params.ProjectID).
+			//Str("job_id", params.JobID).
 			Msg("failed to find a job")
 
 		return http.InternalError()
 	}
 
-	status := found.Status.String()
-	cause := found.CausedBy.String()
-
-	return operations.NewGetExecutionOK().WithPayload(&operations.GetExecutionOKBody{
-		GetExecutionOKBodyAllOf0: operations.GetExecutionOKBodyAllOf0{
-			JobID:     &found.JobID,
-			ScriptID:  &found.ScriptID,
-			ScriptRev: &found.ScriptRev,
-			Status:    &status,
-			Cause:     &cause,
+	return operations.NewGetExecutionOK().WithPayload(&models.ExecutionOutputDetailed{
+		ExecutionOutput: models.ExecutionOutput{
+			ExecutionCommon: ctl.toExecutionCommonDto(found),
 		},
+		StartedAt: found.StartedAt.String(),
+		EndedAt:   found.EndedAt.String(),
+		Params:    dto.ExecutionParamsFrom(found.Params),
 	})
+}
+
+func (ctl *Execution) toExecutionCommonDto(record history.RecordEntity) models.ExecutionCommon {
+	return models.ExecutionCommon{
+		ScriptID:  &record.ScriptID,
+		ScriptRev: &record.ScriptRev,
+		JobID:     &record.JobID,
+		Status:    dto.ExecutionStatusFrom(record.Status),
+		Cause:     dto.ExecutionCauseFrom(record.CausedBy),
+	}
 }

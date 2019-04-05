@@ -10,7 +10,6 @@ import (
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
-	"github.com/go-openapi/validate"
 )
 
 // DataOutputDetailed Data Output Detailed
@@ -18,17 +17,17 @@ import (
 // The properties that are included when fetching a single Data.
 // swagger:model data-output-detailed
 type DataOutputDetailed struct {
-	DataOutputDetailedAllOf0
+	DataEntity
 }
 
 // UnmarshalJSON unmarshals this object from a JSON structure
 func (m *DataOutputDetailed) UnmarshalJSON(raw []byte) error {
 	// AO0
-	var aO0 DataOutputDetailedAllOf0
+	var aO0 DataEntity
 	if err := swag.ReadJSON(raw, &aO0); err != nil {
 		return err
 	}
-	m.DataOutputDetailedAllOf0 = aO0
+	m.DataEntity = aO0
 
 	return nil
 }
@@ -37,7 +36,7 @@ func (m *DataOutputDetailed) UnmarshalJSON(raw []byte) error {
 func (m DataOutputDetailed) MarshalJSON() ([]byte, error) {
 	_parts := make([][]byte, 0, 1)
 
-	aO0, err := swag.WriteJSON(m.DataOutputDetailedAllOf0)
+	aO0, err := swag.WriteJSON(m.DataEntity)
 	if err != nil {
 		return nil, err
 	}
@@ -50,8 +49,8 @@ func (m DataOutputDetailed) MarshalJSON() ([]byte, error) {
 func (m *DataOutputDetailed) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	// validation for a type composition with DataOutputDetailedAllOf0
-	if err := m.DataOutputDetailedAllOf0.Validate(formats); err != nil {
+	// validation for a type composition with DataEntity
+	if err := m.DataEntity.Validate(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -72,345 +71,6 @@ func (m *DataOutputDetailed) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (m *DataOutputDetailed) UnmarshalBinary(b []byte) error {
 	var res DataOutputDetailed
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*m = res
-	return nil
-}
-
-// DataOutputDetailedAllOf0 Data Entity
-// swagger:model DataOutputDetailedAllOf0
-type DataOutputDetailedAllOf0 struct {
-	DataOutputDetailedAllOf0AllOf0
-
-	// job id
-	// Required: true
-	JobID *string `json:"job_id"`
-
-	// script id
-	// Required: true
-	ScriptID *string `json:"script_id"`
-
-	// script rev
-	// Required: true
-	ScriptRev *string `json:"script_rev"`
-
-	// Any
-	// Required: true
-	Value interface{} `json:"value"`
-}
-
-// UnmarshalJSON unmarshals this object from a JSON structure
-func (m *DataOutputDetailedAllOf0) UnmarshalJSON(raw []byte) error {
-	// AO0
-	var aO0 DataOutputDetailedAllOf0AllOf0
-	if err := swag.ReadJSON(raw, &aO0); err != nil {
-		return err
-	}
-	m.DataOutputDetailedAllOf0AllOf0 = aO0
-
-	// AO1
-	var dataAO1 struct {
-		JobID *string `json:"job_id"`
-
-		ScriptID *string `json:"script_id"`
-
-		ScriptRev *string `json:"script_rev"`
-
-		Value interface{} `json:"value"`
-	}
-	if err := swag.ReadJSON(raw, &dataAO1); err != nil {
-		return err
-	}
-
-	m.JobID = dataAO1.JobID
-
-	m.ScriptID = dataAO1.ScriptID
-
-	m.ScriptRev = dataAO1.ScriptRev
-
-	m.Value = dataAO1.Value
-
-	return nil
-}
-
-// MarshalJSON marshals this object to a JSON structure
-func (m DataOutputDetailedAllOf0) MarshalJSON() ([]byte, error) {
-	_parts := make([][]byte, 0, 2)
-
-	aO0, err := swag.WriteJSON(m.DataOutputDetailedAllOf0AllOf0)
-	if err != nil {
-		return nil, err
-	}
-	_parts = append(_parts, aO0)
-
-	var dataAO1 struct {
-		JobID *string `json:"job_id"`
-
-		ScriptID *string `json:"script_id"`
-
-		ScriptRev *string `json:"script_rev"`
-
-		Value interface{} `json:"value"`
-	}
-
-	dataAO1.JobID = m.JobID
-
-	dataAO1.ScriptID = m.ScriptID
-
-	dataAO1.ScriptRev = m.ScriptRev
-
-	dataAO1.Value = m.Value
-
-	jsonDataAO1, errAO1 := swag.WriteJSON(dataAO1)
-	if errAO1 != nil {
-		return nil, errAO1
-	}
-	_parts = append(_parts, jsonDataAO1)
-
-	return swag.ConcatJSON(_parts...), nil
-}
-
-// Validate validates this data output detailed all of0
-func (m *DataOutputDetailedAllOf0) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	// validation for a type composition with DataOutputDetailedAllOf0AllOf0
-	if err := m.DataOutputDetailedAllOf0AllOf0.Validate(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateJobID(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateScriptID(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateScriptRev(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateValue(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *DataOutputDetailedAllOf0) validateJobID(formats strfmt.Registry) error {
-
-	if err := validate.Required("job_id", "body", m.JobID); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *DataOutputDetailedAllOf0) validateScriptID(formats strfmt.Registry) error {
-
-	if err := validate.Required("script_id", "body", m.ScriptID); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *DataOutputDetailedAllOf0) validateScriptRev(formats strfmt.Registry) error {
-
-	if err := validate.Required("script_rev", "body", m.ScriptRev); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *DataOutputDetailedAllOf0) validateValue(formats strfmt.Registry) error {
-
-	if err := validate.Required("value", "body", m.Value); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (m *DataOutputDetailedAllOf0) MarshalBinary() ([]byte, error) {
-	if m == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(m)
-}
-
-// UnmarshalBinary interface implementation
-func (m *DataOutputDetailedAllOf0) UnmarshalBinary(b []byte) error {
-	var res DataOutputDetailedAllOf0
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*m = res
-	return nil
-}
-
-// DataOutputDetailedAllOf0AllOf0 Entity
-//
-// Represents a database entity
-// swagger:model DataOutputDetailedAllOf0AllOf0
-type DataOutputDetailedAllOf0AllOf0 struct {
-
-	// id
-	// Required: true
-	ID *string `json:"id"`
-
-	// rev
-	// Required: true
-	Rev *string `json:"rev"`
-
-	// created at
-	// Required: true
-	CreatedAt *string `json:"created_at"`
-
-	// updated at
-	UpdatedAt string `json:"updated_at,omitempty"`
-}
-
-// UnmarshalJSON unmarshals this object from a JSON structure
-func (m *DataOutputDetailedAllOf0AllOf0) UnmarshalJSON(raw []byte) error {
-	// AO0
-	var dataAO0 struct {
-		ID *string `json:"id"`
-
-		Rev *string `json:"rev"`
-	}
-	if err := swag.ReadJSON(raw, &dataAO0); err != nil {
-		return err
-	}
-
-	m.ID = dataAO0.ID
-
-	m.Rev = dataAO0.Rev
-
-	// AO1
-	var dataAO1 struct {
-		CreatedAt *string `json:"created_at"`
-
-		UpdatedAt string `json:"updated_at,omitempty"`
-	}
-	if err := swag.ReadJSON(raw, &dataAO1); err != nil {
-		return err
-	}
-
-	m.CreatedAt = dataAO1.CreatedAt
-
-	m.UpdatedAt = dataAO1.UpdatedAt
-
-	return nil
-}
-
-// MarshalJSON marshals this object to a JSON structure
-func (m DataOutputDetailedAllOf0AllOf0) MarshalJSON() ([]byte, error) {
-	_parts := make([][]byte, 0, 2)
-
-	var dataAO0 struct {
-		ID *string `json:"id"`
-
-		Rev *string `json:"rev"`
-	}
-
-	dataAO0.ID = m.ID
-
-	dataAO0.Rev = m.Rev
-
-	jsonDataAO0, errAO0 := swag.WriteJSON(dataAO0)
-	if errAO0 != nil {
-		return nil, errAO0
-	}
-	_parts = append(_parts, jsonDataAO0)
-
-	var dataAO1 struct {
-		CreatedAt *string `json:"created_at"`
-
-		UpdatedAt string `json:"updated_at,omitempty"`
-	}
-
-	dataAO1.CreatedAt = m.CreatedAt
-
-	dataAO1.UpdatedAt = m.UpdatedAt
-
-	jsonDataAO1, errAO1 := swag.WriteJSON(dataAO1)
-	if errAO1 != nil {
-		return nil, errAO1
-	}
-	_parts = append(_parts, jsonDataAO1)
-
-	return swag.ConcatJSON(_parts...), nil
-}
-
-// Validate validates this data output detailed all of0 all of0
-func (m *DataOutputDetailedAllOf0AllOf0) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.validateID(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateRev(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateCreatedAt(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *DataOutputDetailedAllOf0AllOf0) validateID(formats strfmt.Registry) error {
-
-	if err := validate.Required("id", "body", m.ID); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *DataOutputDetailedAllOf0AllOf0) validateRev(formats strfmt.Registry) error {
-
-	if err := validate.Required("rev", "body", m.Rev); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *DataOutputDetailedAllOf0AllOf0) validateCreatedAt(formats strfmt.Registry) error {
-
-	if err := validate.Required("created_at", "body", m.CreatedAt); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (m *DataOutputDetailedAllOf0AllOf0) MarshalBinary() ([]byte, error) {
-	if m == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(m)
-}
-
-// UnmarshalBinary interface implementation
-func (m *DataOutputDetailedAllOf0AllOf0) UnmarshalBinary(b []byte) error {
-	var res DataOutputDetailedAllOf0AllOf0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

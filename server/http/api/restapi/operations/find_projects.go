@@ -14,6 +14,8 @@ import (
 	strfmt "github.com/go-openapi/strfmt"
 	swag "github.com/go-openapi/swag"
 	validate "github.com/go-openapi/validate"
+
+	models "github.com/MontFerret/ferret-server/server/http/api/models"
 )
 
 // FindProjectsHandlerFunc turns a function with the right signature into a find projects handler
@@ -65,31 +67,25 @@ func (o *FindProjects) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 // FindProjectsOKBody find projects o k body
 // swagger:model FindProjectsOKBody
 type FindProjectsOKBody struct {
-
-	// paging
-	// Required: true
-	Paging *FindProjectsOKBodyAO0Paging `json:"paging"`
+	models.SearchResult
 
 	// data
 	// Required: true
-	Data []*DataItems0 `json:"data"`
+	Data []*models.ProjectOutput `json:"data"`
 }
 
 // UnmarshalJSON unmarshals this object from a JSON structure
 func (o *FindProjectsOKBody) UnmarshalJSON(raw []byte) error {
 	// FindProjectsOKBodyAO0
-	var dataFindProjectsOKBodyAO0 struct {
-		Paging *FindProjectsOKBodyAO0Paging `json:"paging"`
-	}
-	if err := swag.ReadJSON(raw, &dataFindProjectsOKBodyAO0); err != nil {
+	var findProjectsOKBodyAO0 models.SearchResult
+	if err := swag.ReadJSON(raw, &findProjectsOKBodyAO0); err != nil {
 		return err
 	}
-
-	o.Paging = dataFindProjectsOKBodyAO0.Paging
+	o.SearchResult = findProjectsOKBodyAO0
 
 	// FindProjectsOKBodyAO1
 	var dataFindProjectsOKBodyAO1 struct {
-		Data []*DataItems0 `json:"data"`
+		Data []*models.ProjectOutput `json:"data"`
 	}
 	if err := swag.ReadJSON(raw, &dataFindProjectsOKBodyAO1); err != nil {
 		return err
@@ -104,20 +100,14 @@ func (o *FindProjectsOKBody) UnmarshalJSON(raw []byte) error {
 func (o FindProjectsOKBody) MarshalJSON() ([]byte, error) {
 	_parts := make([][]byte, 0, 2)
 
-	var dataFindProjectsOKBodyAO0 struct {
-		Paging *FindProjectsOKBodyAO0Paging `json:"paging"`
+	findProjectsOKBodyAO0, err := swag.WriteJSON(o.SearchResult)
+	if err != nil {
+		return nil, err
 	}
-
-	dataFindProjectsOKBodyAO0.Paging = o.Paging
-
-	jsonDataFindProjectsOKBodyAO0, errFindProjectsOKBodyAO0 := swag.WriteJSON(dataFindProjectsOKBodyAO0)
-	if errFindProjectsOKBodyAO0 != nil {
-		return nil, errFindProjectsOKBodyAO0
-	}
-	_parts = append(_parts, jsonDataFindProjectsOKBodyAO0)
+	_parts = append(_parts, findProjectsOKBodyAO0)
 
 	var dataFindProjectsOKBodyAO1 struct {
-		Data []*DataItems0 `json:"data"`
+		Data []*models.ProjectOutput `json:"data"`
 	}
 
 	dataFindProjectsOKBodyAO1.Data = o.Data
@@ -135,7 +125,8 @@ func (o FindProjectsOKBody) MarshalJSON() ([]byte, error) {
 func (o *FindProjectsOKBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := o.validatePaging(formats); err != nil {
+	// validation for a type composition with models.SearchResult
+	if err := o.SearchResult.Validate(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -146,24 +137,6 @@ func (o *FindProjectsOKBody) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
-	return nil
-}
-
-func (o *FindProjectsOKBody) validatePaging(formats strfmt.Registry) error {
-
-	if err := validate.Required("findProjectsOK"+"."+"paging", "body", o.Paging); err != nil {
-		return err
-	}
-
-	if o.Paging != nil {
-		if err := o.Paging.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("findProjectsOK" + "." + "paging")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
@@ -203,116 +176,6 @@ func (o *FindProjectsOKBody) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (o *FindProjectsOKBody) UnmarshalBinary(b []byte) error {
 	var res FindProjectsOKBody
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
-}
-
-// FindProjectsOKBodyAO0Paging find projects o k body a o0 paging
-// swagger:model FindProjectsOKBodyAO0Paging
-type FindProjectsOKBodyAO0Paging struct {
-
-	// count
-	// Required: true
-	Count *float64 `json:"count"`
-
-	// cursors
-	// Required: true
-	Cursors *FindProjectsOKBodyAO0PagingCursors `json:"cursors"`
-}
-
-// Validate validates this find projects o k body a o0 paging
-func (o *FindProjectsOKBodyAO0Paging) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := o.validateCount(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validateCursors(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (o *FindProjectsOKBodyAO0Paging) validateCount(formats strfmt.Registry) error {
-
-	if err := validate.Required("findProjectsOK"+"."+"paging"+"."+"count", "body", o.Count); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *FindProjectsOKBodyAO0Paging) validateCursors(formats strfmt.Registry) error {
-
-	if err := validate.Required("findProjectsOK"+"."+"paging"+"."+"cursors", "body", o.Cursors); err != nil {
-		return err
-	}
-
-	if o.Cursors != nil {
-		if err := o.Cursors.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("findProjectsOK" + "." + "paging" + "." + "cursors")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *FindProjectsOKBodyAO0Paging) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *FindProjectsOKBodyAO0Paging) UnmarshalBinary(b []byte) error {
-	var res FindProjectsOKBodyAO0Paging
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
-}
-
-// FindProjectsOKBodyAO0PagingCursors find projects o k body a o0 paging cursors
-// swagger:model FindProjectsOKBodyAO0PagingCursors
-type FindProjectsOKBodyAO0PagingCursors struct {
-
-	// after
-	After string `json:"after,omitempty"`
-
-	// before
-	Before string `json:"before,omitempty"`
-}
-
-// Validate validates this find projects o k body a o0 paging cursors
-func (o *FindProjectsOKBodyAO0PagingCursors) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *FindProjectsOKBodyAO0PagingCursors) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *FindProjectsOKBodyAO0PagingCursors) UnmarshalBinary(b []byte) error {
-	var res FindProjectsOKBodyAO0PagingCursors
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

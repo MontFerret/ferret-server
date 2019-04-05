@@ -18,40 +18,82 @@ import (
 // The properties that are shared amongst all versions of the Script model.
 // swagger:model script-common
 type ScriptCommon struct {
-
-	// description
-	// Max Length: 255
-	// Min Length: 10
-	Description string `json:"description,omitempty"`
+	Definition
 
 	// execution
 	// Required: true
-	Execution *ScriptCommonExecution `json:"execution"`
-
-	// name
-	// Required: true
-	// Max Length: 100
-	// Min Length: 3
-	Name *string `json:"name"`
+	Execution *ScriptExecution `json:"execution"`
 
 	// persistence
 	// Required: true
-	Persistence *ScriptCommonPersistence `json:"persistence"`
+	Persistence *ScriptPersistence `json:"persistence"`
+}
+
+// UnmarshalJSON unmarshals this object from a JSON structure
+func (m *ScriptCommon) UnmarshalJSON(raw []byte) error {
+	// AO0
+	var aO0 Definition
+	if err := swag.ReadJSON(raw, &aO0); err != nil {
+		return err
+	}
+	m.Definition = aO0
+
+	// AO1
+	var dataAO1 struct {
+		Execution *ScriptExecution `json:"execution"`
+
+		Persistence *ScriptPersistence `json:"persistence"`
+	}
+	if err := swag.ReadJSON(raw, &dataAO1); err != nil {
+		return err
+	}
+
+	m.Execution = dataAO1.Execution
+
+	m.Persistence = dataAO1.Persistence
+
+	return nil
+}
+
+// MarshalJSON marshals this object to a JSON structure
+func (m ScriptCommon) MarshalJSON() ([]byte, error) {
+	_parts := make([][]byte, 0, 2)
+
+	aO0, err := swag.WriteJSON(m.Definition)
+	if err != nil {
+		return nil, err
+	}
+	_parts = append(_parts, aO0)
+
+	var dataAO1 struct {
+		Execution *ScriptExecution `json:"execution"`
+
+		Persistence *ScriptPersistence `json:"persistence"`
+	}
+
+	dataAO1.Execution = m.Execution
+
+	dataAO1.Persistence = m.Persistence
+
+	jsonDataAO1, errAO1 := swag.WriteJSON(dataAO1)
+	if errAO1 != nil {
+		return nil, errAO1
+	}
+	_parts = append(_parts, jsonDataAO1)
+
+	return swag.ConcatJSON(_parts...), nil
 }
 
 // Validate validates this script common
 func (m *ScriptCommon) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.validateDescription(formats); err != nil {
+	// validation for a type composition with Definition
+	if err := m.Definition.Validate(formats); err != nil {
 		res = append(res, err)
 	}
 
 	if err := m.validateExecution(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateName(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -62,23 +104,6 @@ func (m *ScriptCommon) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
-	return nil
-}
-
-func (m *ScriptCommon) validateDescription(formats strfmt.Registry) error {
-
-	if swag.IsZero(m.Description) { // not required
-		return nil
-	}
-
-	if err := validate.MinLength("description", "body", string(m.Description), 10); err != nil {
-		return err
-	}
-
-	if err := validate.MaxLength("description", "body", string(m.Description), 255); err != nil {
-		return err
-	}
-
 	return nil
 }
 
@@ -95,23 +120,6 @@ func (m *ScriptCommon) validateExecution(formats strfmt.Registry) error {
 			}
 			return err
 		}
-	}
-
-	return nil
-}
-
-func (m *ScriptCommon) validateName(formats strfmt.Registry) error {
-
-	if err := validate.Required("name", "body", m.Name); err != nil {
-		return err
-	}
-
-	if err := validate.MinLength("name", "body", string(*m.Name), 3); err != nil {
-		return err
-	}
-
-	if err := validate.MaxLength("name", "body", string(*m.Name), 100); err != nil {
-		return err
 	}
 
 	return nil
@@ -146,116 +154,6 @@ func (m *ScriptCommon) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (m *ScriptCommon) UnmarshalBinary(b []byte) error {
 	var res ScriptCommon
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*m = res
-	return nil
-}
-
-// ScriptCommonExecution Script Execution Settings
-//
-// Represents script execution settings like query and params
-// swagger:model ScriptCommonExecution
-type ScriptCommonExecution struct {
-
-	// params
-	Params map[string]interface{} `json:"params,omitempty"`
-
-	// query
-	// Required: true
-	// Min Length: 8
-	Query *string `json:"query"`
-}
-
-// Validate validates this script common execution
-func (m *ScriptCommonExecution) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.validateQuery(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *ScriptCommonExecution) validateQuery(formats strfmt.Registry) error {
-
-	if err := validate.Required("execution"+"."+"query", "body", m.Query); err != nil {
-		return err
-	}
-
-	if err := validate.MinLength("execution"+"."+"query", "body", string(*m.Query), 8); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (m *ScriptCommonExecution) MarshalBinary() ([]byte, error) {
-	if m == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(m)
-}
-
-// UnmarshalBinary interface implementation
-func (m *ScriptCommonExecution) UnmarshalBinary(b []byte) error {
-	var res ScriptCommonExecution
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*m = res
-	return nil
-}
-
-// ScriptCommonPersistence Script Persistence
-// swagger:model ScriptCommonPersistence
-type ScriptCommonPersistence struct {
-
-	// enabled
-	// Required: true
-	Enabled *bool `json:"enabled"`
-}
-
-// Validate validates this script common persistence
-func (m *ScriptCommonPersistence) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.validateEnabled(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *ScriptCommonPersistence) validateEnabled(formats strfmt.Registry) error {
-
-	if err := validate.Required("persistence"+"."+"enabled", "body", m.Enabled); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (m *ScriptCommonPersistence) MarshalBinary() ([]byte, error) {
-	if m == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(m)
-}
-
-// UnmarshalBinary interface implementation
-func (m *ScriptCommonPersistence) UnmarshalBinary(b []byte) error {
-	var res ScriptCommonPersistence
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

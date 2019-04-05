@@ -242,9 +242,6 @@ func (repo *ProjectRepository) fromRecord(meta driver.DocumentMeta, record proje
 			Rev:      meta.Rev,
 			Metadata: record.Metadata,
 		},
-		Project: projects.Project{
-			Name:        record.Name,
-			Description: record.Description,
-		},
+		Project: record.Project,
 	}
 }

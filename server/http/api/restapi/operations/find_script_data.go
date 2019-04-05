@@ -13,7 +13,8 @@ import (
 	middleware "github.com/go-openapi/runtime/middleware"
 	strfmt "github.com/go-openapi/strfmt"
 	swag "github.com/go-openapi/swag"
-	validate "github.com/go-openapi/validate"
+
+	models "github.com/MontFerret/ferret-server/server/http/api/models"
 )
 
 // FindScriptDataHandlerFunc turns a function with the right signature into a find script data handler
@@ -65,24 +66,24 @@ func (o *FindScriptData) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 // FindScriptDataOKBody find script data o k body
 // swagger:model FindScriptDataOKBody
 type FindScriptDataOKBody struct {
-	FindScriptDataOKBodyAllOf0
+	models.SearchResult
 
 	// data
-	Data []*DataItems0 `json:"data"`
+	Data []*models.DataOutput `json:"data"`
 }
 
 // UnmarshalJSON unmarshals this object from a JSON structure
 func (o *FindScriptDataOKBody) UnmarshalJSON(raw []byte) error {
 	// FindScriptDataOKBodyAO0
-	var findScriptDataOKBodyAO0 FindScriptDataOKBodyAllOf0
+	var findScriptDataOKBodyAO0 models.SearchResult
 	if err := swag.ReadJSON(raw, &findScriptDataOKBodyAO0); err != nil {
 		return err
 	}
-	o.FindScriptDataOKBodyAllOf0 = findScriptDataOKBodyAO0
+	o.SearchResult = findScriptDataOKBodyAO0
 
 	// FindScriptDataOKBodyAO1
 	var dataFindScriptDataOKBodyAO1 struct {
-		Data []*DataItems0 `json:"data"`
+		Data []*models.DataOutput `json:"data"`
 	}
 	if err := swag.ReadJSON(raw, &dataFindScriptDataOKBodyAO1); err != nil {
 		return err
@@ -97,14 +98,14 @@ func (o *FindScriptDataOKBody) UnmarshalJSON(raw []byte) error {
 func (o FindScriptDataOKBody) MarshalJSON() ([]byte, error) {
 	_parts := make([][]byte, 0, 2)
 
-	findScriptDataOKBodyAO0, err := swag.WriteJSON(o.FindScriptDataOKBodyAllOf0)
+	findScriptDataOKBodyAO0, err := swag.WriteJSON(o.SearchResult)
 	if err != nil {
 		return nil, err
 	}
 	_parts = append(_parts, findScriptDataOKBodyAO0)
 
 	var dataFindScriptDataOKBodyAO1 struct {
-		Data []*DataItems0 `json:"data"`
+		Data []*models.DataOutput `json:"data"`
 	}
 
 	dataFindScriptDataOKBodyAO1.Data = o.Data
@@ -122,8 +123,8 @@ func (o FindScriptDataOKBody) MarshalJSON() ([]byte, error) {
 func (o *FindScriptDataOKBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	// validation for a type composition with FindScriptDataOKBodyAllOf0
-	if err := o.FindScriptDataOKBodyAllOf0.Validate(formats); err != nil {
+	// validation for a type composition with models.SearchResult
+	if err := o.SearchResult.Validate(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -173,205 +174,6 @@ func (o *FindScriptDataOKBody) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (o *FindScriptDataOKBody) UnmarshalBinary(b []byte) error {
 	var res FindScriptDataOKBody
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
-}
-
-// FindScriptDataOKBodyAllOf0 find script data o k body all of0
-// swagger:model FindScriptDataOKBodyAllOf0
-type FindScriptDataOKBodyAllOf0 []*FindScriptDataOKBodyAllOf0Items0
-
-// Validate validates this find script data o k body all of0
-func (o FindScriptDataOKBodyAllOf0) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	for i := 0; i < len(o); i++ {
-		if swag.IsZero(o[i]) { // not required
-			continue
-		}
-
-		if o[i] != nil {
-			if err := o[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
-					return ve.ValidateName(strconv.Itoa(i))
-				}
-				return err
-			}
-		}
-
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-// FindScriptDataOKBodyAllOf0Items0 SearchResult
-// swagger:model FindScriptDataOKBodyAllOf0Items0
-type FindScriptDataOKBodyAllOf0Items0 struct {
-
-	// paging
-	// Required: true
-	Paging *FindScriptDataOKBodyAllOf0Items0Paging `json:"paging"`
-}
-
-// Validate validates this find script data o k body all of0 items0
-func (o *FindScriptDataOKBodyAllOf0Items0) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := o.validatePaging(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (o *FindScriptDataOKBodyAllOf0Items0) validatePaging(formats strfmt.Registry) error {
-
-	if err := validate.Required("paging", "body", o.Paging); err != nil {
-		return err
-	}
-
-	if o.Paging != nil {
-		if err := o.Paging.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("paging")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *FindScriptDataOKBodyAllOf0Items0) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *FindScriptDataOKBodyAllOf0Items0) UnmarshalBinary(b []byte) error {
-	var res FindScriptDataOKBodyAllOf0Items0
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
-}
-
-// FindScriptDataOKBodyAllOf0Items0Paging find script data o k body all of0 items0 paging
-// swagger:model FindScriptDataOKBodyAllOf0Items0Paging
-type FindScriptDataOKBodyAllOf0Items0Paging struct {
-
-	// count
-	// Required: true
-	Count *float64 `json:"count"`
-
-	// cursors
-	// Required: true
-	Cursors *FindScriptDataOKBodyAllOf0Items0PagingCursors `json:"cursors"`
-}
-
-// Validate validates this find script data o k body all of0 items0 paging
-func (o *FindScriptDataOKBodyAllOf0Items0Paging) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := o.validateCount(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validateCursors(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (o *FindScriptDataOKBodyAllOf0Items0Paging) validateCount(formats strfmt.Registry) error {
-
-	if err := validate.Required("paging"+"."+"count", "body", o.Count); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *FindScriptDataOKBodyAllOf0Items0Paging) validateCursors(formats strfmt.Registry) error {
-
-	if err := validate.Required("paging"+"."+"cursors", "body", o.Cursors); err != nil {
-		return err
-	}
-
-	if o.Cursors != nil {
-		if err := o.Cursors.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("paging" + "." + "cursors")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *FindScriptDataOKBodyAllOf0Items0Paging) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *FindScriptDataOKBodyAllOf0Items0Paging) UnmarshalBinary(b []byte) error {
-	var res FindScriptDataOKBodyAllOf0Items0Paging
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
-}
-
-// FindScriptDataOKBodyAllOf0Items0PagingCursors find script data o k body all of0 items0 paging cursors
-// swagger:model FindScriptDataOKBodyAllOf0Items0PagingCursors
-type FindScriptDataOKBodyAllOf0Items0PagingCursors struct {
-
-	// after
-	After string `json:"after,omitempty"`
-
-	// before
-	Before string `json:"before,omitempty"`
-}
-
-// Validate validates this find script data o k body all of0 items0 paging cursors
-func (o *FindScriptDataOKBodyAllOf0Items0PagingCursors) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *FindScriptDataOKBodyAllOf0Items0PagingCursors) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *FindScriptDataOKBodyAllOf0Items0PagingCursors) UnmarshalBinary(b []byte) error {
-	var res FindScriptDataOKBodyAllOf0Items0PagingCursors
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

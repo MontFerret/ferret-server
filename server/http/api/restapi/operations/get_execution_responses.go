@@ -9,6 +9,8 @@ import (
 	"net/http"
 
 	"github.com/go-openapi/runtime"
+
+	models "github.com/MontFerret/ferret-server/server/http/api/models"
 )
 
 // GetExecutionOKCode is the HTTP code returned for type GetExecutionOK
@@ -23,7 +25,7 @@ type GetExecutionOK struct {
 	/*
 	  In: Body
 	*/
-	Payload *GetExecutionOKBody `json:"body,omitempty"`
+	Payload *models.ExecutionOutputDetailed `json:"body,omitempty"`
 }
 
 // NewGetExecutionOK creates GetExecutionOK with default headers values
@@ -33,13 +35,13 @@ func NewGetExecutionOK() *GetExecutionOK {
 }
 
 // WithPayload adds the payload to the get execution o k response
-func (o *GetExecutionOK) WithPayload(payload *GetExecutionOKBody) *GetExecutionOK {
+func (o *GetExecutionOK) WithPayload(payload *models.ExecutionOutputDetailed) *GetExecutionOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the get execution o k response
-func (o *GetExecutionOK) SetPayload(payload *GetExecutionOKBody) {
+func (o *GetExecutionOK) SetPayload(payload *models.ExecutionOutputDetailed) {
 	o.Payload = payload
 }
 

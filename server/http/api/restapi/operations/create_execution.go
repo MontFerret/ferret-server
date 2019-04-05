@@ -8,11 +8,7 @@ package operations
 import (
 	"net/http"
 
-	errors "github.com/go-openapi/errors"
 	middleware "github.com/go-openapi/runtime/middleware"
-	strfmt "github.com/go-openapi/strfmt"
-	swag "github.com/go-openapi/swag"
-	validate "github.com/go-openapi/validate"
 )
 
 // CreateExecutionHandlerFunc turns a function with the right signature into a create execution handler
@@ -59,64 +55,4 @@ func (o *CreateExecution) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
-}
-
-// CreateExecutionBody Execution Input
-//
-// The properties that are allowed when creating or updating a Execution.
-// swagger:model CreateExecutionBody
-type CreateExecutionBody struct {
-
-	// params
-	Params map[string]interface{} `json:"params,omitempty"`
-
-	// script ID
-	// Required: true
-	// Pattern: [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}
-	ScriptID *string `json:"scriptID"`
-}
-
-// Validate validates this create execution body
-func (o *CreateExecutionBody) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := o.validateScriptID(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (o *CreateExecutionBody) validateScriptID(formats strfmt.Registry) error {
-
-	if err := validate.Required("body"+"."+"scriptID", "body", o.ScriptID); err != nil {
-		return err
-	}
-
-	if err := validate.Pattern("body"+"."+"scriptID", "body", string(*o.ScriptID), `[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *CreateExecutionBody) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *CreateExecutionBody) UnmarshalBinary(b []byte) error {
-	var res CreateExecutionBody
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
 }

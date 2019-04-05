@@ -9,6 +9,8 @@ import (
 	"net/http"
 
 	"github.com/go-openapi/runtime"
+
+	models "github.com/MontFerret/ferret-server/server/http/api/models"
 )
 
 // CreateProjectCreatedCode is the HTTP code returned for type CreateProjectCreated
@@ -23,7 +25,7 @@ type CreateProjectCreated struct {
 	/*
 	  In: Body
 	*/
-	Payload *CreateProjectCreatedBody `json:"body,omitempty"`
+	Payload *models.Entity `json:"body,omitempty"`
 }
 
 // NewCreateProjectCreated creates CreateProjectCreated with default headers values
@@ -33,13 +35,13 @@ func NewCreateProjectCreated() *CreateProjectCreated {
 }
 
 // WithPayload adds the payload to the create project created response
-func (o *CreateProjectCreated) WithPayload(payload *CreateProjectCreatedBody) *CreateProjectCreated {
+func (o *CreateProjectCreated) WithPayload(payload *models.Entity) *CreateProjectCreated {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the create project created response
-func (o *CreateProjectCreated) SetPayload(payload *CreateProjectCreatedBody) {
+func (o *CreateProjectCreated) SetPayload(payload *models.Entity) {
 	o.Payload = payload
 }
 

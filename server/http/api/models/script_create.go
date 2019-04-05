@@ -8,130 +8,44 @@ package models
 import (
 	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
-	"github.com/go-openapi/validate"
 )
 
-// ScriptCreate Script Common
+// ScriptCreate Script Create
 //
-// The properties that are shared amongst all versions of the Script model.
+// The properties that are allowed when creating a Script.
 // swagger:model script-create
 type ScriptCreate struct {
+	ScriptCommon
+}
 
-	// description
-	// Max Length: 255
-	// Min Length: 10
-	Description string `json:"description,omitempty"`
+// UnmarshalJSON unmarshals this object from a JSON structure
+func (m *ScriptCreate) UnmarshalJSON(raw []byte) error {
+	// AO0
+	var aO0 ScriptCommon
+	if err := swag.ReadJSON(raw, &aO0); err != nil {
+		return err
+	}
+	m.ScriptCommon = aO0
 
-	// execution
-	// Required: true
-	Execution *ScriptCreateExecution `json:"execution"`
+	return nil
+}
 
-	// name
-	// Required: true
-	// Max Length: 100
-	// Min Length: 3
-	Name *string `json:"name"`
+// MarshalJSON marshals this object to a JSON structure
+func (m ScriptCreate) MarshalJSON() ([]byte, error) {
+	_parts := make([][]byte, 0, 1)
 
-	// persistence
-	// Required: true
-	Persistence *ScriptCreatePersistence `json:"persistence"`
+	aO0, err := swag.WriteJSON(m.ScriptCommon)
+	if err != nil {
+		return nil, err
+	}
+	_parts = append(_parts, aO0)
+
+	return swag.ConcatJSON(_parts...), nil
 }
 
 // Validate validates this script create
 func (m *ScriptCreate) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.validateDescription(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateExecution(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateName(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validatePersistence(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *ScriptCreate) validateDescription(formats strfmt.Registry) error {
-
-	if swag.IsZero(m.Description) { // not required
-		return nil
-	}
-
-	if err := validate.MinLength("description", "body", string(m.Description), 10); err != nil {
-		return err
-	}
-
-	if err := validate.MaxLength("description", "body", string(m.Description), 255); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *ScriptCreate) validateExecution(formats strfmt.Registry) error {
-
-	if err := validate.Required("execution", "body", m.Execution); err != nil {
-		return err
-	}
-
-	if m.Execution != nil {
-		if err := m.Execution.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("execution")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (m *ScriptCreate) validateName(formats strfmt.Registry) error {
-
-	if err := validate.Required("name", "body", m.Name); err != nil {
-		return err
-	}
-
-	if err := validate.MinLength("name", "body", string(*m.Name), 3); err != nil {
-		return err
-	}
-
-	if err := validate.MaxLength("name", "body", string(*m.Name), 100); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *ScriptCreate) validatePersistence(formats strfmt.Registry) error {
-
-	if err := validate.Required("persistence", "body", m.Persistence); err != nil {
-		return err
-	}
-
-	if m.Persistence != nil {
-		if err := m.Persistence.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("persistence")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
@@ -146,116 +60,6 @@ func (m *ScriptCreate) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (m *ScriptCreate) UnmarshalBinary(b []byte) error {
 	var res ScriptCreate
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*m = res
-	return nil
-}
-
-// ScriptCreateExecution Script Execution Settings
-//
-// Represents script execution settings like query and params
-// swagger:model ScriptCreateExecution
-type ScriptCreateExecution struct {
-
-	// params
-	Params map[string]interface{} `json:"params,omitempty"`
-
-	// query
-	// Required: true
-	// Min Length: 8
-	Query *string `json:"query"`
-}
-
-// Validate validates this script create execution
-func (m *ScriptCreateExecution) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.validateQuery(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *ScriptCreateExecution) validateQuery(formats strfmt.Registry) error {
-
-	if err := validate.Required("execution"+"."+"query", "body", m.Query); err != nil {
-		return err
-	}
-
-	if err := validate.MinLength("execution"+"."+"query", "body", string(*m.Query), 8); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (m *ScriptCreateExecution) MarshalBinary() ([]byte, error) {
-	if m == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(m)
-}
-
-// UnmarshalBinary interface implementation
-func (m *ScriptCreateExecution) UnmarshalBinary(b []byte) error {
-	var res ScriptCreateExecution
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*m = res
-	return nil
-}
-
-// ScriptCreatePersistence Script Persistence
-// swagger:model ScriptCreatePersistence
-type ScriptCreatePersistence struct {
-
-	// enabled
-	// Required: true
-	Enabled *bool `json:"enabled"`
-}
-
-// Validate validates this script create persistence
-func (m *ScriptCreatePersistence) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.validateEnabled(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *ScriptCreatePersistence) validateEnabled(formats strfmt.Registry) error {
-
-	if err := validate.Required("persistence"+"."+"enabled", "body", m.Enabled); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (m *ScriptCreatePersistence) MarshalBinary() ([]byte, error) {
-	if m == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(m)
-}
-
-// UnmarshalBinary interface implementation
-func (m *ScriptCreatePersistence) UnmarshalBinary(b []byte) error {
-	var res ScriptCreatePersistence
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

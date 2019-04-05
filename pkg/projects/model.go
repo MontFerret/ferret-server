@@ -9,8 +9,7 @@ type (
 	}
 
 	Project struct {
-		Name        string `json:"name"`
-		Description string `json:"description"`
+		dal.Definition
 	}
 
 	ProjectEntity struct {

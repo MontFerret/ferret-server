@@ -34,8 +34,7 @@ generate:
 	swagger generate server \
 		--exclude-main \
 		--target=${DIR_API_GEN} \
-		--spec=${DIR_API}/api.oas2.json \
-		--with-flatten=expand
+		--spec=${DIR_API}/api.oas2.json
 
 doc:
 	godoc -http=:6060 -index

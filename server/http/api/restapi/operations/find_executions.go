@@ -6,7 +6,6 @@ package operations
 // Editing this file might prove futile when you re-run the generate command
 
 import (
-	"encoding/json"
 	"net/http"
 	"strconv"
 
@@ -14,7 +13,8 @@ import (
 	middleware "github.com/go-openapi/runtime/middleware"
 	strfmt "github.com/go-openapi/strfmt"
 	swag "github.com/go-openapi/swag"
-	validate "github.com/go-openapi/validate"
+
+	models "github.com/MontFerret/ferret-server/server/http/api/models"
 )
 
 // FindExecutionsHandlerFunc turns a function with the right signature into a find executions handler
@@ -63,311 +63,33 @@ func (o *FindExecutions) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 }
 
-// DataItems0 Execution Output
-//
-// The properties that are included when fetching a list of Executions.
-// swagger:model DataItems0
-type DataItems0 struct {
-	DataItems0AllOf0
-
-	// Execution Cause
-	//
-	// Execution cause
-	// Required: true
-	// Enum: [unknown manual schedule hook]
-	Cause *string `json:"cause"`
-
-	// job id
-	// Required: true
-	// Pattern: [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}
-	JobID *string `json:"job_id"`
-
-	// script id
-	// Required: true
-	// Pattern: [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}
-	ScriptID *string `json:"script_id"`
-
-	// script rev
-	// Required: true
-	ScriptRev *string `json:"script_rev"`
-
-	// Execution Status
-	//
-	// Execution stats
-	// Required: true
-	// Enum: [unknown queued running completed cancelled errored]
-	Status *string `json:"status"`
-}
-
-// UnmarshalJSON unmarshals this object from a JSON structure
-func (o *DataItems0) UnmarshalJSON(raw []byte) error {
-	// AO0
-	var aO0 DataItems0AllOf0
-	if err := swag.ReadJSON(raw, &aO0); err != nil {
-		return err
-	}
-	o.DataItems0AllOf0 = aO0
-
-	// AO1
-	var dataAO1 struct {
-		Cause *string `json:"cause"`
-
-		JobID *string `json:"job_id"`
-
-		ScriptID *string `json:"script_id"`
-
-		ScriptRev *string `json:"script_rev"`
-
-		Status *string `json:"status"`
-	}
-	if err := swag.ReadJSON(raw, &dataAO1); err != nil {
-		return err
-	}
-
-	o.Cause = dataAO1.Cause
-
-	o.JobID = dataAO1.JobID
-
-	o.ScriptID = dataAO1.ScriptID
-
-	o.ScriptRev = dataAO1.ScriptRev
-
-	o.Status = dataAO1.Status
-
-	return nil
-}
-
-// MarshalJSON marshals this object to a JSON structure
-func (o DataItems0) MarshalJSON() ([]byte, error) {
-	_parts := make([][]byte, 0, 2)
-
-	aO0, err := swag.WriteJSON(o.DataItems0AllOf0)
-	if err != nil {
-		return nil, err
-	}
-	_parts = append(_parts, aO0)
-
-	var dataAO1 struct {
-		Cause *string `json:"cause"`
-
-		JobID *string `json:"job_id"`
-
-		ScriptID *string `json:"script_id"`
-
-		ScriptRev *string `json:"script_rev"`
-
-		Status *string `json:"status"`
-	}
-
-	dataAO1.Cause = o.Cause
-
-	dataAO1.JobID = o.JobID
-
-	dataAO1.ScriptID = o.ScriptID
-
-	dataAO1.ScriptRev = o.ScriptRev
-
-	dataAO1.Status = o.Status
-
-	jsonDataAO1, errAO1 := swag.WriteJSON(dataAO1)
-	if errAO1 != nil {
-		return nil, errAO1
-	}
-	_parts = append(_parts, jsonDataAO1)
-
-	return swag.ConcatJSON(_parts...), nil
-}
-
-// Validate validates this data items0
-func (o *DataItems0) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	// validation for a type composition with DataItems0AllOf0
-
-	if err := o.validateCause(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validateJobID(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validateScriptID(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validateScriptRev(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validateStatus(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-var dataItems0TypeCausePropEnum []interface{}
-
-func init() {
-	var res []string
-	if err := json.Unmarshal([]byte(`["unknown","manual","schedule","hook"]`), &res); err != nil {
-		panic(err)
-	}
-	for _, v := range res {
-		dataItems0TypeCausePropEnum = append(dataItems0TypeCausePropEnum, v)
-	}
-}
-
-// property enum
-func (o *DataItems0) validateCauseEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, dataItems0TypeCausePropEnum); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (o *DataItems0) validateCause(formats strfmt.Registry) error {
-
-	if err := validate.Required("cause", "body", o.Cause); err != nil {
-		return err
-	}
-
-	// value enum
-	if err := o.validateCauseEnum("cause", "body", *o.Cause); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *DataItems0) validateJobID(formats strfmt.Registry) error {
-
-	if err := validate.Required("job_id", "body", o.JobID); err != nil {
-		return err
-	}
-
-	if err := validate.Pattern("job_id", "body", string(*o.JobID), `[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *DataItems0) validateScriptID(formats strfmt.Registry) error {
-
-	if err := validate.Required("script_id", "body", o.ScriptID); err != nil {
-		return err
-	}
-
-	if err := validate.Pattern("script_id", "body", string(*o.ScriptID), `[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *DataItems0) validateScriptRev(formats strfmt.Registry) error {
-
-	if err := validate.Required("script_rev", "body", o.ScriptRev); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-var dataItems0TypeStatusPropEnum []interface{}
-
-func init() {
-	var res []string
-	if err := json.Unmarshal([]byte(`["unknown","queued","running","completed","cancelled","errored"]`), &res); err != nil {
-		panic(err)
-	}
-	for _, v := range res {
-		dataItems0TypeStatusPropEnum = append(dataItems0TypeStatusPropEnum, v)
-	}
-}
-
-// property enum
-func (o *DataItems0) validateStatusEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, dataItems0TypeStatusPropEnum); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (o *DataItems0) validateStatus(formats strfmt.Registry) error {
-
-	if err := validate.Required("status", "body", o.Status); err != nil {
-		return err
-	}
-
-	// value enum
-	if err := o.validateStatusEnum("status", "body", *o.Status); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *DataItems0) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *DataItems0) UnmarshalBinary(b []byte) error {
-	var res DataItems0
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
-}
-
-// DataItems0AllOf0 data items0 all of0
-// swagger:model DataItems0AllOf0
-type DataItems0AllOf0 interface{}
-
 // FindExecutionsOKBody find executions o k body
 // swagger:model FindExecutionsOKBody
 type FindExecutionsOKBody struct {
+	models.SearchResult
 
 	// data
-	Data []*DataItems0 `json:"data"`
-
-	// paging
-	// Required: true
-	Paging *FindExecutionsOKBodyAO1Paging `json:"paging"`
+	Data []*models.ExecutionOutput `json:"data"`
 }
 
 // UnmarshalJSON unmarshals this object from a JSON structure
 func (o *FindExecutionsOKBody) UnmarshalJSON(raw []byte) error {
 	// FindExecutionsOKBodyAO0
-	var dataFindExecutionsOKBodyAO0 struct {
-		Data []*DataItems0 `json:"data"`
-	}
-	if err := swag.ReadJSON(raw, &dataFindExecutionsOKBodyAO0); err != nil {
+	var findExecutionsOKBodyAO0 models.SearchResult
+	if err := swag.ReadJSON(raw, &findExecutionsOKBodyAO0); err != nil {
 		return err
 	}
-
-	o.Data = dataFindExecutionsOKBodyAO0.Data
+	o.SearchResult = findExecutionsOKBodyAO0
 
 	// FindExecutionsOKBodyAO1
 	var dataFindExecutionsOKBodyAO1 struct {
-		Paging *FindExecutionsOKBodyAO1Paging `json:"paging"`
+		Data []*models.ExecutionOutput `json:"data"`
 	}
 	if err := swag.ReadJSON(raw, &dataFindExecutionsOKBodyAO1); err != nil {
 		return err
 	}
 
-	o.Paging = dataFindExecutionsOKBodyAO1.Paging
+	o.Data = dataFindExecutionsOKBodyAO1.Data
 
 	return nil
 }
@@ -376,23 +98,17 @@ func (o *FindExecutionsOKBody) UnmarshalJSON(raw []byte) error {
 func (o FindExecutionsOKBody) MarshalJSON() ([]byte, error) {
 	_parts := make([][]byte, 0, 2)
 
-	var dataFindExecutionsOKBodyAO0 struct {
-		Data []*DataItems0 `json:"data"`
+	findExecutionsOKBodyAO0, err := swag.WriteJSON(o.SearchResult)
+	if err != nil {
+		return nil, err
 	}
-
-	dataFindExecutionsOKBodyAO0.Data = o.Data
-
-	jsonDataFindExecutionsOKBodyAO0, errFindExecutionsOKBodyAO0 := swag.WriteJSON(dataFindExecutionsOKBodyAO0)
-	if errFindExecutionsOKBodyAO0 != nil {
-		return nil, errFindExecutionsOKBodyAO0
-	}
-	_parts = append(_parts, jsonDataFindExecutionsOKBodyAO0)
+	_parts = append(_parts, findExecutionsOKBodyAO0)
 
 	var dataFindExecutionsOKBodyAO1 struct {
-		Paging *FindExecutionsOKBodyAO1Paging `json:"paging"`
+		Data []*models.ExecutionOutput `json:"data"`
 	}
 
-	dataFindExecutionsOKBodyAO1.Paging = o.Paging
+	dataFindExecutionsOKBodyAO1.Data = o.Data
 
 	jsonDataFindExecutionsOKBodyAO1, errFindExecutionsOKBodyAO1 := swag.WriteJSON(dataFindExecutionsOKBodyAO1)
 	if errFindExecutionsOKBodyAO1 != nil {
@@ -407,11 +123,12 @@ func (o FindExecutionsOKBody) MarshalJSON() ([]byte, error) {
 func (o *FindExecutionsOKBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := o.validateData(formats); err != nil {
+	// validation for a type composition with models.SearchResult
+	if err := o.SearchResult.Validate(formats); err != nil {
 		res = append(res, err)
 	}
 
-	if err := o.validatePaging(formats); err != nil {
+	if err := o.validateData(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -446,24 +163,6 @@ func (o *FindExecutionsOKBody) validateData(formats strfmt.Registry) error {
 	return nil
 }
 
-func (o *FindExecutionsOKBody) validatePaging(formats strfmt.Registry) error {
-
-	if err := validate.Required("findExecutionsOK"+"."+"paging", "body", o.Paging); err != nil {
-		return err
-	}
-
-	if o.Paging != nil {
-		if err := o.Paging.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("findExecutionsOK" + "." + "paging")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
 // MarshalBinary interface implementation
 func (o *FindExecutionsOKBody) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -475,116 +174,6 @@ func (o *FindExecutionsOKBody) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (o *FindExecutionsOKBody) UnmarshalBinary(b []byte) error {
 	var res FindExecutionsOKBody
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
-}
-
-// FindExecutionsOKBodyAO1Paging find executions o k body a o1 paging
-// swagger:model FindExecutionsOKBodyAO1Paging
-type FindExecutionsOKBodyAO1Paging struct {
-
-	// count
-	// Required: true
-	Count *float64 `json:"count"`
-
-	// cursors
-	// Required: true
-	Cursors *FindExecutionsOKBodyAO1PagingCursors `json:"cursors"`
-}
-
-// Validate validates this find executions o k body a o1 paging
-func (o *FindExecutionsOKBodyAO1Paging) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := o.validateCount(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validateCursors(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (o *FindExecutionsOKBodyAO1Paging) validateCount(formats strfmt.Registry) error {
-
-	if err := validate.Required("findExecutionsOK"+"."+"paging"+"."+"count", "body", o.Count); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *FindExecutionsOKBodyAO1Paging) validateCursors(formats strfmt.Registry) error {
-
-	if err := validate.Required("findExecutionsOK"+"."+"paging"+"."+"cursors", "body", o.Cursors); err != nil {
-		return err
-	}
-
-	if o.Cursors != nil {
-		if err := o.Cursors.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("findExecutionsOK" + "." + "paging" + "." + "cursors")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *FindExecutionsOKBodyAO1Paging) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *FindExecutionsOKBodyAO1Paging) UnmarshalBinary(b []byte) error {
-	var res FindExecutionsOKBodyAO1Paging
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
-}
-
-// FindExecutionsOKBodyAO1PagingCursors find executions o k body a o1 paging cursors
-// swagger:model FindExecutionsOKBodyAO1PagingCursors
-type FindExecutionsOKBodyAO1PagingCursors struct {
-
-	// after
-	After string `json:"after,omitempty"`
-
-	// before
-	Before string `json:"before,omitempty"`
-}
-
-// Validate validates this find executions o k body a o1 paging cursors
-func (o *FindExecutionsOKBodyAO1PagingCursors) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *FindExecutionsOKBodyAO1PagingCursors) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *FindExecutionsOKBodyAO1PagingCursors) UnmarshalBinary(b []byte) error {
-	var res FindExecutionsOKBodyAO1PagingCursors
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

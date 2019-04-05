@@ -13,7 +13,7 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// SearchResult SearchResult
+// SearchResult Search Result
 // swagger:model search-result
 type SearchResult struct {
 

@@ -172,21 +172,20 @@ func (repo *PersistenceRepository) Find(ctx context.Context, q dal.Query) (persi
 }
 
 func (repo *PersistenceRepository) FindByScriptID(ctx context.Context, scriptID string, q dal.Query) ([]persistence.RecordEntity, error) {
+	params := map[string]interface{}{}
+	bindPaginationParams(params, q.Pagination)
+
 	cursor, err := repo.collection.Database().Query(
 		ctx,
-		fmt.Sprintf(queries.FindAllByScriptID, repo.collection.Name()),
-		map[string]interface{}{
-			"offset":    q.Pagination.Size * (q.Pagination.Page - 1),
-			"count":     q.Pagination.Size,
-			"script_id": scriptID,
-		},
+		fmt.Sprintf(queries.FindAll, repo.collection.Name()),
+		params,
 	)
 
 	if err != nil {
 		return nil, err
 	}
 
-	result := make([]persistence.RecordEntity, 0, q.Pagination.Size)
+	result := make([]persistence.RecordEntity, 0, q.Pagination.Count)
 
 	defer cursor.Close()
 

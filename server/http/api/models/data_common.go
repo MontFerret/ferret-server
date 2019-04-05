@@ -31,9 +31,9 @@ type DataCommon struct {
 	// Required: true
 	ScriptRev *string `json:"script_rev"`
 
-	// Any
+	// value
 	// Required: true
-	Value interface{} `json:"value"`
+	Value Any `json:"value"`
 }
 
 // Validate validates this data common
