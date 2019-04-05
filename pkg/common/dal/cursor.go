@@ -3,6 +3,7 @@ package dal
 import (
 	"encoding/base64"
 	"encoding/json"
+	"github.com/pkg/errors"
 	"strconv"
 	"time"
 )
@@ -43,11 +44,17 @@ func DecodeCursor(c Cursor) (time.Time, error) {
 		return time.Now(), nil
 	}
 
-	num, err := strconv.ParseInt(string(c), 10, 64)
+	decoded, err := base64.StdEncoding.DecodeString(string(c))
+
+	if err != nil {
+		return time.Time{}, errors.Wrap(err, "decode cursor")
+	}
+
+	num, err := strconv.ParseInt(string(decoded), 10, 64)
 
 	if err != nil {
 		return time.Time{}, err
 	}
 
-	return time.Unix(int64(num), 0), nil
+	return time.Unix(int64(num), -1), nil
 }
