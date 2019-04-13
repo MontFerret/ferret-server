@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/arangodb/go-driver"
@@ -74,7 +73,7 @@ func (repo *ProjectRepository) Find(ctx context.Context, q dal.Query) (projects.
 
 	cursor, err := repo.collection.Database().Query(
 		ctx,
-		fmt.Sprintf(queries.FindAll, repo.collection.Name()),
+		queries.FindAll(repo.collection.Name()),
 		params,
 	)
 
@@ -127,7 +126,7 @@ func (repo *ProjectRepository) Create(ctx context.Context, project projects.Proj
 
 	cursor, err := repo.collection.Database().Query(
 		ctx,
-		fmt.Sprintf(queries.FindOneByName, repo.collection.Name()),
+		queries.FindOneByName(repo.collection.Name()),
 		map[string]interface{}{
 			"name": project.Name,
 		},

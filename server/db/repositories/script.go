@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/arangodb/go-driver"
@@ -74,7 +73,7 @@ func (repo *ScriptRepository) Find(ctx context.Context, q dal.Query) (scripts.Qu
 
 	cursor, err := repo.collection.Database().Query(
 		ctx,
-		fmt.Sprintf(queries.FindAll, repo.collection.Name()),
+		queries.FindAll(repo.collection.Name()),
 		params,
 	)
 

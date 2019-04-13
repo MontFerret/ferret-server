@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/arangodb/go-driver"
@@ -125,7 +124,7 @@ func (repo *PersistenceRepository) Find(ctx context.Context, q dal.Query) (persi
 
 	cursor, err := repo.collection.Database().Query(
 		ctx,
-		fmt.Sprintf(queries.FindAll, repo.collection.Name()),
+		queries.FindAll(repo.collection.Name()),
 		params,
 	)
 
@@ -178,7 +177,7 @@ func (repo *PersistenceRepository) FindByScriptID(ctx context.Context, scriptID 
 
 	cursor, err := repo.collection.Database().Query(
 		ctx,
-		fmt.Sprintf(queries.FindAllByScriptID, repo.collection.Name()),
+		queries.FindAllByScriptID(repo.collection.Name()),
 		params,
 	)
 
