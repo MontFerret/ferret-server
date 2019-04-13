@@ -136,7 +136,7 @@ func compileQuery(collectionName string, q dal.Query) dal.CompiledQuery {
 		}
 	}
 
-	if q.Pagination.Cursor.IsEmpty() == false {
+	if !q.Pagination.Cursor.IsEmpty() {
 		qs.WriteString("\n")
 		qs.WriteString("FILTER ")
 		qs.WriteString(varName)
@@ -164,7 +164,7 @@ func compileQuery(collectionName string, q dal.Query) dal.CompiledQuery {
 }
 
 func bindPaginationParams(params map[string]interface{}, p dal.Pagination) {
-	if p.Cursor.IsEmpty() == false {
+	if !p.Cursor.IsEmpty() {
 		params[queries.ParamPageCursor] = p.Cursor
 	} else {
 		params[queries.ParamPageCursor] = nil
