@@ -35,11 +35,11 @@ func (service *Service) GetProject(ctx context.Context, id string) (ProjectEntit
 	return repo.Get(ctx, id)
 }
 
-func (service *Service) FindProjects(ctx context.Context, q dal.Query) ([]ProjectEntity, error) {
+func (service *Service) FindProjects(ctx context.Context, q dal.Query) (QueryResult, error) {
 	repo, err := service.db.GetProjectsRepository()
 
 	if err != nil {
-		return nil, errors.Wrap(err, "resolve project repository")
+		return QueryResult{}, errors.Wrap(err, "resolve project repository")
 	}
 
 	return repo.Find(ctx, q)

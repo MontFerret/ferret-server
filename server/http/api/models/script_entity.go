@@ -10,64 +10,31 @@ import (
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
-	"github.com/go-openapi/validate"
 )
 
 // ScriptEntity Script Entity
 // swagger:model script-entity
 type ScriptEntity struct {
-	ScriptEntityAllOf0
+	Entity
 
-	// description
-	// Max Length: 255
-	// Min Length: 10
-	Description string `json:"description,omitempty"`
-
-	// execution
-	// Required: true
-	Execution *ScriptEntityAO1Execution `json:"execution"`
-
-	// name
-	// Required: true
-	// Max Length: 100
-	// Min Length: 3
-	Name *string `json:"name"`
-
-	// persistence
-	// Required: true
-	Persistence *ScriptEntityAO1Persistence `json:"persistence"`
+	ScriptCommon
 }
 
 // UnmarshalJSON unmarshals this object from a JSON structure
 func (m *ScriptEntity) UnmarshalJSON(raw []byte) error {
 	// AO0
-	var aO0 ScriptEntityAllOf0
+	var aO0 Entity
 	if err := swag.ReadJSON(raw, &aO0); err != nil {
 		return err
 	}
-	m.ScriptEntityAllOf0 = aO0
+	m.Entity = aO0
 
 	// AO1
-	var dataAO1 struct {
-		Description string `json:"description,omitempty"`
-
-		Execution *ScriptEntityAO1Execution `json:"execution"`
-
-		Name *string `json:"name"`
-
-		Persistence *ScriptEntityAO1Persistence `json:"persistence"`
-	}
-	if err := swag.ReadJSON(raw, &dataAO1); err != nil {
+	var aO1 ScriptCommon
+	if err := swag.ReadJSON(raw, &aO1); err != nil {
 		return err
 	}
-
-	m.Description = dataAO1.Description
-
-	m.Execution = dataAO1.Execution
-
-	m.Name = dataAO1.Name
-
-	m.Persistence = dataAO1.Persistence
+	m.ScriptCommon = aO1
 
 	return nil
 }
@@ -76,35 +43,17 @@ func (m *ScriptEntity) UnmarshalJSON(raw []byte) error {
 func (m ScriptEntity) MarshalJSON() ([]byte, error) {
 	_parts := make([][]byte, 0, 2)
 
-	aO0, err := swag.WriteJSON(m.ScriptEntityAllOf0)
+	aO0, err := swag.WriteJSON(m.Entity)
 	if err != nil {
 		return nil, err
 	}
 	_parts = append(_parts, aO0)
 
-	var dataAO1 struct {
-		Description string `json:"description,omitempty"`
-
-		Execution *ScriptEntityAO1Execution `json:"execution"`
-
-		Name *string `json:"name"`
-
-		Persistence *ScriptEntityAO1Persistence `json:"persistence"`
+	aO1, err := swag.WriteJSON(m.ScriptCommon)
+	if err != nil {
+		return nil, err
 	}
-
-	dataAO1.Description = m.Description
-
-	dataAO1.Execution = m.Execution
-
-	dataAO1.Name = m.Name
-
-	dataAO1.Persistence = m.Persistence
-
-	jsonDataAO1, errAO1 := swag.WriteJSON(dataAO1)
-	if errAO1 != nil {
-		return nil, errAO1
-	}
-	_parts = append(_parts, jsonDataAO1)
+	_parts = append(_parts, aO1)
 
 	return swag.ConcatJSON(_parts...), nil
 }
@@ -113,100 +62,18 @@ func (m ScriptEntity) MarshalJSON() ([]byte, error) {
 func (m *ScriptEntity) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	// validation for a type composition with ScriptEntityAllOf0
-	if err := m.ScriptEntityAllOf0.Validate(formats); err != nil {
+	// validation for a type composition with Entity
+	if err := m.Entity.Validate(formats); err != nil {
 		res = append(res, err)
 	}
-
-	if err := m.validateDescription(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateExecution(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateName(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validatePersistence(formats); err != nil {
+	// validation for a type composition with ScriptCommon
+	if err := m.ScriptCommon.Validate(formats); err != nil {
 		res = append(res, err)
 	}
 
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
-	return nil
-}
-
-func (m *ScriptEntity) validateDescription(formats strfmt.Registry) error {
-
-	if swag.IsZero(m.Description) { // not required
-		return nil
-	}
-
-	if err := validate.MinLength("description", "body", string(m.Description), 10); err != nil {
-		return err
-	}
-
-	if err := validate.MaxLength("description", "body", string(m.Description), 255); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *ScriptEntity) validateExecution(formats strfmt.Registry) error {
-
-	if err := validate.Required("execution", "body", m.Execution); err != nil {
-		return err
-	}
-
-	if m.Execution != nil {
-		if err := m.Execution.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("execution")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (m *ScriptEntity) validateName(formats strfmt.Registry) error {
-
-	if err := validate.Required("name", "body", m.Name); err != nil {
-		return err
-	}
-
-	if err := validate.MinLength("name", "body", string(*m.Name), 3); err != nil {
-		return err
-	}
-
-	if err := validate.MaxLength("name", "body", string(*m.Name), 100); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *ScriptEntity) validatePersistence(formats strfmt.Registry) error {
-
-	if err := validate.Required("persistence", "body", m.Persistence); err != nil {
-		return err
-	}
-
-	if m.Persistence != nil {
-		if err := m.Persistence.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("persistence")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
@@ -221,277 +88,6 @@ func (m *ScriptEntity) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (m *ScriptEntity) UnmarshalBinary(b []byte) error {
 	var res ScriptEntity
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*m = res
-	return nil
-}
-
-// ScriptEntityAO1Execution Script Execution Settings
-//
-// Represents script execution settings like query and params
-// swagger:model ScriptEntityAO1Execution
-type ScriptEntityAO1Execution struct {
-
-	// params
-	Params map[string]interface{} `json:"params,omitempty"`
-
-	// query
-	// Required: true
-	// Min Length: 8
-	Query *string `json:"query"`
-}
-
-// Validate validates this script entity a o1 execution
-func (m *ScriptEntityAO1Execution) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.validateQuery(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *ScriptEntityAO1Execution) validateQuery(formats strfmt.Registry) error {
-
-	if err := validate.Required("execution"+"."+"query", "body", m.Query); err != nil {
-		return err
-	}
-
-	if err := validate.MinLength("execution"+"."+"query", "body", string(*m.Query), 8); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (m *ScriptEntityAO1Execution) MarshalBinary() ([]byte, error) {
-	if m == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(m)
-}
-
-// UnmarshalBinary interface implementation
-func (m *ScriptEntityAO1Execution) UnmarshalBinary(b []byte) error {
-	var res ScriptEntityAO1Execution
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*m = res
-	return nil
-}
-
-// ScriptEntityAO1Persistence Script Persistence
-// swagger:model ScriptEntityAO1Persistence
-type ScriptEntityAO1Persistence struct {
-
-	// enabled
-	// Required: true
-	Enabled *bool `json:"enabled"`
-}
-
-// Validate validates this script entity a o1 persistence
-func (m *ScriptEntityAO1Persistence) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.validateEnabled(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *ScriptEntityAO1Persistence) validateEnabled(formats strfmt.Registry) error {
-
-	if err := validate.Required("persistence"+"."+"enabled", "body", m.Enabled); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (m *ScriptEntityAO1Persistence) MarshalBinary() ([]byte, error) {
-	if m == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(m)
-}
-
-// UnmarshalBinary interface implementation
-func (m *ScriptEntityAO1Persistence) UnmarshalBinary(b []byte) error {
-	var res ScriptEntityAO1Persistence
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*m = res
-	return nil
-}
-
-// ScriptEntityAllOf0 Entity
-//
-// Represents a database entity
-// swagger:model ScriptEntityAllOf0
-type ScriptEntityAllOf0 struct {
-
-	// id
-	// Required: true
-	ID *string `json:"id"`
-
-	// rev
-	// Required: true
-	Rev *string `json:"rev"`
-
-	// created at
-	// Required: true
-	CreatedAt *string `json:"created_at"`
-
-	// updated at
-	UpdatedAt string `json:"updated_at,omitempty"`
-}
-
-// UnmarshalJSON unmarshals this object from a JSON structure
-func (m *ScriptEntityAllOf0) UnmarshalJSON(raw []byte) error {
-	// AO0
-	var dataAO0 struct {
-		ID *string `json:"id"`
-
-		Rev *string `json:"rev"`
-	}
-	if err := swag.ReadJSON(raw, &dataAO0); err != nil {
-		return err
-	}
-
-	m.ID = dataAO0.ID
-
-	m.Rev = dataAO0.Rev
-
-	// AO1
-	var dataAO1 struct {
-		CreatedAt *string `json:"created_at"`
-
-		UpdatedAt string `json:"updated_at,omitempty"`
-	}
-	if err := swag.ReadJSON(raw, &dataAO1); err != nil {
-		return err
-	}
-
-	m.CreatedAt = dataAO1.CreatedAt
-
-	m.UpdatedAt = dataAO1.UpdatedAt
-
-	return nil
-}
-
-// MarshalJSON marshals this object to a JSON structure
-func (m ScriptEntityAllOf0) MarshalJSON() ([]byte, error) {
-	_parts := make([][]byte, 0, 2)
-
-	var dataAO0 struct {
-		ID *string `json:"id"`
-
-		Rev *string `json:"rev"`
-	}
-
-	dataAO0.ID = m.ID
-
-	dataAO0.Rev = m.Rev
-
-	jsonDataAO0, errAO0 := swag.WriteJSON(dataAO0)
-	if errAO0 != nil {
-		return nil, errAO0
-	}
-	_parts = append(_parts, jsonDataAO0)
-
-	var dataAO1 struct {
-		CreatedAt *string `json:"created_at"`
-
-		UpdatedAt string `json:"updated_at,omitempty"`
-	}
-
-	dataAO1.CreatedAt = m.CreatedAt
-
-	dataAO1.UpdatedAt = m.UpdatedAt
-
-	jsonDataAO1, errAO1 := swag.WriteJSON(dataAO1)
-	if errAO1 != nil {
-		return nil, errAO1
-	}
-	_parts = append(_parts, jsonDataAO1)
-
-	return swag.ConcatJSON(_parts...), nil
-}
-
-// Validate validates this script entity all of0
-func (m *ScriptEntityAllOf0) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.validateID(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateRev(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateCreatedAt(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *ScriptEntityAllOf0) validateID(formats strfmt.Registry) error {
-
-	if err := validate.Required("id", "body", m.ID); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *ScriptEntityAllOf0) validateRev(formats strfmt.Registry) error {
-
-	if err := validate.Required("rev", "body", m.Rev); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *ScriptEntityAllOf0) validateCreatedAt(formats strfmt.Registry) error {
-
-	if err := validate.Required("created_at", "body", m.CreatedAt); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (m *ScriptEntityAllOf0) MarshalBinary() ([]byte, error) {
-	if m == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(m)
-}
-
-// UnmarshalBinary interface implementation
-func (m *ScriptEntityAllOf0) UnmarshalBinary(b []byte) error {
-	var res ScriptEntityAllOf0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

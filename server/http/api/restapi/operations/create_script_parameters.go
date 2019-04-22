@@ -14,6 +14,8 @@ import (
 	"github.com/go-openapi/validate"
 
 	strfmt "github.com/go-openapi/strfmt"
+
+	models "github.com/MontFerret/ferret-server/server/http/api/models"
 )
 
 // NewCreateScriptParams creates a new CreateScriptParams object
@@ -35,7 +37,7 @@ type CreateScriptParams struct {
 	/*
 	  In: body
 	*/
-	Body CreateScriptBody
+	Body models.ScriptCreate
 	/*
 	  Required: true
 	  Pattern: [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}
@@ -55,7 +57,7 @@ func (o *CreateScriptParams) BindRequest(r *http.Request, route *middleware.Matc
 
 	if runtime.HasBody(r) {
 		defer r.Body.Close()
-		var body CreateScriptBody
+		var body models.ScriptCreate
 		if err := route.Consumer.Consume(r.Body, &body); err != nil {
 			res = append(res, errors.NewParseError("body", "body", "", err))
 		} else {

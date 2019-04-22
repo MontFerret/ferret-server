@@ -6,6 +6,7 @@ import (
 	"github.com/MontFerret/ferret-server/pkg/projects"
 	"github.com/MontFerret/ferret-server/server/controllers/dto"
 	"github.com/MontFerret/ferret-server/server/http"
+	"github.com/MontFerret/ferret-server/server/http/api/models"
 	"github.com/MontFerret/ferret-server/server/http/api/restapi/operations"
 	"github.com/MontFerret/ferret-server/server/logging"
 
@@ -28,8 +29,7 @@ func (ctl *Projects) CreateProject(params operations.CreateProjectParams) middle
 	logger := logging.FromRequest(params.HTTPRequest)
 
 	out, err := ctl.service.CreateProject(params.HTTPRequest.Context(), projects.Project{
-		Name:        *params.Body.Name,
-		Description: params.Body.Description,
+		Definition: dto.DefinitionTo(params.Body.Definition),
 	})
 
 	if err != nil {
@@ -48,13 +48,9 @@ func (ctl *Projects) CreateProject(params operations.CreateProjectParams) middle
 		Str("name", *params.Body.Name).
 		Msg("created new project")
 
-	createdAt, _ := dto.ToMetadataDates(out.Metadata)
+	e := dto.EntityFrom(out)
 
-	return operations.NewCreateProjectCreated().WithPayload(&operations.CreateProjectCreatedBody{
-		ID:        &out.ID,
-		Rev:       &out.Rev,
-		CreatedAt: &createdAt,
-	})
+	return operations.NewCreateProjectCreated().WithPayload(&e)
 }
 
 func (ctl *Projects) UpdateProject(params operations.UpdateProjectParams) middleware.Responder {
@@ -62,8 +58,7 @@ func (ctl *Projects) UpdateProject(params operations.UpdateProjectParams) middle
 
 	out, err := ctl.service.UpdateProject(params.HTTPRequest.Context(), projects.UpdateProject{
 		Project: projects.Project{
-			Name:        *params.Body.Name,
-			Description: params.Body.Description,
+			Definition: dto.DefinitionTo(params.Body.Definition),
 		},
 		ID: params.ProjectID,
 	})
@@ -85,14 +80,8 @@ func (ctl *Projects) UpdateProject(params operations.UpdateProjectParams) middle
 		Str("name", *params.Body.Name).
 		Msg("updated project")
 
-	createdAt, updatedAt := dto.ToMetadataDates(out.Metadata)
-
-	return operations.NewUpdateProjectOK().WithPayload(&operations.UpdateProjectOKBody{
-		ID:        &out.ID,
-		Rev:       &out.Rev,
-		CreatedAt: &createdAt,
-		UpdatedAt: updatedAt,
-	})
+	e := dto.EntityFrom(out)
+	return operations.NewUpdateProjectOK().WithPayload(&e)
 }
 
 func (ctl *Projects) DeleteProject(params operations.DeleteProjectParams) middleware.Responder {
@@ -137,36 +126,22 @@ func (ctl *Projects) GetProject(params operations.GetProjectParams) middleware.R
 		return http.InternalError()
 	}
 
-	createdAt, updatedAt := dto.ToMetadataDates(out.Metadata)
+	entity := dto.EntityFrom(out.Entity)
 
-	return operations.NewGetProjectOK().WithPayload(&operations.GetProjectOKBody{
-		Name:        &out.Name,
-		Description: out.Description,
-		GetProjectOKBodyAllOf0: operations.GetProjectOKBodyAllOf0{
-			ID:        &out.ID,
-			Rev:       &out.Rev,
-			CreatedAt: &createdAt,
-			UpdatedAt: updatedAt,
+	return operations.NewGetProjectOK().WithPayload(&models.ProjectOutputDetailed{
+		ProjectEntity: models.ProjectEntity{
+			Entity: entity,
+			ProjectCommon: models.ProjectCommon{
+				Definition: dto.DefinitionFrom(out.Definition),
+			},
 		},
 	})
 }
 
 func (ctl *Projects) FindProjects(params operations.FindProjectsParams) middleware.Responder {
 	logger := logging.FromRequest(params.HTTPRequest)
-
-	var size uint = 10
-	var page uint = 1
-
-	if params.Size != nil {
-		size = uint(*params.Size)
-		page = uint(*params.Page)
-	}
-
 	query := dal.Query{
-		Pagination: dal.Pagination{
-			Size: size,
-			Page: page,
-		},
+		Pagination: dto.PaginationTo(params.Count, params.Cursor),
 	}
 
 	out, err := ctl.service.FindProjects(params.HTTPRequest.Context(), query)
@@ -175,30 +150,26 @@ func (ctl *Projects) FindProjects(params operations.FindProjectsParams) middlewa
 		logger.Error().
 			Timestamp().
 			Err(err).
-			Uint("page", query.Pagination.Page).
-			Uint("size", query.Pagination.Size).
+			Uint64("count", query.Pagination.Count).
+			Str("cursor", query.Pagination.Cursor.String()).
 			Msg("failed to find projects")
 
 		return http.InternalError()
 	}
 
-	res := make([]*operations.FindProjectsOKBodyItems0, 0, len(out))
+	res := make([]*models.ProjectOutput, 0, len(out.Data))
 
-	for _, p := range out {
+	for _, p := range out.Data {
 		project := p
-		createdAt, updatedAt := dto.ToMetadataDates(project.Metadata)
 
-		res = append(res, &operations.FindProjectsOKBodyItems0{
-			Name:        &project.Name,
-			Description: project.Description,
-			FindProjectsOKBodyItems0AllOf0: operations.FindProjectsOKBodyItems0AllOf0{
-				ID:        &project.ID,
-				Rev:       &project.Rev,
-				CreatedAt: &createdAt,
-				UpdatedAt: updatedAt,
-			},
+		res = append(res, &models.ProjectOutput{
+			Entity:     dto.EntityFrom(project.Entity),
+			Definition: dto.DefinitionFrom(project.Definition),
 		})
 	}
 
-	return operations.NewFindProjectsOK().WithPayload(res)
+	return operations.NewFindProjectsOK().WithPayload(&operations.FindProjectsOKBody{
+		Data:         res,
+		SearchResult: dto.SearchResultFrom(out.QueryResult),
+	})
 }

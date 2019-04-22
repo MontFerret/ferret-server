@@ -14,6 +14,8 @@ import (
 	"github.com/go-openapi/validate"
 
 	strfmt "github.com/go-openapi/strfmt"
+
+	models "github.com/MontFerret/ferret-server/server/http/api/models"
 )
 
 // NewUpdateProjectParams creates a new UpdateProjectParams object
@@ -35,7 +37,7 @@ type UpdateProjectParams struct {
 	/*
 	  In: body
 	*/
-	Body UpdateProjectBody
+	Body models.ProjectUpdate
 	/*
 	  Required: true
 	  Pattern: [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}
@@ -55,7 +57,7 @@ func (o *UpdateProjectParams) BindRequest(r *http.Request, route *middleware.Mat
 
 	if runtime.HasBody(r) {
 		defer r.Body.Close()
-		var body UpdateProjectBody
+		var body models.ProjectUpdate
 		if err := route.Consumer.Consume(r.Body, &body); err != nil {
 			res = append(res, errors.NewParseError("body", "body", "", err))
 		} else {

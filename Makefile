@@ -1,6 +1,7 @@
 .PHONY: build test doc fmt lint vet
 
 export GOPATH
+export GO111MODULE=on
 
 VERSION ?= $(shell git describe --tags --always --dirty)
 DIR_BIN = ./bin
@@ -17,7 +18,7 @@ start:
 build: vet generate test compile
 
 compile:
-	go build -v -o ${DIR_BIN}/ferret-server \
+	go build -mod=vendor -v -o ${DIR_BIN}/ferret-server \
 	-ldflags "-X main.version=${VERSION}" \
 	./main.go
 
@@ -34,8 +35,7 @@ generate:
 	swagger generate server \
 		--exclude-main \
 		--target=${DIR_API_GEN} \
-		--spec=${DIR_API}/api.oas2.json \
-		--with-flatten=expand
+		--spec=${DIR_API}/api.oas2.json
 
 doc:
 	godoc -http=:6060 -index

@@ -2,15 +2,16 @@ package repositories
 
 import (
 	"context"
-	"fmt"
+	"time"
+
+	"github.com/arangodb/go-driver"
+	"github.com/gofrs/uuid"
+	"github.com/pkg/errors"
+
 	"github.com/MontFerret/ferret-server/pkg/common"
 	"github.com/MontFerret/ferret-server/pkg/common/dal"
 	"github.com/MontFerret/ferret-server/pkg/projects"
 	"github.com/MontFerret/ferret-server/server/db/repositories/queries"
-	"github.com/arangodb/go-driver"
-	"github.com/gofrs/uuid"
-	"github.com/pkg/errors"
-	"time"
 )
 
 type (
@@ -66,21 +67,21 @@ func (repo *ProjectRepository) Get(ctx context.Context, id string) (projects.Pro
 	return repo.fromRecord(meta, record), nil
 }
 
-func (repo *ProjectRepository) Find(ctx context.Context, q dal.Query) ([]projects.ProjectEntity, error) {
+func (repo *ProjectRepository) Find(ctx context.Context, q dal.Query) (projects.QueryResult, error) {
+	params := map[string]interface{}{}
+	bindPaginationParams(params, q.Pagination)
+
 	cursor, err := repo.collection.Database().Query(
 		ctx,
-		fmt.Sprintf(queries.FindAll, repo.collection.Name()),
-		map[string]interface{}{
-			"offset": q.Pagination.Size * (q.Pagination.Page - 1),
-			"count":  q.Pagination.Size,
-		},
+		queries.FindAll(repo.collection.Name()),
+		params,
 	)
 
 	if err != nil {
-		return nil, err
+		return projects.QueryResult{}, err
 	}
 
-	result := make([]projects.ProjectEntity, 0, q.Pagination.Size)
+	data := make([]projects.ProjectEntity, 0, q.Pagination.Count)
 
 	defer cursor.Close()
 
@@ -90,10 +91,29 @@ func (repo *ProjectRepository) Find(ctx context.Context, q dal.Query) ([]project
 		meta, err := cursor.ReadDocument(ctx, &record)
 
 		if err != nil {
-			return nil, err
+			return projects.QueryResult{}, err
 		}
 
-		result = append(result, repo.fromRecord(meta, record))
+		data = append(data, repo.fromRecord(meta, record))
+	}
+
+	result := projects.QueryResult{
+		QueryResult: dal.QueryResult{
+			Count: uint64(len(data)),
+		},
+		Data: data,
+	}
+
+	length := len(data)
+
+	if length > 0 {
+		first := data[0]
+		result.BeforeCursor = dal.NewCursor(first.CreatedAt)
+
+		if length == int(q.Pagination.Count) {
+			last := data[length-1]
+			result.AfterCursor = dal.NewCursor(last.CreatedAt)
+		}
 	}
 
 	return result, nil
@@ -106,7 +126,7 @@ func (repo *ProjectRepository) Create(ctx context.Context, project projects.Proj
 
 	cursor, err := repo.collection.Database().Query(
 		ctx,
-		fmt.Sprintf(queries.FindOneByName, repo.collection.Name()),
+		queries.FindOneByName(repo.collection.Name()),
 		map[string]interface{}{
 			"name": project.Name,
 		},
@@ -221,9 +241,6 @@ func (repo *ProjectRepository) fromRecord(meta driver.DocumentMeta, record proje
 			Rev:      meta.Rev,
 			Metadata: record.Metadata,
 		},
-		Project: projects.Project{
-			Name:        record.Name,
-			Description: record.Description,
-		},
+		Project: record.Project,
 	}
 }

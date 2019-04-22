@@ -24,15 +24,11 @@ func NewFindScriptDataParams() FindScriptDataParams {
 	var (
 		// initialize parameters with default values
 
-		pageDefault = int32(1)
-
-		sizeDefault = int32(10)
+		countDefault = int32(10)
 	)
 
 	return FindScriptDataParams{
-		Page: &pageDefault,
-
-		Size: &sizeDefault,
+		Count: &countDefault,
 	}
 }
 
@@ -45,12 +41,17 @@ type FindScriptDataParams struct {
 	// HTTP Request Object
 	HTTPRequest *http.Request `json:"-"`
 
-	/*Page number for queries
+	/*Count of items to return
+	  Maximum: 100
 	  Minimum: 1
 	  In: query
-	  Default: 1
+	  Default: 10
 	*/
-	Page *int32
+	Count *int32
+	/*Pagination cursor
+	  In: query
+	*/
+	Cursor *string
 	/*
 	  Required: true
 	  In: path
@@ -62,13 +63,6 @@ type FindScriptDataParams struct {
 	  In: path
 	*/
 	ScriptID string
-	/*Page size
-	  Maximum: 100
-	  Minimum: 1
-	  In: query
-	  Default: 10
-	*/
-	Size *int32
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -82,8 +76,13 @@ func (o *FindScriptDataParams) BindRequest(r *http.Request, route *middleware.Ma
 
 	qs := runtime.Values(r.URL.Query())
 
-	qPage, qhkPage, _ := qs.GetOK("page")
-	if err := o.bindPage(qPage, qhkPage, route.Formats); err != nil {
+	qCount, qhkCount, _ := qs.GetOK("count")
+	if err := o.bindCount(qCount, qhkCount, route.Formats); err != nil {
+		res = append(res, err)
+	}
+
+	qCursor, qhkCursor, _ := qs.GetOK("cursor")
+	if err := o.bindCursor(qCursor, qhkCursor, route.Formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -97,19 +96,14 @@ func (o *FindScriptDataParams) BindRequest(r *http.Request, route *middleware.Ma
 		res = append(res, err)
 	}
 
-	qSize, qhkSize, _ := qs.GetOK("size")
-	if err := o.bindSize(qSize, qhkSize, route.Formats); err != nil {
-		res = append(res, err)
-	}
-
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
 	return nil
 }
 
-// bindPage binds and validates parameter Page from query.
-func (o *FindScriptDataParams) bindPage(rawData []string, hasKey bool, formats strfmt.Registry) error {
+// bindCount binds and validates parameter Count from query.
+func (o *FindScriptDataParams) bindCount(rawData []string, hasKey bool, formats strfmt.Registry) error {
 	var raw string
 	if len(rawData) > 0 {
 		raw = rawData[len(rawData)-1]
@@ -124,23 +118,45 @@ func (o *FindScriptDataParams) bindPage(rawData []string, hasKey bool, formats s
 
 	value, err := swag.ConvertInt32(raw)
 	if err != nil {
-		return errors.InvalidType("page", "query", "int32", raw)
+		return errors.InvalidType("count", "query", "int32", raw)
 	}
-	o.Page = &value
+	o.Count = &value
 
-	if err := o.validatePage(formats); err != nil {
+	if err := o.validateCount(formats); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-// validatePage carries on validations for parameter Page
-func (o *FindScriptDataParams) validatePage(formats strfmt.Registry) error {
+// validateCount carries on validations for parameter Count
+func (o *FindScriptDataParams) validateCount(formats strfmt.Registry) error {
 
-	if err := validate.MinimumInt("page", "query", int64(*o.Page), 1, false); err != nil {
+	if err := validate.MinimumInt("count", "query", int64(*o.Count), 1, false); err != nil {
 		return err
 	}
+
+	if err := validate.MaximumInt("count", "query", int64(*o.Count), 100, false); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// bindCursor binds and validates parameter Cursor from query.
+func (o *FindScriptDataParams) bindCursor(rawData []string, hasKey bool, formats strfmt.Registry) error {
+	var raw string
+	if len(rawData) > 0 {
+		raw = rawData[len(rawData)-1]
+	}
+
+	// Required: false
+	// AllowEmptyValue: false
+	if raw == "" { // empty values pass all other validations
+		return nil
+	}
+
+	o.Cursor = &raw
 
 	return nil
 }
@@ -183,47 +199,6 @@ func (o *FindScriptDataParams) bindScriptID(rawData []string, hasKey bool, forma
 func (o *FindScriptDataParams) validateScriptID(formats strfmt.Registry) error {
 
 	if err := validate.Pattern("scriptID", "path", o.ScriptID, `[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// bindSize binds and validates parameter Size from query.
-func (o *FindScriptDataParams) bindSize(rawData []string, hasKey bool, formats strfmt.Registry) error {
-	var raw string
-	if len(rawData) > 0 {
-		raw = rawData[len(rawData)-1]
-	}
-
-	// Required: false
-	// AllowEmptyValue: false
-	if raw == "" { // empty values pass all other validations
-		// Default values have been previously initialized by NewFindScriptDataParams()
-		return nil
-	}
-
-	value, err := swag.ConvertInt32(raw)
-	if err != nil {
-		return errors.InvalidType("size", "query", "int32", raw)
-	}
-	o.Size = &value
-
-	if err := o.validateSize(formats); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// validateSize carries on validations for parameter Size
-func (o *FindScriptDataParams) validateSize(formats strfmt.Registry) error {
-
-	if err := validate.MinimumInt("size", "query", int64(*o.Size), 1, false); err != nil {
-		return err
-	}
-
-	if err := validate.MaximumInt("size", "query", int64(*o.Size), 100, false); err != nil {
 		return err
 	}
 

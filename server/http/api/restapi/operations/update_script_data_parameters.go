@@ -13,6 +13,8 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 
 	strfmt "github.com/go-openapi/strfmt"
+
+	models "github.com/MontFerret/ferret-server/server/http/api/models"
 )
 
 // NewUpdateScriptDataParams creates a new UpdateScriptDataParams object
@@ -34,7 +36,7 @@ type UpdateScriptDataParams struct {
 	/*
 	  In: body
 	*/
-	Body UpdateScriptDataBody
+	Body *models.DataUpdate
 	/*
 	  Required: true
 	  In: path
@@ -63,7 +65,7 @@ func (o *UpdateScriptDataParams) BindRequest(r *http.Request, route *middleware.
 
 	if runtime.HasBody(r) {
 		defer r.Body.Close()
-		var body UpdateScriptDataBody
+		var body models.DataUpdate
 		if err := route.Consumer.Consume(r.Body, &body); err != nil {
 			res = append(res, errors.NewParseError("body", "body", "", err))
 		} else {
@@ -73,7 +75,7 @@ func (o *UpdateScriptDataParams) BindRequest(r *http.Request, route *middleware.
 			}
 
 			if len(res) == 0 {
-				o.Body = body
+				o.Body = &body
 			}
 		}
 	}

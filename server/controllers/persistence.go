@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"github.com/MontFerret/ferret-server/server/http/api/models"
 
 	"github.com/MontFerret/ferret-server/pkg/common"
 	"github.com/MontFerret/ferret-server/pkg/common/dal"
@@ -29,20 +30,8 @@ func NewPersistence(service *persistence.Service) (*Persistence, error) {
 
 func (ctl *Persistence) FindAll(params operations.FindProjectDataParams) middleware.Responder {
 	logger := logging.FromRequest(params.HTTPRequest)
-
-	var size uint = 10
-	var page uint = 1
-
-	if params.Size != nil {
-		size = uint(*params.Size)
-		page = uint(*params.Page)
-	}
-
 	query := dal.Query{
-		Pagination: dal.Pagination{
-			Size: size,
-			Page: page,
-		},
+		Pagination: dto.PaginationTo(params.Count, params.Cursor),
 	}
 
 	ctx := context.Background()
@@ -53,49 +42,29 @@ func (ctl *Persistence) FindAll(params operations.FindProjectDataParams) middlew
 			Timestamp().
 			Err(err).
 			Str("project_id", params.ProjectID).
+			Uint64("count", query.Pagination.Count).
+			Str("cursor", query.Pagination.Cursor.String()).
 			Msg("failed to find project data")
 
 		return http.InternalError()
 	}
 
-	payload := make([]*operations.FindProjectDataOKBodyItems0, 0, len(out))
+	data := make([]*models.DataOutput, 0, len(out.Data))
 
-	for _, i := range out {
-		el := i
-		createdAt, updatedAt := dto.ToMetadataDates(el.Metadata)
-
-		payload = append(payload, &operations.FindProjectDataOKBodyItems0{
-			FindProjectDataOKBodyItems0AllOf0: operations.FindProjectDataOKBodyItems0AllOf0{
-				ID:        &el.ID,
-				Rev:       &el.Rev,
-				CreatedAt: &createdAt,
-				UpdatedAt: updatedAt,
-			},
-			JobID:     &el.JobID,
-			ScriptID:  &el.ScriptID,
-			ScriptRev: el.ScriptRev,
-		})
+	for _, i := range out.Data {
+		data = append(data, ctl.toDataOutputDto(i))
 	}
 
-	return operations.NewFindProjectDataOK().WithPayload(payload)
+	return operations.NewFindProjectDataOK().WithPayload(&operations.FindProjectDataOKBody{
+		Data:         data,
+		SearchResult: dto.SearchResultFrom(out.QueryResult),
+	})
 }
 
 func (ctl *Persistence) Find(params operations.FindScriptDataParams) middleware.Responder {
 	logger := logging.FromRequest(params.HTTPRequest)
-
-	var size uint = 10
-	var page uint = 1
-
-	if params.Size != nil {
-		size = uint(*params.Size)
-		page = uint(*params.Page)
-	}
-
 	query := dal.Query{
-		Pagination: dal.Pagination{
-			Size: size,
-			Page: page,
-		},
+		Pagination: dto.PaginationTo(params.Count, params.Cursor),
 	}
 
 	ctx := context.Background()
@@ -110,31 +79,23 @@ func (ctl *Persistence) Find(params operations.FindScriptDataParams) middleware.
 			Err(err).
 			Str("project_id", params.ProjectID).
 			Str("script_id", params.ScriptID).
+			Uint64("count", query.Pagination.Count).
+			Str("cursor", query.Pagination.Cursor.String()).
 			Msg("failed to find script data")
 
 		return http.InternalError()
 	}
 
-	payload := make([]*operations.FindScriptDataOKBodyItems0, 0, len(out))
+	data := make([]*models.DataOutput, 0, len(out.Data))
 
-	for _, i := range out {
-		el := i
-		createdAt, updatedAt := dto.ToMetadataDates(el.Metadata)
-
-		payload = append(payload, &operations.FindScriptDataOKBodyItems0{
-			FindScriptDataOKBodyItems0AllOf0: operations.FindScriptDataOKBodyItems0AllOf0{
-				ID:        &el.ID,
-				Rev:       &el.Rev,
-				CreatedAt: &createdAt,
-				UpdatedAt: updatedAt,
-			},
-			JobID:     &el.JobID,
-			ScriptID:  &el.ScriptID,
-			ScriptRev: el.ScriptRev,
-		})
+	for _, i := range out.Data {
+		data = append(data, ctl.toDataOutputDto(i))
 	}
 
-	return operations.NewFindScriptDataOK().WithPayload(payload)
+	return operations.NewFindScriptDataOK().WithPayload(&operations.FindScriptDataOKBody{
+		Data:         data,
+		SearchResult: dto.SearchResultFrom(out.QueryResult),
+	})
 }
 
 func (ctl *Persistence) Get(params operations.GetScriptDataParams) middleware.Responder {
@@ -158,20 +119,15 @@ func (ctl *Persistence) Get(params operations.GetScriptDataParams) middleware.Re
 		return http.InternalError()
 	}
 
-	createdAt, updatedAt := dto.ToMetadataDates(out.Metadata)
-
-	return operations.NewGetScriptDataOK().WithPayload(&operations.GetScriptDataOKBody{
-		GetScriptDataOKBodyAllOf0: operations.GetScriptDataOKBodyAllOf0{
-			GetScriptDataOKBodyAllOf0AllOf0: operations.GetScriptDataOKBodyAllOf0AllOf0{
-				ID:        &out.ID,
-				Rev:       &out.Rev,
-				CreatedAt: &createdAt,
-				UpdatedAt: updatedAt,
+	return operations.NewGetScriptDataOK().WithPayload(&models.DataOutputDetailed{
+		DataEntity: models.DataEntity{
+			Entity: dto.EntityFrom(out.Entity),
+			DataCommon: models.DataCommon{
+				ScriptID:  &out.ScriptID,
+				ScriptRev: &out.ScriptRev,
+				JobID:     &out.JobID,
+				Value:     out.Data,
 			},
-			ScriptID:  &out.ScriptID,
-			ScriptRev: &out.ScriptRev,
-			JobID:     &out.JobID,
-			Value:     out.Data,
 		},
 	})
 }
@@ -196,14 +152,8 @@ func (ctl *Persistence) Update(params operations.UpdateScriptDataParams) middlew
 		return http.InternalError()
 	}
 
-	createdAt, updatedAt := dto.ToMetadataDates(out.Metadata)
-
-	return operations.NewUpdateScriptDataOK().WithPayload(&operations.UpdateScriptDataOKBody{
-		ID:        &out.ID,
-		Rev:       &out.Rev,
-		CreatedAt: &createdAt,
-		UpdatedAt: updatedAt,
-	})
+	e := dto.EntityFrom(out)
+	return operations.NewUpdateScriptDataOK().WithPayload(&e)
 }
 
 func (ctl *Persistence) Delete(params operations.DeleteScriptDataParams) middleware.Responder {
@@ -228,4 +178,13 @@ func (ctl *Persistence) Delete(params operations.DeleteScriptDataParams) middlew
 	}
 
 	return operations.NewDeleteScriptDataNoContent()
+}
+
+func (ctl *Persistence) toDataOutputDto(data persistence.RecordEntity) *models.DataOutput {
+	return &models.DataOutput{
+		Entity:    dto.EntityFrom(data.Entity),
+		JobID:     &data.JobID,
+		ScriptID:  &data.ScriptID,
+		ScriptRev: data.ScriptRev,
+	}
 }

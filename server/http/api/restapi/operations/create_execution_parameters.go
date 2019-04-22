@@ -14,6 +14,8 @@ import (
 	"github.com/go-openapi/validate"
 
 	strfmt "github.com/go-openapi/strfmt"
+
+	models "github.com/MontFerret/ferret-server/server/http/api/models"
 )
 
 // NewCreateExecutionParams creates a new CreateExecutionParams object
@@ -35,7 +37,7 @@ type CreateExecutionParams struct {
 	/*
 	  In: body
 	*/
-	Body CreateExecutionBody
+	Body *models.ExecutionInput
 	/*
 	  Required: true
 	  Pattern: [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}
@@ -55,7 +57,7 @@ func (o *CreateExecutionParams) BindRequest(r *http.Request, route *middleware.M
 
 	if runtime.HasBody(r) {
 		defer r.Body.Close()
-		var body CreateExecutionBody
+		var body models.ExecutionInput
 		if err := route.Consumer.Consume(r.Body, &body); err != nil {
 			res = append(res, errors.NewParseError("body", "body", "", err))
 		} else {
@@ -65,7 +67,7 @@ func (o *CreateExecutionParams) BindRequest(r *http.Request, route *middleware.M
 			}
 
 			if len(res) == 0 {
-				o.Body = body
+				o.Body = &body
 			}
 		}
 	}

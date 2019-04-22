@@ -19,9 +19,9 @@ import (
 // swagger:model data-update
 type DataUpdate struct {
 
-	// Any
+	// value
 	// Required: true
-	Value interface{} `json:"value"`
+	Value Any `json:"value"`
 }
 
 // Validate validates this data update

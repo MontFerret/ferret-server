@@ -9,7 +9,7 @@ API of Ferret Server
       http
     Host: localhost
     BasePath: /
-    Version: 1.0.0-rc.1
+    Version: 1.0.0-rc.2
     License: MIT
     Contact: MontFerret Project Group<mont.ferret@gmail.com> https://github.com/MontFerret
 

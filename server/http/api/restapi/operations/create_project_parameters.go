@@ -11,6 +11,8 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
+
+	models "github.com/MontFerret/ferret-server/server/http/api/models"
 )
 
 // NewCreateProjectParams creates a new CreateProjectParams object
@@ -32,7 +34,7 @@ type CreateProjectParams struct {
 	/*
 	  In: body
 	*/
-	Body CreateProjectBody
+	Body models.ProjectCreate
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -46,7 +48,7 @@ func (o *CreateProjectParams) BindRequest(r *http.Request, route *middleware.Mat
 
 	if runtime.HasBody(r) {
 		defer r.Body.Close()
-		var body CreateProjectBody
+		var body models.ProjectCreate
 		if err := route.Consumer.Consume(r.Body, &body); err != nil {
 			res = append(res, errors.NewParseError("body", "body", "", err))
 		} else {

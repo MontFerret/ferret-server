@@ -9,6 +9,8 @@ import (
 	"net/http"
 
 	"github.com/go-openapi/runtime"
+
+	models "github.com/MontFerret/ferret-server/server/http/api/models"
 )
 
 // CreateScriptCreatedCode is the HTTP code returned for type CreateScriptCreated
@@ -23,7 +25,7 @@ type CreateScriptCreated struct {
 	/*
 	  In: Body
 	*/
-	Payload *CreateScriptCreatedBody `json:"body,omitempty"`
+	Payload *models.Entity `json:"body,omitempty"`
 }
 
 // NewCreateScriptCreated creates CreateScriptCreated with default headers values
@@ -33,13 +35,13 @@ func NewCreateScriptCreated() *CreateScriptCreated {
 }
 
 // WithPayload adds the payload to the create script created response
-func (o *CreateScriptCreated) WithPayload(payload *CreateScriptCreatedBody) *CreateScriptCreated {
+func (o *CreateScriptCreated) WithPayload(payload *models.Entity) *CreateScriptCreated {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the create script created response
-func (o *CreateScriptCreated) SetPayload(payload *CreateScriptCreatedBody) {
+func (o *CreateScriptCreated) SetPayload(payload *models.Entity) {
 	o.Payload = payload
 }
 

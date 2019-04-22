@@ -23,7 +23,7 @@ type FindScriptDataOK struct {
 	/*
 	  In: Body
 	*/
-	Payload []*FindScriptDataOKBodyItems0 `json:"body,omitempty"`
+	Payload *FindScriptDataOKBody `json:"body,omitempty"`
 }
 
 // NewFindScriptDataOK creates FindScriptDataOK with default headers values
@@ -33,13 +33,13 @@ func NewFindScriptDataOK() *FindScriptDataOK {
 }
 
 // WithPayload adds the payload to the find script data o k response
-func (o *FindScriptDataOK) WithPayload(payload []*FindScriptDataOKBodyItems0) *FindScriptDataOK {
+func (o *FindScriptDataOK) WithPayload(payload *FindScriptDataOKBody) *FindScriptDataOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the find script data o k response
-func (o *FindScriptDataOK) SetPayload(payload []*FindScriptDataOKBodyItems0) {
+func (o *FindScriptDataOK) SetPayload(payload *FindScriptDataOKBody) {
 	o.Payload = payload
 }
 
@@ -47,13 +47,10 @@ func (o *FindScriptDataOK) SetPayload(payload []*FindScriptDataOKBodyItems0) {
 func (o *FindScriptDataOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.WriteHeader(200)
-	payload := o.Payload
-	if payload == nil {
-		payload = make([]*FindScriptDataOKBodyItems0, 0, 50)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
 	}
-
-	if err := producer.Produce(rw, payload); err != nil {
-		panic(err) // let the recovery middleware deal with this
-	}
-
 }

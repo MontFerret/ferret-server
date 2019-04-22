@@ -9,6 +9,8 @@ import (
 	"net/http"
 
 	"github.com/go-openapi/runtime"
+
+	models "github.com/MontFerret/ferret-server/server/http/api/models"
 )
 
 // UpdateScriptDataOKCode is the HTTP code returned for type UpdateScriptDataOK
@@ -23,7 +25,7 @@ type UpdateScriptDataOK struct {
 	/*
 	  In: Body
 	*/
-	Payload *UpdateScriptDataOKBody `json:"body,omitempty"`
+	Payload *models.Entity `json:"body,omitempty"`
 }
 
 // NewUpdateScriptDataOK creates UpdateScriptDataOK with default headers values
@@ -33,13 +35,13 @@ func NewUpdateScriptDataOK() *UpdateScriptDataOK {
 }
 
 // WithPayload adds the payload to the update script data o k response
-func (o *UpdateScriptDataOK) WithPayload(payload *UpdateScriptDataOKBody) *UpdateScriptDataOK {
+func (o *UpdateScriptDataOK) WithPayload(payload *models.Entity) *UpdateScriptDataOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the update script data o k response
-func (o *UpdateScriptDataOK) SetPayload(payload *UpdateScriptDataOKBody) {
+func (o *UpdateScriptDataOK) SetPayload(payload *models.Entity) {
 	o.Payload = payload
 }
 

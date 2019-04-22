@@ -6,8 +6,6 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"encoding/json"
-
 	strfmt "github.com/go-openapi/strfmt"
 
 	"github.com/go-openapi/errors"
@@ -21,12 +19,9 @@ import (
 // swagger:model execution-common
 type ExecutionCommon struct {
 
-	// Execution Cause
-	//
-	// Execution cause
+	// cause
 	// Required: true
-	// Enum: [unknown manual schedule hook]
-	Cause *string `json:"cause"`
+	Cause ExecutionCause `json:"cause"`
 
 	// job id
 	// Required: true
@@ -42,12 +37,9 @@ type ExecutionCommon struct {
 	// Required: true
 	ScriptRev *string `json:"script_rev"`
 
-	// Execution Status
-	//
-	// Execution stats
+	// status
 	// Required: true
-	// Enum: [unknown queued running completed cancelled errored]
-	Status *string `json:"status"`
+	Status ExecutionStatus `json:"status"`
 }
 
 // Validate validates this execution common
@@ -80,49 +72,12 @@ func (m *ExecutionCommon) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-var executionCommonTypeCausePropEnum []interface{}
-
-func init() {
-	var res []string
-	if err := json.Unmarshal([]byte(`["unknown","manual","schedule","hook"]`), &res); err != nil {
-		panic(err)
-	}
-	for _, v := range res {
-		executionCommonTypeCausePropEnum = append(executionCommonTypeCausePropEnum, v)
-	}
-}
-
-const (
-
-	// ExecutionCommonCauseUnknown captures enum value "unknown"
-	ExecutionCommonCauseUnknown string = "unknown"
-
-	// ExecutionCommonCauseManual captures enum value "manual"
-	ExecutionCommonCauseManual string = "manual"
-
-	// ExecutionCommonCauseSchedule captures enum value "schedule"
-	ExecutionCommonCauseSchedule string = "schedule"
-
-	// ExecutionCommonCauseHook captures enum value "hook"
-	ExecutionCommonCauseHook string = "hook"
-)
-
-// prop value enum
-func (m *ExecutionCommon) validateCauseEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, executionCommonTypeCausePropEnum); err != nil {
-		return err
-	}
-	return nil
-}
-
 func (m *ExecutionCommon) validateCause(formats strfmt.Registry) error {
 
-	if err := validate.Required("cause", "body", m.Cause); err != nil {
-		return err
-	}
-
-	// value enum
-	if err := m.validateCauseEnum("cause", "body", *m.Cause); err != nil {
+	if err := m.Cause.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("cause")
+		}
 		return err
 	}
 
@@ -164,55 +119,12 @@ func (m *ExecutionCommon) validateScriptRev(formats strfmt.Registry) error {
 	return nil
 }
 
-var executionCommonTypeStatusPropEnum []interface{}
-
-func init() {
-	var res []string
-	if err := json.Unmarshal([]byte(`["unknown","queued","running","completed","cancelled","errored"]`), &res); err != nil {
-		panic(err)
-	}
-	for _, v := range res {
-		executionCommonTypeStatusPropEnum = append(executionCommonTypeStatusPropEnum, v)
-	}
-}
-
-const (
-
-	// ExecutionCommonStatusUnknown captures enum value "unknown"
-	ExecutionCommonStatusUnknown string = "unknown"
-
-	// ExecutionCommonStatusQueued captures enum value "queued"
-	ExecutionCommonStatusQueued string = "queued"
-
-	// ExecutionCommonStatusRunning captures enum value "running"
-	ExecutionCommonStatusRunning string = "running"
-
-	// ExecutionCommonStatusCompleted captures enum value "completed"
-	ExecutionCommonStatusCompleted string = "completed"
-
-	// ExecutionCommonStatusCancelled captures enum value "cancelled"
-	ExecutionCommonStatusCancelled string = "cancelled"
-
-	// ExecutionCommonStatusErrored captures enum value "errored"
-	ExecutionCommonStatusErrored string = "errored"
-)
-
-// prop value enum
-func (m *ExecutionCommon) validateStatusEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, executionCommonTypeStatusPropEnum); err != nil {
-		return err
-	}
-	return nil
-}
-
 func (m *ExecutionCommon) validateStatus(formats strfmt.Registry) error {
 
-	if err := validate.Required("status", "body", m.Status); err != nil {
-		return err
-	}
-
-	// value enum
-	if err := m.validateStatusEnum("status", "body", *m.Status); err != nil {
+	if err := m.Status.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("status")
+		}
 		return err
 	}
 

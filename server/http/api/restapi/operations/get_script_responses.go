@@ -9,6 +9,8 @@ import (
 	"net/http"
 
 	"github.com/go-openapi/runtime"
+
+	models "github.com/MontFerret/ferret-server/server/http/api/models"
 )
 
 // GetScriptOKCode is the HTTP code returned for type GetScriptOK
@@ -23,7 +25,7 @@ type GetScriptOK struct {
 	/*
 	  In: Body
 	*/
-	Payload *GetScriptOKBody `json:"body,omitempty"`
+	Payload *models.ScriptOutputDetailed `json:"body,omitempty"`
 }
 
 // NewGetScriptOK creates GetScriptOK with default headers values
@@ -33,13 +35,13 @@ func NewGetScriptOK() *GetScriptOK {
 }
 
 // WithPayload adds the payload to the get script o k response
-func (o *GetScriptOK) WithPayload(payload *GetScriptOKBody) *GetScriptOK {
+func (o *GetScriptOK) WithPayload(payload *models.ScriptOutputDetailed) *GetScriptOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the get script o k response
-func (o *GetScriptOK) SetPayload(payload *GetScriptOKBody) {
+func (o *GetScriptOK) SetPayload(payload *models.ScriptOutputDetailed) {
 	o.Payload = payload
 }
 

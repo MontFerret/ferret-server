@@ -1,22 +1,40 @@
 package queries
 
-const (
-	FindAll = `
+import (
+	"fmt"
+)
+
+var (
+	findAll = `
 		FOR i IN %s
-			LIMIT @offset, @count
+			FILTER @` + ParamPageCursor + ` != NULL ? i.created_at < @` + ParamPageCursor + ` : TRUE == TRUE
+			LIMIT @` + ParamPageCount + `
 			RETURN i
 `
-	FindAllByScriptID = `
+	findAllByScriptID = `
 		FOR i IN %s
-			FILTER i.script_id == @script_id
-			LIMIT @offset, @count
+			FILTER i.script_id == @` + ParamFilterByScriptID + `
+			FILTER @` + ParamPageCursor + ` != NULL ? i.created_at < @` + ParamPageCursor + ` : TRUE == TRUE
+			LIMIT @` + ParamPageCount + `
 			RETURN i
 `
 
-	FindOneByName = `
+	findOneByName = `
 		FOR i IN %s
-			FILTER i.name == @name
+			FILTER i.name == @` + ParamFilterByName + `
 			LIMIT 1
 			RETURN i
 	`
 )
+
+func FindAll(collection string) string {
+	return fmt.Sprintf(findAll, collection)
+}
+
+func FindAllByScriptID(collection string) string {
+	return fmt.Sprintf(findAllByScriptID, collection)
+}
+
+func FindOneByName(collection string) string {
+	return fmt.Sprintf(findOneByName, collection)
+}

@@ -28,8 +28,10 @@ jobs:
     - make lint
   - stage: compile
     script:
+    - go mod vendor
     - make generate
     - make compile
   - stage: test
     script:
+    - go mod vendor
     - make cover

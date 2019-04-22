@@ -3,11 +3,14 @@ package repositories
 import (
 	"bytes"
 	"context"
-	"github.com/MontFerret/ferret-server/pkg/common"
-	"github.com/MontFerret/ferret-server/pkg/common/dal"
+	"time"
+
 	"github.com/arangodb/go-driver"
 	"github.com/pkg/errors"
-	"time"
+
+	"github.com/MontFerret/ferret-server/pkg/common"
+	"github.com/MontFerret/ferret-server/pkg/common/dal"
+	"github.com/MontFerret/ferret-server/server/db/repositories/queries"
 )
 
 type (
@@ -133,12 +136,22 @@ func compileQuery(collectionName string, q dal.Query) dal.CompiledQuery {
 		}
 	}
 
-	if q.Pagination.Page > 0 {
+	if !q.Pagination.Cursor.IsEmpty() {
 		qs.WriteString("\n")
-		qs.WriteString("LIMIT @offset, @count")
+		qs.WriteString("FILTER ")
+		qs.WriteString(varName)
+		qs.WriteString(".created_at < @")
+		qs.WriteString(queries.ParamPageCursor)
 
-		params["offset"] = q.Pagination.Size * (q.Pagination.Page - 1)
-		params["count"] = q.Pagination.Size
+		params[queries.ParamPageCursor] = q.Pagination.Cursor
+	}
+
+	if q.Pagination.Count > 0 {
+		qs.WriteString("\n")
+		qs.WriteString("LIMIT @")
+		qs.WriteString(queries.ParamPageCount)
+
+		params[queries.ParamPageCount] = q.Pagination.Count
 	}
 
 	qs.WriteString("\n")
@@ -148,4 +161,14 @@ func compileQuery(collectionName string, q dal.Query) dal.CompiledQuery {
 		String: qs.String(),
 		Params: params,
 	}
+}
+
+func bindPaginationParams(params map[string]interface{}, p dal.Pagination) {
+	if !p.Cursor.IsEmpty() {
+		params[queries.ParamPageCursor] = p.Cursor
+	} else {
+		params[queries.ParamPageCursor] = nil
+	}
+
+	params[queries.ParamPageCount] = p.Count
 }

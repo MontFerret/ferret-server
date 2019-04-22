@@ -6,14 +6,15 @@ package operations
 // Editing this file might prove futile when you re-run the generate command
 
 import (
-	"encoding/json"
 	"net/http"
+	"strconv"
 
 	errors "github.com/go-openapi/errors"
 	middleware "github.com/go-openapi/runtime/middleware"
 	strfmt "github.com/go-openapi/strfmt"
 	swag "github.com/go-openapi/swag"
-	validate "github.com/go-openapi/validate"
+
+	models "github.com/MontFerret/ferret-server/server/http/api/models"
 )
 
 // FindExecutionsHandlerFunc turns a function with the right signature into a find executions handler
@@ -62,144 +63,72 @@ func (o *FindExecutions) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 }
 
-// FindExecutionsOKBodyItems0 Execution Output
-//
-// The properties that are included when fetching a list of Executions.
-// swagger:model FindExecutionsOKBodyItems0
-type FindExecutionsOKBodyItems0 struct {
-	FindExecutionsOKBodyItems0AllOf0
+// FindExecutionsOKBody find executions o k body
+// swagger:model FindExecutionsOKBody
+type FindExecutionsOKBody struct {
+	models.SearchResult
 
-	// Execution Cause
-	//
-	// Execution cause
-	// Required: true
-	// Enum: [unknown manual schedule hook]
-	Cause *string `json:"cause"`
-
-	// job id
-	// Required: true
-	// Pattern: [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}
-	JobID *string `json:"job_id"`
-
-	// script id
-	// Required: true
-	// Pattern: [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}
-	ScriptID *string `json:"script_id"`
-
-	// script rev
-	// Required: true
-	ScriptRev *string `json:"script_rev"`
-
-	// Execution Status
-	//
-	// Execution stats
-	// Required: true
-	// Enum: [unknown queued running completed cancelled errored]
-	Status *string `json:"status"`
+	// data
+	Data []*models.ExecutionOutput `json:"data"`
 }
 
 // UnmarshalJSON unmarshals this object from a JSON structure
-func (o *FindExecutionsOKBodyItems0) UnmarshalJSON(raw []byte) error {
-	// AO0
-	var aO0 FindExecutionsOKBodyItems0AllOf0
-	if err := swag.ReadJSON(raw, &aO0); err != nil {
+func (o *FindExecutionsOKBody) UnmarshalJSON(raw []byte) error {
+	// FindExecutionsOKBodyAO0
+	var findExecutionsOKBodyAO0 models.SearchResult
+	if err := swag.ReadJSON(raw, &findExecutionsOKBodyAO0); err != nil {
 		return err
 	}
-	o.FindExecutionsOKBodyItems0AllOf0 = aO0
+	o.SearchResult = findExecutionsOKBodyAO0
 
-	// AO1
-	var dataAO1 struct {
-		Cause *string `json:"cause"`
-
-		JobID *string `json:"job_id"`
-
-		ScriptID *string `json:"script_id"`
-
-		ScriptRev *string `json:"script_rev"`
-
-		Status *string `json:"status"`
+	// FindExecutionsOKBodyAO1
+	var dataFindExecutionsOKBodyAO1 struct {
+		Data []*models.ExecutionOutput `json:"data"`
 	}
-	if err := swag.ReadJSON(raw, &dataAO1); err != nil {
+	if err := swag.ReadJSON(raw, &dataFindExecutionsOKBodyAO1); err != nil {
 		return err
 	}
 
-	o.Cause = dataAO1.Cause
-
-	o.JobID = dataAO1.JobID
-
-	o.ScriptID = dataAO1.ScriptID
-
-	o.ScriptRev = dataAO1.ScriptRev
-
-	o.Status = dataAO1.Status
+	o.Data = dataFindExecutionsOKBodyAO1.Data
 
 	return nil
 }
 
 // MarshalJSON marshals this object to a JSON structure
-func (o FindExecutionsOKBodyItems0) MarshalJSON() ([]byte, error) {
+func (o FindExecutionsOKBody) MarshalJSON() ([]byte, error) {
 	_parts := make([][]byte, 0, 2)
 
-	aO0, err := swag.WriteJSON(o.FindExecutionsOKBodyItems0AllOf0)
+	findExecutionsOKBodyAO0, err := swag.WriteJSON(o.SearchResult)
 	if err != nil {
 		return nil, err
 	}
-	_parts = append(_parts, aO0)
+	_parts = append(_parts, findExecutionsOKBodyAO0)
 
-	var dataAO1 struct {
-		Cause *string `json:"cause"`
-
-		JobID *string `json:"job_id"`
-
-		ScriptID *string `json:"script_id"`
-
-		ScriptRev *string `json:"script_rev"`
-
-		Status *string `json:"status"`
+	var dataFindExecutionsOKBodyAO1 struct {
+		Data []*models.ExecutionOutput `json:"data"`
 	}
 
-	dataAO1.Cause = o.Cause
+	dataFindExecutionsOKBodyAO1.Data = o.Data
 
-	dataAO1.JobID = o.JobID
-
-	dataAO1.ScriptID = o.ScriptID
-
-	dataAO1.ScriptRev = o.ScriptRev
-
-	dataAO1.Status = o.Status
-
-	jsonDataAO1, errAO1 := swag.WriteJSON(dataAO1)
-	if errAO1 != nil {
-		return nil, errAO1
+	jsonDataFindExecutionsOKBodyAO1, errFindExecutionsOKBodyAO1 := swag.WriteJSON(dataFindExecutionsOKBodyAO1)
+	if errFindExecutionsOKBodyAO1 != nil {
+		return nil, errFindExecutionsOKBodyAO1
 	}
-	_parts = append(_parts, jsonDataAO1)
+	_parts = append(_parts, jsonDataFindExecutionsOKBodyAO1)
 
 	return swag.ConcatJSON(_parts...), nil
 }
 
-// Validate validates this find executions o k body items0
-func (o *FindExecutionsOKBodyItems0) Validate(formats strfmt.Registry) error {
+// Validate validates this find executions o k body
+func (o *FindExecutionsOKBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	// validation for a type composition with FindExecutionsOKBodyItems0AllOf0
-
-	if err := o.validateCause(formats); err != nil {
+	// validation for a type composition with models.SearchResult
+	if err := o.SearchResult.Validate(formats); err != nil {
 		res = append(res, err)
 	}
 
-	if err := o.validateJobID(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validateScriptID(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validateScriptRev(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validateStatus(formats); err != nil {
+	if err := o.validateData(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -209,111 +138,33 @@ func (o *FindExecutionsOKBodyItems0) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-var findExecutionsOKBodyItems0TypeCausePropEnum []interface{}
+func (o *FindExecutionsOKBody) validateData(formats strfmt.Registry) error {
 
-func init() {
-	var res []string
-	if err := json.Unmarshal([]byte(`["unknown","manual","schedule","hook"]`), &res); err != nil {
-		panic(err)
-	}
-	for _, v := range res {
-		findExecutionsOKBodyItems0TypeCausePropEnum = append(findExecutionsOKBodyItems0TypeCausePropEnum, v)
-	}
-}
-
-// property enum
-func (o *FindExecutionsOKBodyItems0) validateCauseEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, findExecutionsOKBodyItems0TypeCausePropEnum); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (o *FindExecutionsOKBodyItems0) validateCause(formats strfmt.Registry) error {
-
-	if err := validate.Required("cause", "body", o.Cause); err != nil {
-		return err
+	if swag.IsZero(o.Data) { // not required
+		return nil
 	}
 
-	// value enum
-	if err := o.validateCauseEnum("cause", "body", *o.Cause); err != nil {
-		return err
-	}
+	for i := 0; i < len(o.Data); i++ {
+		if swag.IsZero(o.Data[i]) { // not required
+			continue
+		}
 
-	return nil
-}
+		if o.Data[i] != nil {
+			if err := o.Data[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("findExecutionsOK" + "." + "data" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
 
-func (o *FindExecutionsOKBodyItems0) validateJobID(formats strfmt.Registry) error {
-
-	if err := validate.Required("job_id", "body", o.JobID); err != nil {
-		return err
-	}
-
-	if err := validate.Pattern("job_id", "body", string(*o.JobID), `[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *FindExecutionsOKBodyItems0) validateScriptID(formats strfmt.Registry) error {
-
-	if err := validate.Required("script_id", "body", o.ScriptID); err != nil {
-		return err
-	}
-
-	if err := validate.Pattern("script_id", "body", string(*o.ScriptID), `[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *FindExecutionsOKBodyItems0) validateScriptRev(formats strfmt.Registry) error {
-
-	if err := validate.Required("script_rev", "body", o.ScriptRev); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-var findExecutionsOKBodyItems0TypeStatusPropEnum []interface{}
-
-func init() {
-	var res []string
-	if err := json.Unmarshal([]byte(`["unknown","queued","running","completed","cancelled","errored"]`), &res); err != nil {
-		panic(err)
-	}
-	for _, v := range res {
-		findExecutionsOKBodyItems0TypeStatusPropEnum = append(findExecutionsOKBodyItems0TypeStatusPropEnum, v)
-	}
-}
-
-// property enum
-func (o *FindExecutionsOKBodyItems0) validateStatusEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, findExecutionsOKBodyItems0TypeStatusPropEnum); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (o *FindExecutionsOKBodyItems0) validateStatus(formats strfmt.Registry) error {
-
-	if err := validate.Required("status", "body", o.Status); err != nil {
-		return err
-	}
-
-	// value enum
-	if err := o.validateStatusEnum("status", "body", *o.Status); err != nil {
-		return err
 	}
 
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (o *FindExecutionsOKBodyItems0) MarshalBinary() ([]byte, error) {
+func (o *FindExecutionsOKBody) MarshalBinary() ([]byte, error) {
 	if o == nil {
 		return nil, nil
 	}
@@ -321,15 +172,11 @@ func (o *FindExecutionsOKBodyItems0) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (o *FindExecutionsOKBodyItems0) UnmarshalBinary(b []byte) error {
-	var res FindExecutionsOKBodyItems0
+func (o *FindExecutionsOKBody) UnmarshalBinary(b []byte) error {
+	var res FindExecutionsOKBody
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
 	*o = res
 	return nil
 }
-
-// FindExecutionsOKBodyItems0AllOf0 find executions o k body items0 all of0
-// swagger:model FindExecutionsOKBodyItems0AllOf0
-type FindExecutionsOKBodyItems0AllOf0 interface{}

@@ -18,8 +18,7 @@ type (
 	}
 
 	Script struct {
-		Name        string      `json:"name"`
-		Description string      `json:"description"`
+		dal.Definition
 		Execution   Execution   `json:"execution"`
 		Persistence Persistence `json:"persistence"`
 	}
@@ -32,5 +31,10 @@ type (
 	ScriptEntity struct {
 		dal.Entity
 		Script
+	}
+
+	QueryResult struct {
+		dal.QueryResult
+		Data []ScriptEntity
 	}
 )

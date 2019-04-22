@@ -6,13 +6,10 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"encoding/json"
-
 	strfmt "github.com/go-openapi/strfmt"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
-	"github.com/go-openapi/validate"
 )
 
 // ExecutionOutput Execution Output
@@ -20,112 +17,30 @@ import (
 // The properties that are included when fetching a list of Executions.
 // swagger:model execution-output
 type ExecutionOutput struct {
-	ExecutionOutputAllOf0
-
-	// Execution Cause
-	//
-	// Execution cause
-	// Required: true
-	// Enum: [unknown manual schedule hook]
-	Cause *string `json:"cause"`
-
-	// job id
-	// Required: true
-	// Pattern: [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}
-	JobID *string `json:"job_id"`
-
-	// script id
-	// Required: true
-	// Pattern: [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}
-	ScriptID *string `json:"script_id"`
-
-	// script rev
-	// Required: true
-	ScriptRev *string `json:"script_rev"`
-
-	// Execution Status
-	//
-	// Execution stats
-	// Required: true
-	// Enum: [unknown queued running completed cancelled errored]
-	Status *string `json:"status"`
+	ExecutionCommon
 }
 
 // UnmarshalJSON unmarshals this object from a JSON structure
 func (m *ExecutionOutput) UnmarshalJSON(raw []byte) error {
 	// AO0
-	var aO0 ExecutionOutputAllOf0
+	var aO0 ExecutionCommon
 	if err := swag.ReadJSON(raw, &aO0); err != nil {
 		return err
 	}
-	m.ExecutionOutputAllOf0 = aO0
-
-	// AO1
-	var dataAO1 struct {
-		Cause *string `json:"cause"`
-
-		JobID *string `json:"job_id"`
-
-		ScriptID *string `json:"script_id"`
-
-		ScriptRev *string `json:"script_rev"`
-
-		Status *string `json:"status"`
-	}
-	if err := swag.ReadJSON(raw, &dataAO1); err != nil {
-		return err
-	}
-
-	m.Cause = dataAO1.Cause
-
-	m.JobID = dataAO1.JobID
-
-	m.ScriptID = dataAO1.ScriptID
-
-	m.ScriptRev = dataAO1.ScriptRev
-
-	m.Status = dataAO1.Status
+	m.ExecutionCommon = aO0
 
 	return nil
 }
 
 // MarshalJSON marshals this object to a JSON structure
 func (m ExecutionOutput) MarshalJSON() ([]byte, error) {
-	_parts := make([][]byte, 0, 2)
+	_parts := make([][]byte, 0, 1)
 
-	aO0, err := swag.WriteJSON(m.ExecutionOutputAllOf0)
+	aO0, err := swag.WriteJSON(m.ExecutionCommon)
 	if err != nil {
 		return nil, err
 	}
 	_parts = append(_parts, aO0)
-
-	var dataAO1 struct {
-		Cause *string `json:"cause"`
-
-		JobID *string `json:"job_id"`
-
-		ScriptID *string `json:"script_id"`
-
-		ScriptRev *string `json:"script_rev"`
-
-		Status *string `json:"status"`
-	}
-
-	dataAO1.Cause = m.Cause
-
-	dataAO1.JobID = m.JobID
-
-	dataAO1.ScriptID = m.ScriptID
-
-	dataAO1.ScriptRev = m.ScriptRev
-
-	dataAO1.Status = m.Status
-
-	jsonDataAO1, errAO1 := swag.WriteJSON(dataAO1)
-	if errAO1 != nil {
-		return nil, errAO1
-	}
-	_parts = append(_parts, jsonDataAO1)
 
 	return swag.ConcatJSON(_parts...), nil
 }
@@ -134,134 +49,14 @@ func (m ExecutionOutput) MarshalJSON() ([]byte, error) {
 func (m *ExecutionOutput) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	// validation for a type composition with ExecutionOutputAllOf0
-
-	if err := m.validateCause(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateJobID(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateScriptID(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateScriptRev(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateStatus(formats); err != nil {
+	// validation for a type composition with ExecutionCommon
+	if err := m.ExecutionCommon.Validate(formats); err != nil {
 		res = append(res, err)
 	}
 
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
-	return nil
-}
-
-var executionOutputTypeCausePropEnum []interface{}
-
-func init() {
-	var res []string
-	if err := json.Unmarshal([]byte(`["unknown","manual","schedule","hook"]`), &res); err != nil {
-		panic(err)
-	}
-	for _, v := range res {
-		executionOutputTypeCausePropEnum = append(executionOutputTypeCausePropEnum, v)
-	}
-}
-
-// property enum
-func (m *ExecutionOutput) validateCauseEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, executionOutputTypeCausePropEnum); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (m *ExecutionOutput) validateCause(formats strfmt.Registry) error {
-
-	if err := validate.Required("cause", "body", m.Cause); err != nil {
-		return err
-	}
-
-	// value enum
-	if err := m.validateCauseEnum("cause", "body", *m.Cause); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *ExecutionOutput) validateJobID(formats strfmt.Registry) error {
-
-	if err := validate.Required("job_id", "body", m.JobID); err != nil {
-		return err
-	}
-
-	if err := validate.Pattern("job_id", "body", string(*m.JobID), `[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *ExecutionOutput) validateScriptID(formats strfmt.Registry) error {
-
-	if err := validate.Required("script_id", "body", m.ScriptID); err != nil {
-		return err
-	}
-
-	if err := validate.Pattern("script_id", "body", string(*m.ScriptID), `[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *ExecutionOutput) validateScriptRev(formats strfmt.Registry) error {
-
-	if err := validate.Required("script_rev", "body", m.ScriptRev); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-var executionOutputTypeStatusPropEnum []interface{}
-
-func init() {
-	var res []string
-	if err := json.Unmarshal([]byte(`["unknown","queued","running","completed","cancelled","errored"]`), &res); err != nil {
-		panic(err)
-	}
-	for _, v := range res {
-		executionOutputTypeStatusPropEnum = append(executionOutputTypeStatusPropEnum, v)
-	}
-}
-
-// property enum
-func (m *ExecutionOutput) validateStatusEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, executionOutputTypeStatusPropEnum); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (m *ExecutionOutput) validateStatus(formats strfmt.Registry) error {
-
-	if err := validate.Required("status", "body", m.Status); err != nil {
-		return err
-	}
-
-	// value enum
-	if err := m.validateStatusEnum("status", "body", *m.Status); err != nil {
-		return err
-	}
-
 	return nil
 }
 
@@ -282,7 +77,3 @@ func (m *ExecutionOutput) UnmarshalBinary(b []byte) error {
 	*m = res
 	return nil
 }
-
-// ExecutionOutputAllOf0 execution output all of0
-// swagger:model ExecutionOutputAllOf0
-type ExecutionOutputAllOf0 interface{}

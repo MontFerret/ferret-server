@@ -2,6 +2,7 @@ package persistence
 
 import (
 	"context"
+
 	"github.com/MontFerret/ferret-server/pkg/common/dal"
 )
 
@@ -14,7 +15,7 @@ type Repository interface {
 
 	Delete(ctx context.Context, id string) error
 
-	Find(ctx context.Context, q dal.Query) ([]RecordEntity, error)
+	Find(ctx context.Context, q dal.Query) (QueryResult, error)
 
-	FindByScriptID(ctx context.Context, scriptID string, q dal.Query) ([]RecordEntity, error)
+	FindByScriptID(ctx context.Context, scriptID string, q dal.Query) (QueryResult, error)
 }

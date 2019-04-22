@@ -7,12 +7,15 @@ package operations
 
 import (
 	"net/http"
+	"strconv"
 
 	errors "github.com/go-openapi/errors"
 	middleware "github.com/go-openapi/runtime/middleware"
 	strfmt "github.com/go-openapi/strfmt"
 	swag "github.com/go-openapi/swag"
 	validate "github.com/go-openapi/validate"
+
+	models "github.com/MontFerret/ferret-server/server/http/api/models"
 )
 
 // FindProjectsHandlerFunc turns a function with the right signature into a find projects handler
@@ -61,86 +64,73 @@ func (o *FindProjects) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 }
 
-// FindProjectsOKBodyItems0 Project Output
-//
-// The properties that are included when fetching a list of Projects.
-// swagger:model FindProjectsOKBodyItems0
-type FindProjectsOKBodyItems0 struct {
-	FindProjectsOKBodyItems0AllOf0
+// FindProjectsOKBody find projects o k body
+// swagger:model FindProjectsOKBody
+type FindProjectsOKBody struct {
+	models.SearchResult
 
-	// description
-	Description string `json:"description,omitempty"`
-
-	// name
+	// data
 	// Required: true
-	Name *string `json:"name"`
+	Data []*models.ProjectOutput `json:"data"`
 }
 
 // UnmarshalJSON unmarshals this object from a JSON structure
-func (o *FindProjectsOKBodyItems0) UnmarshalJSON(raw []byte) error {
-	// AO0
-	var aO0 FindProjectsOKBodyItems0AllOf0
-	if err := swag.ReadJSON(raw, &aO0); err != nil {
+func (o *FindProjectsOKBody) UnmarshalJSON(raw []byte) error {
+	// FindProjectsOKBodyAO0
+	var findProjectsOKBodyAO0 models.SearchResult
+	if err := swag.ReadJSON(raw, &findProjectsOKBodyAO0); err != nil {
 		return err
 	}
-	o.FindProjectsOKBodyItems0AllOf0 = aO0
+	o.SearchResult = findProjectsOKBodyAO0
 
-	// AO1
-	var dataAO1 struct {
-		Description string `json:"description,omitempty"`
-
-		Name *string `json:"name"`
+	// FindProjectsOKBodyAO1
+	var dataFindProjectsOKBodyAO1 struct {
+		Data []*models.ProjectOutput `json:"data"`
 	}
-	if err := swag.ReadJSON(raw, &dataAO1); err != nil {
+	if err := swag.ReadJSON(raw, &dataFindProjectsOKBodyAO1); err != nil {
 		return err
 	}
 
-	o.Description = dataAO1.Description
-
-	o.Name = dataAO1.Name
+	o.Data = dataFindProjectsOKBodyAO1.Data
 
 	return nil
 }
 
 // MarshalJSON marshals this object to a JSON structure
-func (o FindProjectsOKBodyItems0) MarshalJSON() ([]byte, error) {
+func (o FindProjectsOKBody) MarshalJSON() ([]byte, error) {
 	_parts := make([][]byte, 0, 2)
 
-	aO0, err := swag.WriteJSON(o.FindProjectsOKBodyItems0AllOf0)
+	findProjectsOKBodyAO0, err := swag.WriteJSON(o.SearchResult)
 	if err != nil {
 		return nil, err
 	}
-	_parts = append(_parts, aO0)
+	_parts = append(_parts, findProjectsOKBodyAO0)
 
-	var dataAO1 struct {
-		Description string `json:"description,omitempty"`
-
-		Name *string `json:"name"`
+	var dataFindProjectsOKBodyAO1 struct {
+		Data []*models.ProjectOutput `json:"data"`
 	}
 
-	dataAO1.Description = o.Description
+	dataFindProjectsOKBodyAO1.Data = o.Data
 
-	dataAO1.Name = o.Name
-
-	jsonDataAO1, errAO1 := swag.WriteJSON(dataAO1)
-	if errAO1 != nil {
-		return nil, errAO1
+	jsonDataFindProjectsOKBodyAO1, errFindProjectsOKBodyAO1 := swag.WriteJSON(dataFindProjectsOKBodyAO1)
+	if errFindProjectsOKBodyAO1 != nil {
+		return nil, errFindProjectsOKBodyAO1
 	}
-	_parts = append(_parts, jsonDataAO1)
+	_parts = append(_parts, jsonDataFindProjectsOKBodyAO1)
 
 	return swag.ConcatJSON(_parts...), nil
 }
 
-// Validate validates this find projects o k body items0
-func (o *FindProjectsOKBodyItems0) Validate(formats strfmt.Registry) error {
+// Validate validates this find projects o k body
+func (o *FindProjectsOKBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	// validation for a type composition with FindProjectsOKBodyItems0AllOf0
-	if err := o.FindProjectsOKBodyItems0AllOf0.Validate(formats); err != nil {
+	// validation for a type composition with models.SearchResult
+	if err := o.SearchResult.Validate(formats); err != nil {
 		res = append(res, err)
 	}
 
-	if err := o.validateName(formats); err != nil {
+	if err := o.validateData(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -150,17 +140,33 @@ func (o *FindProjectsOKBodyItems0) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (o *FindProjectsOKBodyItems0) validateName(formats strfmt.Registry) error {
+func (o *FindProjectsOKBody) validateData(formats strfmt.Registry) error {
 
-	if err := validate.Required("name", "body", o.Name); err != nil {
+	if err := validate.Required("findProjectsOK"+"."+"data", "body", o.Data); err != nil {
 		return err
+	}
+
+	for i := 0; i < len(o.Data); i++ {
+		if swag.IsZero(o.Data[i]) { // not required
+			continue
+		}
+
+		if o.Data[i] != nil {
+			if err := o.Data[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("findProjectsOK" + "." + "data" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
 	}
 
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (o *FindProjectsOKBodyItems0) MarshalBinary() ([]byte, error) {
+func (o *FindProjectsOKBody) MarshalBinary() ([]byte, error) {
 	if o == nil {
 		return nil, nil
 	}
@@ -168,169 +174,8 @@ func (o *FindProjectsOKBodyItems0) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (o *FindProjectsOKBodyItems0) UnmarshalBinary(b []byte) error {
-	var res FindProjectsOKBodyItems0
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
-}
-
-// FindProjectsOKBodyItems0AllOf0 Entity
-//
-// Represents a database entity
-// swagger:model FindProjectsOKBodyItems0AllOf0
-type FindProjectsOKBodyItems0AllOf0 struct {
-
-	// id
-	// Required: true
-	ID *string `json:"id"`
-
-	// rev
-	// Required: true
-	Rev *string `json:"rev"`
-
-	// created at
-	// Required: true
-	CreatedAt *string `json:"created_at"`
-
-	// updated at
-	UpdatedAt string `json:"updated_at,omitempty"`
-}
-
-// UnmarshalJSON unmarshals this object from a JSON structure
-func (o *FindProjectsOKBodyItems0AllOf0) UnmarshalJSON(raw []byte) error {
-	// AO0
-	var dataAO0 struct {
-		ID *string `json:"id"`
-
-		Rev *string `json:"rev"`
-	}
-	if err := swag.ReadJSON(raw, &dataAO0); err != nil {
-		return err
-	}
-
-	o.ID = dataAO0.ID
-
-	o.Rev = dataAO0.Rev
-
-	// AO1
-	var dataAO1 struct {
-		CreatedAt *string `json:"created_at"`
-
-		UpdatedAt string `json:"updated_at,omitempty"`
-	}
-	if err := swag.ReadJSON(raw, &dataAO1); err != nil {
-		return err
-	}
-
-	o.CreatedAt = dataAO1.CreatedAt
-
-	o.UpdatedAt = dataAO1.UpdatedAt
-
-	return nil
-}
-
-// MarshalJSON marshals this object to a JSON structure
-func (o FindProjectsOKBodyItems0AllOf0) MarshalJSON() ([]byte, error) {
-	_parts := make([][]byte, 0, 2)
-
-	var dataAO0 struct {
-		ID *string `json:"id"`
-
-		Rev *string `json:"rev"`
-	}
-
-	dataAO0.ID = o.ID
-
-	dataAO0.Rev = o.Rev
-
-	jsonDataAO0, errAO0 := swag.WriteJSON(dataAO0)
-	if errAO0 != nil {
-		return nil, errAO0
-	}
-	_parts = append(_parts, jsonDataAO0)
-
-	var dataAO1 struct {
-		CreatedAt *string `json:"created_at"`
-
-		UpdatedAt string `json:"updated_at,omitempty"`
-	}
-
-	dataAO1.CreatedAt = o.CreatedAt
-
-	dataAO1.UpdatedAt = o.UpdatedAt
-
-	jsonDataAO1, errAO1 := swag.WriteJSON(dataAO1)
-	if errAO1 != nil {
-		return nil, errAO1
-	}
-	_parts = append(_parts, jsonDataAO1)
-
-	return swag.ConcatJSON(_parts...), nil
-}
-
-// Validate validates this find projects o k body items0 all of0
-func (o *FindProjectsOKBodyItems0AllOf0) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := o.validateID(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validateRev(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validateCreatedAt(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (o *FindProjectsOKBodyItems0AllOf0) validateID(formats strfmt.Registry) error {
-
-	if err := validate.Required("id", "body", o.ID); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *FindProjectsOKBodyItems0AllOf0) validateRev(formats strfmt.Registry) error {
-
-	if err := validate.Required("rev", "body", o.Rev); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *FindProjectsOKBodyItems0AllOf0) validateCreatedAt(formats strfmt.Registry) error {
-
-	if err := validate.Required("created_at", "body", o.CreatedAt); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *FindProjectsOKBodyItems0AllOf0) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *FindProjectsOKBodyItems0AllOf0) UnmarshalBinary(b []byte) error {
-	var res FindProjectsOKBodyItems0AllOf0
+func (o *FindProjectsOKBody) UnmarshalBinary(b []byte) error {
+	var res FindProjectsOKBody
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

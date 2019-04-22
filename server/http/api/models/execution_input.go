@@ -20,7 +20,7 @@ import (
 type ExecutionInput struct {
 
 	// params
-	Params map[string]interface{} `json:"params,omitempty"`
+	Params map[string]Any `json:"params,omitempty"`
 
 	// script ID
 	// Required: true

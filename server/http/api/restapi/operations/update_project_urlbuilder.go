@@ -46,7 +46,7 @@ func (o *UpdateProjectURL) Build() (*url.URL, error) {
 	if projectID != "" {
 		_path = strings.Replace(_path, "{projectID}", projectID, -1)
 	} else {
-		return nil, errors.New("ProjectID is required on UpdateProjectURL")
+		return nil, errors.New("projectId is required on UpdateProjectURL")
 	}
 
 	_basePath := o._basePath

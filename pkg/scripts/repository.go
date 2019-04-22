@@ -2,13 +2,14 @@ package scripts
 
 import (
 	"context"
+
 	"github.com/MontFerret/ferret-server/pkg/common/dal"
 )
 
 type Repository interface {
 	Get(ctx context.Context, id string) (ScriptEntity, error)
 
-	Find(ctx context.Context, query dal.Query) ([]ScriptEntity, error)
+	Find(ctx context.Context, query dal.Query) (QueryResult, error)
 
 	Create(ctx context.Context, script Script) (dal.Entity, error)
 

@@ -24,15 +24,11 @@ func NewFindScriptsParams() FindScriptsParams {
 	var (
 		// initialize parameters with default values
 
-		pageDefault = int32(1)
-
-		sizeDefault = int32(10)
+		countDefault = int32(10)
 	)
 
 	return FindScriptsParams{
-		Page: &pageDefault,
-
-		Size: &sizeDefault,
+		Count: &countDefault,
 	}
 }
 
@@ -45,25 +41,23 @@ type FindScriptsParams struct {
 	// HTTP Request Object
 	HTTPRequest *http.Request `json:"-"`
 
-	/*Page number for queries
+	/*Count of items to return
+	  Maximum: 100
 	  Minimum: 1
 	  In: query
-	  Default: 1
+	  Default: 10
 	*/
-	Page *int32
+	Count *int32
+	/*Pagination cursor
+	  In: query
+	*/
+	Cursor *string
 	/*
 	  Required: true
 	  Pattern: [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}
 	  In: path
 	*/
 	ProjectID string
-	/*Page size
-	  Maximum: 100
-	  Minimum: 1
-	  In: query
-	  Default: 10
-	*/
-	Size *int32
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -77,18 +71,18 @@ func (o *FindScriptsParams) BindRequest(r *http.Request, route *middleware.Match
 
 	qs := runtime.Values(r.URL.Query())
 
-	qPage, qhkPage, _ := qs.GetOK("page")
-	if err := o.bindPage(qPage, qhkPage, route.Formats); err != nil {
+	qCount, qhkCount, _ := qs.GetOK("count")
+	if err := o.bindCount(qCount, qhkCount, route.Formats); err != nil {
+		res = append(res, err)
+	}
+
+	qCursor, qhkCursor, _ := qs.GetOK("cursor")
+	if err := o.bindCursor(qCursor, qhkCursor, route.Formats); err != nil {
 		res = append(res, err)
 	}
 
 	rProjectID, rhkProjectID, _ := route.Params.GetOK("projectID")
 	if err := o.bindProjectID(rProjectID, rhkProjectID, route.Formats); err != nil {
-		res = append(res, err)
-	}
-
-	qSize, qhkSize, _ := qs.GetOK("size")
-	if err := o.bindSize(qSize, qhkSize, route.Formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -98,8 +92,8 @@ func (o *FindScriptsParams) BindRequest(r *http.Request, route *middleware.Match
 	return nil
 }
 
-// bindPage binds and validates parameter Page from query.
-func (o *FindScriptsParams) bindPage(rawData []string, hasKey bool, formats strfmt.Registry) error {
+// bindCount binds and validates parameter Count from query.
+func (o *FindScriptsParams) bindCount(rawData []string, hasKey bool, formats strfmt.Registry) error {
 	var raw string
 	if len(rawData) > 0 {
 		raw = rawData[len(rawData)-1]
@@ -114,23 +108,45 @@ func (o *FindScriptsParams) bindPage(rawData []string, hasKey bool, formats strf
 
 	value, err := swag.ConvertInt32(raw)
 	if err != nil {
-		return errors.InvalidType("page", "query", "int32", raw)
+		return errors.InvalidType("count", "query", "int32", raw)
 	}
-	o.Page = &value
+	o.Count = &value
 
-	if err := o.validatePage(formats); err != nil {
+	if err := o.validateCount(formats); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-// validatePage carries on validations for parameter Page
-func (o *FindScriptsParams) validatePage(formats strfmt.Registry) error {
+// validateCount carries on validations for parameter Count
+func (o *FindScriptsParams) validateCount(formats strfmt.Registry) error {
 
-	if err := validate.MinimumInt("page", "query", int64(*o.Page), 1, false); err != nil {
+	if err := validate.MinimumInt("count", "query", int64(*o.Count), 1, false); err != nil {
 		return err
 	}
+
+	if err := validate.MaximumInt("count", "query", int64(*o.Count), 100, false); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// bindCursor binds and validates parameter Cursor from query.
+func (o *FindScriptsParams) bindCursor(rawData []string, hasKey bool, formats strfmt.Registry) error {
+	var raw string
+	if len(rawData) > 0 {
+		raw = rawData[len(rawData)-1]
+	}
+
+	// Required: false
+	// AllowEmptyValue: false
+	if raw == "" { // empty values pass all other validations
+		return nil
+	}
+
+	o.Cursor = &raw
 
 	return nil
 }
@@ -158,47 +174,6 @@ func (o *FindScriptsParams) bindProjectID(rawData []string, hasKey bool, formats
 func (o *FindScriptsParams) validateProjectID(formats strfmt.Registry) error {
 
 	if err := validate.Pattern("projectID", "path", o.ProjectID, `[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// bindSize binds and validates parameter Size from query.
-func (o *FindScriptsParams) bindSize(rawData []string, hasKey bool, formats strfmt.Registry) error {
-	var raw string
-	if len(rawData) > 0 {
-		raw = rawData[len(rawData)-1]
-	}
-
-	// Required: false
-	// AllowEmptyValue: false
-	if raw == "" { // empty values pass all other validations
-		// Default values have been previously initialized by NewFindScriptsParams()
-		return nil
-	}
-
-	value, err := swag.ConvertInt32(raw)
-	if err != nil {
-		return errors.InvalidType("size", "query", "int32", raw)
-	}
-	o.Size = &value
-
-	if err := o.validateSize(formats); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// validateSize carries on validations for parameter Size
-func (o *FindScriptsParams) validateSize(formats strfmt.Registry) error {
-
-	if err := validate.MinimumInt("size", "query", int64(*o.Size), 1, false); err != nil {
-		return err
-	}
-
-	if err := validate.MaximumInt("size", "query", int64(*o.Size), 100, false); err != nil {
 		return err
 	}
 

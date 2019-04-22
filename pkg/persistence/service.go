@@ -2,10 +2,12 @@ package persistence
 
 import (
 	"context"
+
 	"github.com/MontFerret/ferret-server/pkg/common"
 	"github.com/MontFerret/ferret-server/pkg/common/dal"
 	"github.com/MontFerret/ferret-server/pkg/execution"
 	"github.com/MontFerret/ferret-server/pkg/scripts"
+
 	"github.com/pkg/errors"
 )
 
@@ -99,27 +101,27 @@ func (service *Service) GetRecord(ctx context.Context, identity scripts.Identity
 	return repo.Get(ctx, id)
 }
 
-func (service *Service) FindScriptRecords(ctx context.Context, identity scripts.Identity, q dal.Query) ([]RecordEntity, error) {
+func (service *Service) FindScriptRecords(ctx context.Context, identity scripts.Identity, q dal.Query) (QueryResult, error) {
 	repo, err := service.resolveRepository(ctx, identity.ProjectID)
 
 	if err != nil {
-		return nil, err
+		return QueryResult{}, err
 	}
 
 	return repo.FindByScriptID(ctx, identity.ScriptID, q)
 }
 
-func (service *Service) FindProjectRecords(ctx context.Context, projectID string, q dal.Query) ([]RecordEntity, error) {
+func (service *Service) FindProjectRecords(ctx context.Context, projectID string, q dal.Query) (QueryResult, error) {
 	repo, err := service.resolveRepository(ctx, projectID)
 
 	if err != nil {
-		return nil, err
+		return QueryResult{}, err
 	}
 
 	out, err := repo.Find(ctx, q)
 
 	if err != nil {
-		return nil, err
+		return QueryResult{}, err
 	}
 
 	return out, nil

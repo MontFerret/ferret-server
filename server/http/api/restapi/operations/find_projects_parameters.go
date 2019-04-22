@@ -24,14 +24,11 @@ func NewFindProjectsParams() FindProjectsParams {
 	var (
 		// initialize parameters with default values
 
-		pageDefault = int32(1)
-		sizeDefault = int32(10)
+		countDefault = int32(10)
 	)
 
 	return FindProjectsParams{
-		Page: &pageDefault,
-
-		Size: &sizeDefault,
+		Count: &countDefault,
 	}
 }
 
@@ -44,19 +41,17 @@ type FindProjectsParams struct {
 	// HTTP Request Object
 	HTTPRequest *http.Request `json:"-"`
 
-	/*Page number for queries
-	  Minimum: 1
-	  In: query
-	  Default: 1
-	*/
-	Page *int32
-	/*Page size
+	/*Count of items to return
 	  Maximum: 100
 	  Minimum: 1
 	  In: query
 	  Default: 10
 	*/
-	Size *int32
+	Count *int32
+	/*Pagination cursor
+	  In: query
+	*/
+	Cursor *string
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -70,13 +65,13 @@ func (o *FindProjectsParams) BindRequest(r *http.Request, route *middleware.Matc
 
 	qs := runtime.Values(r.URL.Query())
 
-	qPage, qhkPage, _ := qs.GetOK("page")
-	if err := o.bindPage(qPage, qhkPage, route.Formats); err != nil {
+	qCount, qhkCount, _ := qs.GetOK("count")
+	if err := o.bindCount(qCount, qhkCount, route.Formats); err != nil {
 		res = append(res, err)
 	}
 
-	qSize, qhkSize, _ := qs.GetOK("size")
-	if err := o.bindSize(qSize, qhkSize, route.Formats); err != nil {
+	qCursor, qhkCursor, _ := qs.GetOK("cursor")
+	if err := o.bindCursor(qCursor, qhkCursor, route.Formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -86,8 +81,8 @@ func (o *FindProjectsParams) BindRequest(r *http.Request, route *middleware.Matc
 	return nil
 }
 
-// bindPage binds and validates parameter Page from query.
-func (o *FindProjectsParams) bindPage(rawData []string, hasKey bool, formats strfmt.Registry) error {
+// bindCount binds and validates parameter Count from query.
+func (o *FindProjectsParams) bindCount(rawData []string, hasKey bool, formats strfmt.Registry) error {
 	var raw string
 	if len(rawData) > 0 {
 		raw = rawData[len(rawData)-1]
@@ -102,29 +97,33 @@ func (o *FindProjectsParams) bindPage(rawData []string, hasKey bool, formats str
 
 	value, err := swag.ConvertInt32(raw)
 	if err != nil {
-		return errors.InvalidType("page", "query", "int32", raw)
+		return errors.InvalidType("count", "query", "int32", raw)
 	}
-	o.Page = &value
+	o.Count = &value
 
-	if err := o.validatePage(formats); err != nil {
+	if err := o.validateCount(formats); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-// validatePage carries on validations for parameter Page
-func (o *FindProjectsParams) validatePage(formats strfmt.Registry) error {
+// validateCount carries on validations for parameter Count
+func (o *FindProjectsParams) validateCount(formats strfmt.Registry) error {
 
-	if err := validate.MinimumInt("page", "query", int64(*o.Page), 1, false); err != nil {
+	if err := validate.MinimumInt("count", "query", int64(*o.Count), 1, false); err != nil {
+		return err
+	}
+
+	if err := validate.MaximumInt("count", "query", int64(*o.Count), 100, false); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-// bindSize binds and validates parameter Size from query.
-func (o *FindProjectsParams) bindSize(rawData []string, hasKey bool, formats strfmt.Registry) error {
+// bindCursor binds and validates parameter Cursor from query.
+func (o *FindProjectsParams) bindCursor(rawData []string, hasKey bool, formats strfmt.Registry) error {
 	var raw string
 	if len(rawData) > 0 {
 		raw = rawData[len(rawData)-1]
@@ -133,33 +132,10 @@ func (o *FindProjectsParams) bindSize(rawData []string, hasKey bool, formats str
 	// Required: false
 	// AllowEmptyValue: false
 	if raw == "" { // empty values pass all other validations
-		// Default values have been previously initialized by NewFindProjectsParams()
 		return nil
 	}
 
-	value, err := swag.ConvertInt32(raw)
-	if err != nil {
-		return errors.InvalidType("size", "query", "int32", raw)
-	}
-	o.Size = &value
-
-	if err := o.validateSize(formats); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// validateSize carries on validations for parameter Size
-func (o *FindProjectsParams) validateSize(formats strfmt.Registry) error {
-
-	if err := validate.MinimumInt("size", "query", int64(*o.Size), 1, false); err != nil {
-		return err
-	}
-
-	if err := validate.MaximumInt("size", "query", int64(*o.Size), 100, false); err != nil {
-		return err
-	}
+	o.Cursor = &raw
 
 	return nil
 }
