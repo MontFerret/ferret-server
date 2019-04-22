@@ -24,7 +24,7 @@ require (
 	github.com/namsral/flag v1.7.4-pre
 	github.com/pilu/xrequestid v0.0.0-20160221113542-870344eeaa6c
 	github.com/pkg/errors v0.8.1
-	github.com/rs/zerolog v1.13.0
+	github.com/rs/zerolog v1.14.0
 	github.com/sethgrid/pester v0.0.0-20190127155807-68a33a018ad0 // indirect
 	golang.org/x/net v0.0.0-20190328230028-74de082e2cca
 	golang.org/x/sync v0.0.0-20190227155943-e225da77a7e6 // indirect
