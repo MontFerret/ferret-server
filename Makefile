@@ -15,12 +15,15 @@ default: build
 start:
 	./bin/ferret-server
 
-build: vet generate test compile
+build: vet generate test install compile
 
 compile:
 	go build -mod=vendor -v -o ${DIR_BIN}/ferret-server \
 	-ldflags "-X main.version=${VERSION}" \
 	./main.go
+
+install:
+	go mod vendor && go get
 
 test:
 	go test ${DIR_PKG}/...
