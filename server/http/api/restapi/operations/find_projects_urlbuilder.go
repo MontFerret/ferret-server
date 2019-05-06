@@ -16,7 +16,7 @@ import (
 // FindProjectsURL generates an URL for the find projects operation
 type FindProjectsURL struct {
 	Count  *int32
-	Cursor *string
+	Cursor *int64
 
 	_basePath string
 	// avoid unkeyed usage
@@ -59,7 +59,7 @@ func (o *FindProjectsURL) Build() (*url.URL, error) {
 
 	var cursor string
 	if o.Cursor != nil {
-		cursor = *o.Cursor
+		cursor = swag.FormatInt64(*o.Cursor)
 	}
 	if cursor != "" {
 		qs.Set("cursor", cursor)

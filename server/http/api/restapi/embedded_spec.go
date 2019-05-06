@@ -779,6 +779,30 @@ func init() {
         }
       }
     },
+    "pagination": {
+      "type": "object",
+      "title": "Pagination",
+      "required": [
+        "cursors",
+        "count"
+      ],
+      "properties": {
+        "count": {
+          "type": "number"
+        },
+        "cursors": {
+          "type": "object",
+          "properties": {
+            "after": {
+              "type": "integer"
+            },
+            "before": {
+              "type": "integer"
+            }
+          }
+        }
+      }
+    },
     "project-common": {
       "description": "The properties that are shared amongst all versions of the Project model.",
       "title": "Project Common",
@@ -924,27 +948,7 @@ func init() {
       ],
       "properties": {
         "paging": {
-          "type": "object",
-          "required": [
-            "cursors",
-            "count"
-          ],
-          "properties": {
-            "count": {
-              "type": "number"
-            },
-            "cursors": {
-              "type": "object",
-              "properties": {
-                "after": {
-                  "type": "string"
-                },
-                "before": {
-                  "type": "string"
-                }
-              }
-            }
-          }
+          "$ref": "#/definitions/pagination"
         }
       }
     }
@@ -973,7 +977,7 @@ func init() {
       "in": "query"
     },
     "cursor": {
-      "type": "string",
+      "type": "integer",
       "description": "Pagination cursor",
       "name": "cursor",
       "in": "query"
@@ -1046,7 +1050,7 @@ func init() {
         "operationId": "findProjects",
         "parameters": [
           {
-            "type": "string",
+            "type": "integer",
             "description": "Pagination cursor",
             "name": "cursor",
             "in": "query"
@@ -1164,7 +1168,7 @@ func init() {
         "operationId": "findProjectData",
         "parameters": [
           {
-            "type": "string",
+            "type": "integer",
             "description": "Pagination cursor",
             "name": "cursor",
             "in": "query"
@@ -1218,7 +1222,7 @@ func init() {
         "operationId": "findScriptData",
         "parameters": [
           {
-            "type": "string",
+            "type": "integer",
             "description": "Pagination cursor",
             "name": "cursor",
             "in": "query"
@@ -1345,7 +1349,7 @@ func init() {
         "operationId": "findExecutions",
         "parameters": [
           {
-            "type": "string",
+            "type": "integer",
             "description": "Pagination cursor",
             "name": "cursor",
             "in": "query"
@@ -1480,7 +1484,7 @@ func init() {
         "operationId": "findScripts",
         "parameters": [
           {
-            "type": "string",
+            "type": "integer",
             "description": "Pagination cursor",
             "name": "cursor",
             "in": "query"
@@ -1874,6 +1878,30 @@ func init() {
         }
       }
     },
+    "pagination": {
+      "type": "object",
+      "title": "Pagination",
+      "required": [
+        "cursors",
+        "count"
+      ],
+      "properties": {
+        "count": {
+          "type": "number"
+        },
+        "cursors": {
+          "type": "object",
+          "properties": {
+            "after": {
+              "type": "integer"
+            },
+            "before": {
+              "type": "integer"
+            }
+          }
+        }
+      }
+    },
     "project-common": {
       "description": "The properties that are shared amongst all versions of the Project model.",
       "title": "Project Common",
@@ -2019,27 +2047,7 @@ func init() {
       ],
       "properties": {
         "paging": {
-          "type": "object",
-          "required": [
-            "cursors",
-            "count"
-          ],
-          "properties": {
-            "count": {
-              "type": "number"
-            },
-            "cursors": {
-              "type": "object",
-              "properties": {
-                "after": {
-                  "type": "string"
-                },
-                "before": {
-                  "type": "string"
-                }
-              }
-            }
-          }
+          "$ref": "#/definitions/pagination"
         }
       }
     }
@@ -2068,7 +2076,7 @@ func init() {
       "in": "query"
     },
     "cursor": {
-      "type": "string",
+      "type": "integer",
       "description": "Pagination cursor",
       "name": "cursor",
       "in": "query"

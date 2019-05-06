@@ -20,7 +20,7 @@ type FindExecutionsURL struct {
 
 	Cause  *string
 	Count  *int32
-	Cursor *string
+	Cursor *int64
 	Status *string
 
 	_basePath string
@@ -79,7 +79,7 @@ func (o *FindExecutionsURL) Build() (*url.URL, error) {
 
 	var cursor string
 	if o.Cursor != nil {
-		cursor = *o.Cursor
+		cursor = swag.FormatInt64(*o.Cursor)
 	}
 	if cursor != "" {
 		qs.Set("cursor", cursor)

@@ -8,17 +8,17 @@ import (
 func SearchResultFrom(from dal.QueryResult) models.SearchResult {
 	count := float64(from.Count)
 	return models.SearchResult{
-		Paging: &models.SearchResultPaging{
-			Cursors: &models.SearchResultPagingCursors{
-				After:  from.AfterCursor.String(),
-				Before: from.BeforeCursor.String(),
+		Paging: &models.Pagination{
+			Cursors: &models.PaginationCursors{
+				After:  int64(from.AfterCursor),
+				Before: int64(from.BeforeCursor),
 			},
 			Count: &count,
 		},
 	}
 }
 
-func PaginationTo(countP *int32, cursorP *string) dal.Pagination {
+func PaginationTo(countP *int32, cursorP *int64) dal.Pagination {
 	var count uint64
 	var cursor dal.Cursor
 

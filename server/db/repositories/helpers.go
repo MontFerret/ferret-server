@@ -138,13 +138,18 @@ func compileQuery(collectionName string, q dal.Query) dal.CompiledQuery {
 
 	if !q.Pagination.Cursor.IsEmpty() {
 		qs.WriteString("\n")
-		qs.WriteString("FILTER ")
+		qs.WriteString("FILTER DATE_TIMESTAMP(")
 		qs.WriteString(varName)
-		qs.WriteString(".created_at < @")
+		qs.WriteString(".created_at) > @")
 		qs.WriteString(queries.ParamPageCursor)
 
 		params[queries.ParamPageCursor] = q.Pagination.Cursor
 	}
+
+	qs.WriteString("\n")
+	qs.WriteString("SORT ")
+	qs.WriteString(varName)
+	qs.WriteString("i.created_at")
 
 	if q.Pagination.Count > 0 {
 		qs.WriteString("\n")

@@ -51,7 +51,7 @@ type FindProjectDataParams struct {
 	/*Pagination cursor
 	  In: query
 	*/
-	Cursor *string
+	Cursor *int64
 	/*
 	  Required: true
 	  In: path
@@ -145,7 +145,11 @@ func (o *FindProjectDataParams) bindCursor(rawData []string, hasKey bool, format
 		return nil
 	}
 
-	o.Cursor = &raw
+	value, err := swag.ConvertInt64(raw)
+	if err != nil {
+		return errors.InvalidType("cursor", "query", "int64", raw)
+	}
+	o.Cursor = &value
 
 	return nil
 }
