@@ -49,7 +49,7 @@ func NewHistoryRepository(db driver.Database, collectionName string) (*HistoryRe
 	})
 
 	if err != nil {
-		return nil, errors.Wrap(err, "create indexes")
+		return nil, errors.Wrap(err, "create hash indexes")
 	}
 
 	err = ensureSkipListIndexes(ctx, collection, []skipListIndex{
@@ -62,7 +62,7 @@ func NewHistoryRepository(db driver.Database, collectionName string) (*HistoryRe
 	})
 
 	if err != nil {
-		return nil, errors.Wrap(err, "create indexes")
+		return nil, errors.Wrap(err, "create skiplist indexes")
 	}
 
 	return &HistoryRepository{collection}, nil

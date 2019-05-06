@@ -43,10 +43,16 @@ func NewProjectRepository(client driver.Client, db driver.Database, collectionNa
 				Unique: true,
 			},
 		},
+		{
+			fields: []string{"created_at"},
+			opts: &driver.EnsureSkipListIndexOptions{
+				Unique: true,
+			},
+		},
 	})
 
 	if err != nil {
-		return nil, errors.Wrap(err, "create indexes")
+		return nil, errors.Wrap(err, "create skiplist indexes")
 	}
 
 	return &ProjectRepository{client, collection}, nil

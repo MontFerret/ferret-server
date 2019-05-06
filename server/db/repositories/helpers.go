@@ -110,6 +110,11 @@ func compileQuery(collectionName string, q dal.Query) dal.CompiledQuery {
 	qs.WriteString(" IN ")
 	qs.WriteString(collectionName)
 
+	qs.WriteString("\n")
+	qs.WriteString("SORT ")
+	qs.WriteString(varName)
+	qs.WriteString("i.created_at")
+
 	if q.Filtering.Fields != nil && len(q.Filtering.Fields) > 0 {
 		qs.WriteString("\n")
 		qs.WriteString("FILTER ")
@@ -146,11 +151,6 @@ func compileQuery(collectionName string, q dal.Query) dal.CompiledQuery {
 		params[queries.ParamPageCursor] = q.Pagination.Cursor
 	}
 
-	qs.WriteString("\n")
-	qs.WriteString("SORT ")
-	qs.WriteString(varName)
-	qs.WriteString("i.created_at")
-
 	if q.Pagination.Count > 0 {
 		qs.WriteString("\n")
 		qs.WriteString("LIMIT @")
@@ -176,4 +176,25 @@ func bindPaginationParams(params map[string]interface{}, p dal.Pagination) {
 	}
 
 	params[queries.ParamPageCount] = p.Count
+}
+
+func createQueryResult(paging dal.Pagination, data []dal.Entity) dal.QueryResult {
+	qr := dal.QueryResult{
+		Count: paging.Count,
+	}
+
+	length := len(data)
+
+	if length > 0 {
+		if !paging.Cursor.IsEmpty() {
+			qr.BeforeCursor = dal.NewCursor(data[0].CreatedAt)
+		}
+
+		if length == int(paging.Count) {
+			last := data[length-1]
+			qr.AfterCursor = dal.NewCursor(last.CreatedAt)
+		}
+	}
+
+	return qr
 }

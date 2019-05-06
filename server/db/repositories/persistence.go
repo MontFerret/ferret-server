@@ -50,7 +50,20 @@ func NewPersistenceRepository(db driver.Database, collectionName string) (*Persi
 	})
 
 	if err != nil {
-		return nil, errors.Wrap(err, "create indexes")
+		return nil, errors.Wrap(err, "create hash indexes")
+	}
+
+	err = ensureSkipListIndexes(ctx, collection, []skipListIndex{
+		{
+			fields: []string{"created_at"},
+			opts: &driver.EnsureSkipListIndexOptions{
+				Unique: true,
+			},
+		},
+	})
+
+	if err != nil {
+		return nil, errors.Wrap(err, "create skiplist indexes")
 	}
 
 	return &PersistenceRepository{collection: collection}, nil

@@ -42,10 +42,16 @@ func NewScriptRepository(db driver.Database, collectionName string) (*ScriptRepo
 				Unique: true,
 			},
 		},
+		{
+			fields: []string{"created_at"},
+			opts: &driver.EnsureSkipListIndexOptions{
+				Unique: true,
+			},
+		},
 	})
 
 	if err != nil {
-		return nil, errors.Wrap(err, "create indexes")
+		return nil, errors.Wrap(err, "create skiplist indexes")
 	}
 
 	return &ScriptRepository{collection}, nil
@@ -104,11 +110,15 @@ func (repo *ScriptRepository) Find(ctx context.Context, q dal.Query) (scripts.Qu
 		Data: data,
 	}
 
+	// result.QueryResult = createQueryResult(q.Pagination, data)
+
 	length := len(data)
 
 	if length > 0 {
-		first := data[0]
-		result.BeforeCursor = dal.NewCursor(first.CreatedAt)
+		if !q.Pagination.Cursor.IsEmpty() {
+			first := data[0]
+			result.BeforeCursor = dal.NewCursor(first.CreatedAt)
+		}
 
 		if length == int(q.Pagination.Count) {
 			last := data[length-1]
