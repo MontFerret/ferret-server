@@ -8,7 +8,7 @@ import (
 type Cursor int64
 
 func NewCursor(ts time.Time) Cursor {
-	return Cursor(ts.UTC().Unix())
+	return Cursor(ts.UnixNano() / int64(time.Millisecond))
 }
 
 func (c Cursor) IsEmpty() bool {
