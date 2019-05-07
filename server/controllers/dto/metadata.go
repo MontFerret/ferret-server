@@ -26,8 +26,8 @@ func MetadataFrom(from dal.Metadata) *models.Metadata {
 }
 
 func MetadataTo(from models.Metadata) (dal.Metadata, error) {
-	var createdAt time.Time
-	var updatedAt time.Time
+	var createdAt *time.Time
+	var updatedAt *time.Time
 
 	if from.CreatedAt != nil {
 		str := *from.CreatedAt
@@ -38,10 +38,11 @@ func MetadataTo(from models.Metadata) (dal.Metadata, error) {
 			return dal.Metadata{}, errors.Wrap(err, "parse created_at")
 		}
 
-		createdAt = parsed
+		createdAt = &parsed
 	} else {
+		ts := time.Now()
 		// fallback
-		createdAt = time.Now()
+		createdAt = &ts
 	}
 
 	if from.UpdatedAt != "" {
@@ -51,7 +52,7 @@ func MetadataTo(from models.Metadata) (dal.Metadata, error) {
 			return dal.Metadata{}, errors.Wrap(err, "parse updated_at")
 		}
 
-		updatedAt = parsed
+		updatedAt = &parsed
 	}
 
 	return dal.Metadata{

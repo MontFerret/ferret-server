@@ -70,8 +70,9 @@ func NewHistoryRepository(db driver.Database, collectionName string) (*HistoryRe
 
 func (repo *HistoryRepository) Create(ctx context.Context, entry history.Record) (dal.Entity, error) {
 	record := historyRecord{}
+	ts := time.Now()
 	record.Key = entry.JobID
-	record.Metadata.CreatedAt = time.Now()
+	record.Metadata.CreatedAt = &ts
 	record.Record = entry
 
 	meta, err := repo.collection.CreateDocument(ctx, record)
@@ -91,14 +92,13 @@ func (repo *HistoryRepository) Update(ctx context.Context, entry history.Record)
 		return dal.Entity{}, common.Error(common.ErrInvalidOperation, "project model does not have ID")
 	}
 
-	updatedAt := time.Now()
-
-	old := history.RecordEntity{}
-	updateCtx := driver.WithMergeObjects(driver.WithReturnOld(ctx, &old), false)
+	ts := time.Now()
+	out := history.RecordEntity{}
+	updateCtx := driver.WithMergeObjects(driver.WithReturnOld(ctx, &out), false)
 	meta, err := repo.collection.UpdateDocument(updateCtx, entry.JobID, &historyRecord{
 		Record: entry,
 		Metadata: dal.Metadata{
-			UpdateAt: updatedAt,
+			UpdateAt: &ts,
 		},
 	})
 
@@ -106,7 +106,7 @@ func (repo *HistoryRepository) Update(ctx context.Context, entry history.Record)
 		return dal.Entity{}, err
 	}
 
-	return updatedEntity(meta, old.CreatedAt, updatedAt), nil
+	return updatedEntity(meta, out.CreatedAt, &ts), nil
 }
 
 func (repo *HistoryRepository) Get(ctx context.Context, jobID string) (history.RecordEntity, error) {

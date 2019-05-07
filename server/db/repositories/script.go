@@ -126,12 +126,12 @@ func (repo *ScriptRepository) Create(ctx context.Context, script scripts.Script)
 	}
 
 	key := id.String()
-	createdAt := time.Now()
+	ts := time.Now()
 
 	record := scriptRecord{
 		Key: key,
 		Metadata: dal.Metadata{
-			CreatedAt: createdAt,
+			CreatedAt: &ts,
 		},
 		Script: script,
 	}
@@ -142,7 +142,7 @@ func (repo *ScriptRepository) Create(ctx context.Context, script scripts.Script)
 		return dal.Entity{}, errors.Wrap(err, "create script")
 	}
 
-	return createdEntity(meta, createdAt), nil
+	return createdEntity(meta, &ts), nil
 }
 
 func (repo *ScriptRepository) Update(ctx context.Context, script scripts.UpdateScript) (dal.Entity, error) {
@@ -150,16 +150,14 @@ func (repo *ScriptRepository) Update(ctx context.Context, script scripts.UpdateS
 		return dal.Entity{}, common.Error(common.ErrInvalidOperation, "script model does not have ID")
 	}
 
-	updatedAt := time.Now()
-
-	old := &scripts.ScriptEntity{}
-
-	updateCtx := driver.WithMergeObjects(driver.WithReturnOld(ctx, old), false)
+	ts := time.Now()
+	out := &scripts.ScriptEntity{}
+	updateCtx := driver.WithMergeObjects(driver.WithReturnOld(ctx, out), false)
 
 	meta, err := repo.collection.UpdateDocument(updateCtx, script.ID, &scriptRecord{
 		Script: script.Script,
 		Metadata: dal.Metadata{
-			UpdateAt: updatedAt,
+			UpdateAt: &ts,
 		},
 	})
 
@@ -167,7 +165,7 @@ func (repo *ScriptRepository) Update(ctx context.Context, script scripts.UpdateS
 		return dal.Entity{}, err
 	}
 
-	return updatedEntity(meta, old.CreatedAt, updatedAt), nil
+	return updatedEntity(meta, out.CreatedAt, &ts), nil
 }
 
 func (repo *ScriptRepository) Delete(ctx context.Context, id string) error {

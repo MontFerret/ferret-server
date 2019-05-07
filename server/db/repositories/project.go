@@ -155,13 +155,12 @@ func (repo *ProjectRepository) Create(ctx context.Context, project projects.Proj
 		return dal.Entity{}, errors.Wrapf(err, "create new database with id %s", dbName)
 	}
 
-	createdAt := time.Now()
-
+	ts := time.Now()
 	meta, err := repo.collection.CreateDocument(ctx, &projectRecord{
 		Key:     dbName,
 		Project: project,
 		Metadata: dal.Metadata{
-			CreatedAt: createdAt,
+			CreatedAt: &ts,
 		},
 	})
 
@@ -171,7 +170,7 @@ func (repo *ProjectRepository) Create(ctx context.Context, project projects.Proj
 		return dal.Entity{}, err
 	}
 
-	return createdEntity(meta, createdAt), nil
+	return createdEntity(meta, &ts), nil
 }
 
 func (repo *ProjectRepository) Update(ctx context.Context, project projects.UpdateProject) (dal.Entity, error) {
@@ -179,16 +178,14 @@ func (repo *ProjectRepository) Update(ctx context.Context, project projects.Upda
 		return dal.Entity{}, common.Error(common.ErrInvalidOperation, "project model does not have ID")
 	}
 
-	updatedAt := time.Now()
-
-	old := &projects.ProjectEntity{}
-
-	updateCtx := driver.WithMergeObjects(driver.WithReturnOld(ctx, &old), false)
+	ts := time.Now()
+	out := &projects.ProjectEntity{}
+	updateCtx := driver.WithMergeObjects(driver.WithReturnOld(ctx, &out), false)
 
 	meta, err := repo.collection.UpdateDocument(updateCtx, project.ID, &projectRecord{
 		Project: project.Project,
 		Metadata: dal.Metadata{
-			UpdateAt: updatedAt,
+			UpdateAt: &ts,
 		},
 	})
 
@@ -196,7 +193,7 @@ func (repo *ProjectRepository) Update(ctx context.Context, project projects.Upda
 		return dal.Entity{}, err
 	}
 
-	return updatedEntity(meta, old.CreatedAt, updatedAt), nil
+	return updatedEntity(meta, out.CreatedAt, &ts), nil
 }
 
 func (repo *ProjectRepository) Delete(ctx context.Context, id string) error {

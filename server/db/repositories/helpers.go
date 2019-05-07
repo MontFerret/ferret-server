@@ -25,7 +25,7 @@ type (
 	}
 )
 
-func createdEntity(meta driver.DocumentMeta, time time.Time) dal.Entity {
+func createdEntity(meta driver.DocumentMeta, time *time.Time) dal.Entity {
 	return dal.Entity{
 		ID:  meta.Key,
 		Rev: meta.Rev,
@@ -35,7 +35,7 @@ func createdEntity(meta driver.DocumentMeta, time time.Time) dal.Entity {
 	}
 }
 
-func updatedEntity(meta driver.DocumentMeta, createdAt, updatedAt time.Time) dal.Entity {
+func updatedEntity(meta driver.DocumentMeta, createdAt, updatedAt *time.Time) dal.Entity {
 	res := createdEntity(meta, createdAt)
 	res.UpdateAt = updatedAt
 

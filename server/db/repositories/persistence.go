@@ -70,9 +70,10 @@ func NewPersistenceRepository(db driver.Database, collectionName string) (*Persi
 }
 
 func (repo *PersistenceRepository) Create(ctx context.Context, record persistence.Record) (dal.Entity, error) {
+	ts := time.Now()
 	data := persistenceRecord{}
 	data.Key = record.JobID
-	data.Metadata.CreatedAt = time.Now()
+	data.Metadata.CreatedAt = &ts
 	data.Record = record
 
 	meta, err := repo.collection.CreateDocument(ctx, data)
@@ -92,14 +93,13 @@ func (repo *PersistenceRepository) Update(ctx context.Context, record persistenc
 		return dal.Entity{}, common.Error(common.ErrInvalidOperation, "data record does not have ID")
 	}
 
-	updatedAt := time.Now()
-
-	old := persistence.RecordEntity{}
-	updateCtx := driver.WithMergeObjects(driver.WithReturnOld(ctx, &old), false)
+	ts := time.Now()
+	out := persistence.RecordEntity{}
+	updateCtx := driver.WithMergeObjects(driver.WithReturnOld(ctx, &out), false)
 	meta, err := repo.collection.UpdateDocument(updateCtx, record.JobID, &persistenceRecord{
 		Record: record,
 		Metadata: dal.Metadata{
-			UpdateAt: updatedAt,
+			UpdateAt: &ts,
 		},
 	})
 
@@ -107,7 +107,7 @@ func (repo *PersistenceRepository) Update(ctx context.Context, record persistenc
 		return dal.Entity{}, err
 	}
 
-	return updatedEntity(meta, old.CreatedAt, updatedAt), nil
+	return updatedEntity(meta, out.CreatedAt, &ts), nil
 }
 
 func (repo *PersistenceRepository) Get(ctx context.Context, id string) (persistence.RecordEntity, error) {
