@@ -87,7 +87,7 @@ func (repo *ScriptRepository) Find(ctx context.Context, q dal.Query) (scripts.Qu
 		return scripts.QueryResult{}, err
 	}
 
-	data := make([]scripts.ScriptEntity, 0, q.Pagination.Count)
+	data := make([]scripts.ScriptEntity, 0, q.Pagination.Count+1)
 
 	defer cursor.Close()
 
@@ -103,26 +103,15 @@ func (repo *ScriptRepository) Find(ctx context.Context, q dal.Query) (scripts.Qu
 		data = append(data, repo.fromRecord(meta, record))
 	}
 
-	result := scripts.QueryResult{
-		QueryResult: dal.QueryResult{
-			Count: uint64(len(data)),
-		},
-		Data: data,
-	}
-
-	// result.QueryResult = createQueryResult(q.Pagination, data)
-
+	result := scripts.QueryResult{}
 	length := len(data)
+	result.QueryResult = createPaginationResult(q.Pagination, length)
 
 	if length > 0 {
-		if !q.Pagination.Cursor.IsEmpty() {
-			first := data[0]
-			result.BeforeCursor = dal.NewCursor(first.CreatedAt)
-		}
-
-		if length == int(q.Pagination.Count) {
-			last := data[length-1]
-			result.AfterCursor = dal.NewCursor(last.CreatedAt)
+		if length >= int(q.Pagination.Count) {
+			result.Data = data[:q.Pagination.Count]
+		} else {
+			result.Data = data
 		}
 	}
 

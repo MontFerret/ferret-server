@@ -20,7 +20,7 @@ type FindScriptDataURL struct {
 	ScriptID  string
 
 	Count  *int32
-	Cursor *int64
+	Cursor *string
 
 	_basePath string
 	// avoid unkeyed usage
@@ -77,7 +77,7 @@ func (o *FindScriptDataURL) Build() (*url.URL, error) {
 
 	var cursor string
 	if o.Cursor != nil {
-		cursor = swag.FormatInt64(*o.Cursor)
+		cursor = *o.Cursor
 	}
 	if cursor != "" {
 		qs.Set("cursor", cursor)

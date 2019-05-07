@@ -10,15 +10,15 @@ func SearchResultFrom(from dal.QueryResult) models.SearchResult {
 	return models.SearchResult{
 		Paging: &models.Pagination{
 			Cursors: &models.PaginationCursors{
-				After:  int64(from.AfterCursor),
-				Before: int64(from.BeforeCursor),
+				After:  string(from.AfterCursor),
+				Before: string(from.BeforeCursor),
 			},
 			Count: &count,
 		},
 	}
 }
 
-func PaginationTo(countP *int32, cursorP *int64) dal.Pagination {
+func PaginationTo(countP *int32, cursorP *string) dal.Pagination {
 	var count uint64
 	var cursor dal.Cursor
 

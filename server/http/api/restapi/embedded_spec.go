@@ -794,10 +794,10 @@ func init() {
           "type": "object",
           "properties": {
             "after": {
-              "type": "integer"
+              "type": "string"
             },
             "before": {
-              "type": "integer"
+              "type": "string"
             }
           }
         }
@@ -977,7 +977,7 @@ func init() {
       "in": "query"
     },
     "cursor": {
-      "type": "integer",
+      "type": "string",
       "description": "Pagination cursor",
       "name": "cursor",
       "in": "query"
@@ -1050,7 +1050,7 @@ func init() {
         "operationId": "findProjects",
         "parameters": [
           {
-            "type": "integer",
+            "type": "string",
             "description": "Pagination cursor",
             "name": "cursor",
             "in": "query"
@@ -1168,7 +1168,7 @@ func init() {
         "operationId": "findProjectData",
         "parameters": [
           {
-            "type": "integer",
+            "type": "string",
             "description": "Pagination cursor",
             "name": "cursor",
             "in": "query"
@@ -1222,7 +1222,7 @@ func init() {
         "operationId": "findScriptData",
         "parameters": [
           {
-            "type": "integer",
+            "type": "string",
             "description": "Pagination cursor",
             "name": "cursor",
             "in": "query"
@@ -1349,7 +1349,7 @@ func init() {
         "operationId": "findExecutions",
         "parameters": [
           {
-            "type": "integer",
+            "type": "string",
             "description": "Pagination cursor",
             "name": "cursor",
             "in": "query"
@@ -1484,7 +1484,7 @@ func init() {
         "operationId": "findScripts",
         "parameters": [
           {
-            "type": "integer",
+            "type": "string",
             "description": "Pagination cursor",
             "name": "cursor",
             "in": "query"
@@ -1893,10 +1893,10 @@ func init() {
           "type": "object",
           "properties": {
             "after": {
-              "type": "integer"
+              "type": "string"
             },
             "before": {
-              "type": "integer"
+              "type": "string"
             }
           }
         }
@@ -2076,7 +2076,7 @@ func init() {
       "in": "query"
     },
     "cursor": {
-      "type": "integer",
+      "type": "string",
       "description": "Pagination cursor",
       "name": "cursor",
       "in": "query"

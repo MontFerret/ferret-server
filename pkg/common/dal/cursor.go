@@ -1,26 +1,48 @@
 package dal
 
 import (
+	"encoding/base64"
 	"encoding/json"
-	"time"
+	"strconv"
 )
 
-type Cursor int64
-
-func NewCursor(ts time.Time) Cursor {
-	return Cursor(ts.UnixNano() / int64(time.Millisecond))
-}
+type Cursor string
 
 func (c Cursor) IsEmpty() bool {
-	return c <= 0
+	return c == ""
 }
 
 func (c Cursor) MarshalJSON() ([]byte, error) {
-	return json.Marshal(int64(c))
+	return json.Marshal(string(c))
 }
 
 func (c Cursor) String() string {
-	ts := time.Unix(int64(c), 0)
+	return string(c)
+}
 
-	return ts.Format(time.RFC1123)
+func EncodeCursor(value int64) Cursor {
+	str := strconv.FormatInt(value, 10)
+	encoded := base64.StdEncoding.EncodeToString([]byte(str))
+
+	return Cursor(encoded)
+}
+
+func DecodeCursor(c Cursor) int64 {
+	if c == "" {
+		return 0
+	}
+
+	decoded, err := base64.StdEncoding.DecodeString(string(c))
+
+	if err != nil {
+		return 0
+	}
+
+	num, err := strconv.ParseInt(string(decoded), 10, 64)
+
+	if err != nil {
+		return 0
+	}
+
+	return num
 }

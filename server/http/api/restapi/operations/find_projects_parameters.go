@@ -51,7 +51,7 @@ type FindProjectsParams struct {
 	/*Pagination cursor
 	  In: query
 	*/
-	Cursor *int64
+	Cursor *string
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -135,11 +135,7 @@ func (o *FindProjectsParams) bindCursor(rawData []string, hasKey bool, formats s
 		return nil
 	}
 
-	value, err := swag.ConvertInt64(raw)
-	if err != nil {
-		return errors.InvalidType("cursor", "query", "int64", raw)
-	}
-	o.Cursor = &value
+	o.Cursor = &raw
 
 	return nil
 }

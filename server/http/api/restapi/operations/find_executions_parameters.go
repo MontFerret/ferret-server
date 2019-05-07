@@ -55,7 +55,7 @@ type FindExecutionsParams struct {
 	/*Pagination cursor
 	  In: query
 	*/
-	Cursor *int64
+	Cursor *string
 	/*
 	  Required: true
 	  Pattern: [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}
@@ -196,11 +196,7 @@ func (o *FindExecutionsParams) bindCursor(rawData []string, hasKey bool, formats
 		return nil
 	}
 
-	value, err := swag.ConvertInt64(raw)
-	if err != nil {
-		return errors.InvalidType("cursor", "query", "int64", raw)
-	}
-	o.Cursor = &value
+	o.Cursor = &raw
 
 	return nil
 }

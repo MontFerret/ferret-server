@@ -94,10 +94,10 @@ func (m *Pagination) UnmarshalBinary(b []byte) error {
 type PaginationCursors struct {
 
 	// after
-	After int64 `json:"after,omitempty"`
+	After string `json:"after,omitempty"`
 
 	// before
-	Before int64 `json:"before,omitempty"`
+	Before string `json:"before,omitempty"`
 }
 
 // Validate validates this pagination cursors
