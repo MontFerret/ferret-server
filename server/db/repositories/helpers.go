@@ -110,6 +110,11 @@ func compileQuery(collectionName string, q dal.Query) dal.CompiledQuery {
 	qs.WriteString(" IN ")
 	qs.WriteString(collectionName)
 
+	qs.WriteString("\n")
+	qs.WriteString("SORT ")
+	qs.WriteString(varName)
+	qs.WriteString("i.created_at")
+
 	if q.Filtering.Fields != nil && len(q.Filtering.Fields) > 0 {
 		qs.WriteString("\n")
 		qs.WriteString("FILTER ")
@@ -136,23 +141,14 @@ func compileQuery(collectionName string, q dal.Query) dal.CompiledQuery {
 		}
 	}
 
-	if !q.Pagination.Cursor.IsEmpty() {
-		qs.WriteString("\n")
-		qs.WriteString("FILTER ")
-		qs.WriteString(varName)
-		qs.WriteString(".created_at < @")
-		qs.WriteString(queries.ParamPageCursor)
+	qs.WriteString("\n")
+	qs.WriteString("LIMIT ")
+	qs.WriteString("@")
+	qs.WriteString(queries.ParamPageOffset)
+	qs.WriteString(", @")
+	qs.WriteString(queries.ParamPageCount)
 
-		params[queries.ParamPageCursor] = q.Pagination.Cursor
-	}
-
-	if q.Pagination.Count > 0 {
-		qs.WriteString("\n")
-		qs.WriteString("LIMIT @")
-		qs.WriteString(queries.ParamPageCount)
-
-		params[queries.ParamPageCount] = q.Pagination.Count
-	}
+	bindPaginationParams(params, q.Pagination)
 
 	qs.WriteString("\n")
 	qs.WriteString("RETURN i")
@@ -165,10 +161,30 @@ func compileQuery(collectionName string, q dal.Query) dal.CompiledQuery {
 
 func bindPaginationParams(params map[string]interface{}, p dal.Pagination) {
 	if !p.Cursor.IsEmpty() {
-		params[queries.ParamPageCursor] = p.Cursor
+		params[queries.ParamPageOffset] = dal.DecodeCursor(p.Cursor) * int64(p.Count)
 	} else {
-		params[queries.ParamPageCursor] = nil
+		params[queries.ParamPageOffset] = 0
 	}
 
-	params[queries.ParamPageCount] = p.Count
+	params[queries.ParamPageCount] = p.Count + 1
+}
+
+func createPaginationResult(p dal.Pagination, resultSize int) dal.QueryResult {
+	result := dal.QueryResult{
+		Count: uint64(resultSize) - 1,
+	}
+
+	page := dal.DecodeCursor(p.Cursor)
+
+	if resultSize > 0 {
+		if page > 0 {
+			result.BeforeCursor = dal.EncodeCursor(page - 1)
+		}
+
+		if resultSize > int(p.Count) {
+			result.AfterCursor = dal.EncodeCursor(page + 1)
+		}
+	}
+
+	return result
 }

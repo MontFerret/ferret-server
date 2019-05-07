@@ -19,7 +19,7 @@ type SearchResult struct {
 
 	// paging
 	// Required: true
-	Paging *SearchResultPaging `json:"paging"`
+	Paging *Pagination `json:"paging"`
 }
 
 // Validate validates this search result
@@ -65,116 +65,6 @@ func (m *SearchResult) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (m *SearchResult) UnmarshalBinary(b []byte) error {
 	var res SearchResult
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*m = res
-	return nil
-}
-
-// SearchResultPaging search result paging
-// swagger:model SearchResultPaging
-type SearchResultPaging struct {
-
-	// count
-	// Required: true
-	Count *float64 `json:"count"`
-
-	// cursors
-	// Required: true
-	Cursors *SearchResultPagingCursors `json:"cursors"`
-}
-
-// Validate validates this search result paging
-func (m *SearchResultPaging) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.validateCount(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateCursors(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *SearchResultPaging) validateCount(formats strfmt.Registry) error {
-
-	if err := validate.Required("paging"+"."+"count", "body", m.Count); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *SearchResultPaging) validateCursors(formats strfmt.Registry) error {
-
-	if err := validate.Required("paging"+"."+"cursors", "body", m.Cursors); err != nil {
-		return err
-	}
-
-	if m.Cursors != nil {
-		if err := m.Cursors.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("paging" + "." + "cursors")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (m *SearchResultPaging) MarshalBinary() ([]byte, error) {
-	if m == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(m)
-}
-
-// UnmarshalBinary interface implementation
-func (m *SearchResultPaging) UnmarshalBinary(b []byte) error {
-	var res SearchResultPaging
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*m = res
-	return nil
-}
-
-// SearchResultPagingCursors search result paging cursors
-// swagger:model SearchResultPagingCursors
-type SearchResultPagingCursors struct {
-
-	// after
-	After string `json:"after,omitempty"`
-
-	// before
-	Before string `json:"before,omitempty"`
-}
-
-// Validate validates this search result paging cursors
-func (m *SearchResultPagingCursors) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (m *SearchResultPagingCursors) MarshalBinary() ([]byte, error) {
-	if m == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(m)
-}
-
-// UnmarshalBinary interface implementation
-func (m *SearchResultPagingCursors) UnmarshalBinary(b []byte) error {
-	var res SearchResultPagingCursors
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

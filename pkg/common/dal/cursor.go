@@ -4,58 +4,45 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"strconv"
-	"time"
-
-	"github.com/pkg/errors"
 )
 
 type Cursor string
-
-func NewCursor(ts time.Time) Cursor {
-	str := strconv.Itoa(int(ts.Unix()))
-	encoded := base64.StdEncoding.EncodeToString([]byte(str))
-
-	return Cursor(encoded)
-}
 
 func (c Cursor) IsEmpty() bool {
 	return c == ""
 }
 
 func (c Cursor) MarshalJSON() ([]byte, error) {
-	if c == "" {
-		return []byte(""), nil
-	}
-
-	ts, err := DecodeCursor(c)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return json.Marshal(ts)
+	return json.Marshal(string(c))
 }
 
 func (c Cursor) String() string {
 	return string(c)
 }
 
-func DecodeCursor(c Cursor) (time.Time, error) {
+func EncodeCursor(value int64) Cursor {
+	str := strconv.FormatInt(value, 10)
+	encoded := base64.StdEncoding.EncodeToString([]byte(str))
+
+	return Cursor(encoded)
+}
+
+func DecodeCursor(c Cursor) int64 {
 	if c == "" {
-		return time.Time{}, nil
+		return 0
 	}
 
 	decoded, err := base64.StdEncoding.DecodeString(string(c))
 
 	if err != nil {
-		return time.Time{}, errors.Wrap(err, "decode cursor")
+		return 0
 	}
 
 	num, err := strconv.ParseInt(string(decoded), 10, 64)
 
 	if err != nil {
-		return time.Time{}, err
+		return 0
 	}
 
-	return time.Unix(int64(num), 0), nil
+	return num
 }

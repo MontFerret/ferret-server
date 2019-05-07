@@ -7,15 +7,15 @@ import (
 var (
 	findAll = `
 		FOR i IN %s
-			FILTER @` + ParamPageCursor + ` != NULL ? i.created_at < @` + ParamPageCursor + ` : TRUE == TRUE
-			LIMIT @` + ParamPageCount + `
+			SORT i.created_at
+			LIMIT  @` + ParamPageOffset + `, @` + ParamPageCount + `
 			RETURN i
 `
 	findAllByScriptID = `
 		FOR i IN %s
+			SORT i.created_at
 			FILTER i.script_id == @` + ParamFilterByScriptID + `
-			FILTER @` + ParamPageCursor + ` != NULL ? i.created_at < @` + ParamPageCursor + ` : TRUE == TRUE
-			LIMIT @` + ParamPageCount + `
+			LIMIT  @` + ParamPageOffset + `, @` + ParamPageCount + `
 			RETURN i
 `
 

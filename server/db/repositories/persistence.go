@@ -50,7 +50,20 @@ func NewPersistenceRepository(db driver.Database, collectionName string) (*Persi
 	})
 
 	if err != nil {
-		return nil, errors.Wrap(err, "create indexes")
+		return nil, errors.Wrap(err, "create hash indexes")
+	}
+
+	err = ensureSkipListIndexes(ctx, collection, []skipListIndex{
+		{
+			fields: []string{"created_at"},
+			opts: &driver.EnsureSkipListIndexOptions{
+				Unique: true,
+			},
+		},
+	})
+
+	if err != nil {
+		return nil, errors.Wrap(err, "create skiplist indexes")
 	}
 
 	return &PersistenceRepository{collection: collection}, nil
@@ -132,7 +145,7 @@ func (repo *PersistenceRepository) Find(ctx context.Context, q dal.Query) (persi
 		return persistence.QueryResult{}, err
 	}
 
-	data := make([]persistence.RecordEntity, 0, q.Pagination.Count)
+	data := make([]persistence.RecordEntity, 0, q.Pagination.Count+1)
 
 	defer cursor.Close()
 
@@ -148,29 +161,22 @@ func (repo *PersistenceRepository) Find(ctx context.Context, q dal.Query) (persi
 		data = append(data, repo.fromRecord(meta, record))
 	}
 
-	result := persistence.QueryResult{
-		QueryResult: dal.QueryResult{
-			Count: uint64(len(data)),
-		},
-		Data: data,
-	}
-
+	result := persistence.QueryResult{}
 	length := len(data)
+	result.QueryResult = createPaginationResult(q.Pagination, length)
 
 	if length > 0 {
-		first := data[0]
-		result.BeforeCursor = dal.NewCursor(first.CreatedAt)
-
-		if length == int(q.Pagination.Count) {
-			last := data[length-1]
-			result.AfterCursor = dal.NewCursor(last.CreatedAt)
+		if length >= int(q.Pagination.Count) {
+			result.Data = data[:q.Pagination.Count]
+		} else {
+			result.Data = data
 		}
 	}
 
 	return result, nil
 }
 
-func (repo *PersistenceRepository) FindByScriptID(ctx context.Context, scriptID string, q dal.Query) ([]persistence.RecordEntity, error) {
+func (repo *PersistenceRepository) FindByScriptID(ctx context.Context, scriptID string, q dal.Query) (persistence.QueryResult, error) {
 	params := map[string]interface{}{}
 	bindPaginationParams(params, q.Pagination)
 	params[queries.ParamFilterByScriptID] = scriptID
@@ -182,10 +188,10 @@ func (repo *PersistenceRepository) FindByScriptID(ctx context.Context, scriptID 
 	)
 
 	if err != nil {
-		return nil, err
+		return persistence.QueryResult{}, err
 	}
 
-	result := make([]persistence.RecordEntity, 0, q.Pagination.Count)
+	data := make([]persistence.RecordEntity, 0, q.Pagination.Count+1)
 
 	defer cursor.Close()
 
@@ -195,10 +201,22 @@ func (repo *PersistenceRepository) FindByScriptID(ctx context.Context, scriptID 
 		meta, err := cursor.ReadDocument(ctx, &record)
 
 		if err != nil {
-			return nil, err
+			return persistence.QueryResult{}, err
 		}
 
-		result = append(result, repo.fromRecord(meta, record))
+		data = append(data, repo.fromRecord(meta, record))
+	}
+
+	result := persistence.QueryResult{}
+	length := len(data)
+	result.QueryResult = createPaginationResult(q.Pagination, length)
+
+	if length > 0 {
+		if length >= int(q.Pagination.Count) {
+			result.Data = data[:q.Pagination.Count]
+		} else {
+			result.Data = data
+		}
 	}
 
 	return result, nil

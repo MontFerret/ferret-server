@@ -779,6 +779,30 @@ func init() {
         }
       }
     },
+    "pagination": {
+      "type": "object",
+      "title": "Pagination",
+      "required": [
+        "cursors",
+        "count"
+      ],
+      "properties": {
+        "count": {
+          "type": "number"
+        },
+        "cursors": {
+          "type": "object",
+          "properties": {
+            "after": {
+              "type": "string"
+            },
+            "before": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
     "project-common": {
       "description": "The properties that are shared amongst all versions of the Project model.",
       "title": "Project Common",
@@ -924,27 +948,7 @@ func init() {
       ],
       "properties": {
         "paging": {
-          "type": "object",
-          "required": [
-            "cursors",
-            "count"
-          ],
-          "properties": {
-            "count": {
-              "type": "number"
-            },
-            "cursors": {
-              "type": "object",
-              "properties": {
-                "after": {
-                  "type": "string"
-                },
-                "before": {
-                  "type": "string"
-                }
-              }
-            }
-          }
+          "$ref": "#/definitions/pagination"
         }
       }
     }
@@ -1874,6 +1878,30 @@ func init() {
         }
       }
     },
+    "pagination": {
+      "type": "object",
+      "title": "Pagination",
+      "required": [
+        "cursors",
+        "count"
+      ],
+      "properties": {
+        "count": {
+          "type": "number"
+        },
+        "cursors": {
+          "type": "object",
+          "properties": {
+            "after": {
+              "type": "string"
+            },
+            "before": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
     "project-common": {
       "description": "The properties that are shared amongst all versions of the Project model.",
       "title": "Project Common",
@@ -2019,27 +2047,7 @@ func init() {
       ],
       "properties": {
         "paging": {
-          "type": "object",
-          "required": [
-            "cursors",
-            "count"
-          ],
-          "properties": {
-            "count": {
-              "type": "number"
-            },
-            "cursors": {
-              "type": "object",
-              "properties": {
-                "after": {
-                  "type": "string"
-                },
-                "before": {
-                  "type": "string"
-                }
-              }
-            }
-          }
+          "$ref": "#/definitions/pagination"
         }
       }
     }

@@ -49,7 +49,7 @@ func NewHistoryRepository(db driver.Database, collectionName string) (*HistoryRe
 	})
 
 	if err != nil {
-		return nil, errors.Wrap(err, "create indexes")
+		return nil, errors.Wrap(err, "create hash indexes")
 	}
 
 	err = ensureSkipListIndexes(ctx, collection, []skipListIndex{
@@ -62,7 +62,7 @@ func NewHistoryRepository(db driver.Database, collectionName string) (*HistoryRe
 	})
 
 	if err != nil {
-		return nil, errors.Wrap(err, "create indexes")
+		return nil, errors.Wrap(err, "create skiplist indexes")
 	}
 
 	return &HistoryRepository{collection}, nil
@@ -135,7 +135,7 @@ func (repo *HistoryRepository) Find(ctx context.Context, q dal.Query) (history.Q
 		return history.QueryResult{}, err
 	}
 
-	data := make([]history.RecordEntity, 0, q.Pagination.Count)
+	data := make([]history.RecordEntity, 0, q.Pagination.Count+1)
 
 	defer cursor.Close()
 
@@ -151,22 +151,15 @@ func (repo *HistoryRepository) Find(ctx context.Context, q dal.Query) (history.Q
 		data = append(data, repo.fromRecord(meta, record))
 	}
 
-	result := history.QueryResult{
-		QueryResult: dal.QueryResult{
-			Count: uint64(len(data)),
-		},
-		Data: data,
-	}
-
+	result := history.QueryResult{}
 	length := len(data)
+	result.QueryResult = createPaginationResult(q.Pagination, length)
 
 	if length > 0 {
-		first := data[0]
-		result.BeforeCursor = dal.NewCursor(first.CreatedAt)
-
-		if length == int(q.Pagination.Count) {
-			last := data[length-1]
-			result.AfterCursor = dal.NewCursor(last.CreatedAt)
+		if length >= int(q.Pagination.Count) {
+			result.Data = data[:q.Pagination.Count]
+		} else {
+			result.Data = data
 		}
 	}
 

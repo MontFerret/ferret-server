@@ -46,6 +46,7 @@ You can download latest binaries from [here](https://github.com/MontFerret/ferre
 * ArangoDB
 
 #### Development
+* [Go Swagger](https://www.github.com/go-swagger/go-swagger)
 * GNU Make
 * ANTLR4 >=4.7.1
 

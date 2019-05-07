@@ -8,10 +8,10 @@ import (
 func SearchResultFrom(from dal.QueryResult) models.SearchResult {
 	count := float64(from.Count)
 	return models.SearchResult{
-		Paging: &models.SearchResultPaging{
-			Cursors: &models.SearchResultPagingCursors{
-				After:  from.AfterCursor.String(),
-				Before: from.BeforeCursor.String(),
+		Paging: &models.Pagination{
+			Cursors: &models.PaginationCursors{
+				After:  string(from.AfterCursor),
+				Before: string(from.BeforeCursor),
 			},
 			Count: &count,
 		},
