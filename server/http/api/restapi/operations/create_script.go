@@ -29,7 +29,7 @@ func NewCreateScript(ctx *middleware.Context, handler CreateScriptHandler) *Crea
 	return &CreateScript{Context: ctx, Handler: handler}
 }
 
-/*CreateScript swagger:route POST /projects/{projectID}/scripts createScript
+/*CreateScript swagger:route POST /projects/{projectId}/scripts createScript
 
 Create Script
 

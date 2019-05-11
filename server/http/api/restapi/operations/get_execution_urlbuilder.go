@@ -41,7 +41,7 @@ func (o *GetExecutionURL) SetBasePath(bp string) {
 func (o *GetExecutionURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/projects/{projectID}/exec/{jobID}"
+	var _path = "/projects/{projectId}/exec/{jobID}"
 
 	jobID := o.JobID
 	if jobID != "" {
@@ -52,7 +52,7 @@ func (o *GetExecutionURL) Build() (*url.URL, error) {
 
 	projectID := o.ProjectID
 	if projectID != "" {
-		_path = strings.Replace(_path, "{projectID}", projectID, -1)
+		_path = strings.Replace(_path, "{projectId}", projectID, -1)
 	} else {
 		return nil, errors.New("projectId is required on GetExecutionURL")
 	}

@@ -35,7 +35,7 @@ func NewFindProjectData(ctx *middleware.Context, handler FindProjectDataHandler)
 	return &FindProjectData{Context: ctx, Handler: handler}
 }
 
-/*FindProjectData swagger:route GET /projects/{projectID}/data findProjectData
+/*FindProjectData swagger:route GET /projects/{projectId}/data findProjectData
 
 List Data
 

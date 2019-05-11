@@ -37,7 +37,7 @@ func (ctl *Execution) Create(params operations.CreateExecutionParams) middleware
 	logger := logging.FromRequest(params.HTTPRequest)
 	ctx := context.Background()
 
-	id, err := ctl.exec.Start(ctx, execution.Event{
+	jobID, err := ctl.exec.Start(ctx, execution.Event{
 		ProjectID: params.ProjectID,
 		ScriptID:  *params.Body.ScriptID,
 		CausedBy:  execution.CauseManual,
@@ -62,7 +62,9 @@ func (ctl *Execution) Create(params operations.CreateExecutionParams) middleware
 		Str("cause", execution.CauseManual.String()).
 		Msg("create a job")
 
-	return operations.NewCreateExecutionOK().WithPayload(id)
+	return operations.NewCreateExecutionOK().WithPayload(&operations.CreateExecutionOKBody{
+		JobID: &jobID,
+	})
 }
 
 func (ctl *Execution) Delete(params operations.DeleteExecutionParams) middleware.Responder {

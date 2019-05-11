@@ -71,7 +71,7 @@ func (o *CreateExecutionParams) BindRequest(r *http.Request, route *middleware.M
 			}
 		}
 	}
-	rProjectID, rhkProjectID, _ := route.Params.GetOK("projectID")
+	rProjectID, rhkProjectID, _ := route.Params.GetOK("projectId")
 	if err := o.bindProjectID(rProjectID, rhkProjectID, route.Formats); err != nil {
 		res = append(res, err)
 	}
@@ -104,7 +104,7 @@ func (o *CreateExecutionParams) bindProjectID(rawData []string, hasKey bool, for
 // validateProjectID carries on validations for parameter ProjectID
 func (o *CreateExecutionParams) validateProjectID(formats strfmt.Registry) error {
 
-	if err := validate.Pattern("projectID", "path", o.ProjectID, `[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`); err != nil {
+	if err := validate.Pattern("projectId", "path", o.ProjectID, `[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`); err != nil {
 		return err
 	}
 

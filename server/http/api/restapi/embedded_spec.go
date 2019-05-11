@@ -101,7 +101,7 @@ func init() {
         }
       }
     },
-    "/projects/{projectID}": {
+    "/projects/{projectId}": {
       "get": {
         "summary": "Get Project",
         "operationId": "getProject",
@@ -142,11 +142,11 @@ func init() {
       },
       "parameters": [
         {
-          "$ref": "#/parameters/projectID"
+          "$ref": "#/parameters/projectId"
         }
       ]
     },
-    "/projects/{projectID}/data": {
+    "/projects/{projectId}/data": {
       "get": {
         "summary": "List Data",
         "operationId": "findProjectData",
@@ -184,13 +184,13 @@ func init() {
       "parameters": [
         {
           "type": "string",
-          "name": "projectID",
+          "name": "projectId",
           "in": "path",
           "required": true
         }
       ]
     },
-    "/projects/{projectID}/data/{scriptID}": {
+    "/projects/{projectId}/data/{scriptId}": {
       "get": {
         "summary": "List Script Data",
         "operationId": "findScriptData",
@@ -202,7 +202,7 @@ func init() {
             "$ref": "#/parameters/count"
           },
           {
-            "$ref": "#/parameters/scriptID"
+            "$ref": "#/parameters/scriptId"
           }
         ],
         "responses": {
@@ -231,19 +231,19 @@ func init() {
       "parameters": [
         {
           "type": "string",
-          "name": "projectID",
+          "name": "projectId",
           "in": "path",
           "required": true
         },
         {
           "type": "string",
-          "name": "scriptID",
+          "name": "scriptId",
           "in": "path",
           "required": true
         }
       ]
     },
-    "/projects/{projectID}/data/{scriptID}/{dataId}": {
+    "/projects/{projectId}/data/{scriptId}/{dataId}": {
       "get": {
         "summary": "Get Data",
         "operationId": "getScriptData",
@@ -285,13 +285,13 @@ func init() {
       "parameters": [
         {
           "type": "string",
-          "name": "projectID",
+          "name": "projectId",
           "in": "path",
           "required": true
         },
         {
           "type": "string",
-          "name": "scriptID",
+          "name": "scriptId",
           "in": "path",
           "required": true
         },
@@ -303,7 +303,7 @@ func init() {
         }
       ]
     },
-    "/projects/{projectID}/exec": {
+    "/projects/{projectId}/exec": {
       "get": {
         "summary": "List Execution",
         "operationId": "findExecutions",
@@ -359,18 +359,26 @@ func init() {
         "responses": {
           "200": {
             "schema": {
-              "type": "string"
+              "type": "object",
+              "required": [
+                "jobId"
+              ],
+              "properties": {
+                "jobId": {
+                  "type": "string"
+                }
+              }
             }
           }
         }
       },
       "parameters": [
         {
-          "$ref": "#/parameters/projectID"
+          "$ref": "#/parameters/projectId"
         }
       ]
     },
-    "/projects/{projectID}/exec/{jobID}": {
+    "/projects/{projectId}/exec/{jobID}": {
       "get": {
         "summary": "Get Status of Execution",
         "operationId": "getExecution",
@@ -391,7 +399,7 @@ func init() {
       },
       "parameters": [
         {
-          "$ref": "#/parameters/projectID"
+          "$ref": "#/parameters/projectId"
         },
         {
           "type": "string",
@@ -401,7 +409,7 @@ func init() {
         }
       ]
     },
-    "/projects/{projectID}/scripts": {
+    "/projects/{projectId}/scripts": {
       "get": {
         "summary": "List Script",
         "operationId": "findScripts",
@@ -458,11 +466,11 @@ func init() {
       },
       "parameters": [
         {
-          "$ref": "#/parameters/projectID"
+          "$ref": "#/parameters/projectId"
         }
       ]
     },
-    "/projects/{projectID}/scripts/{scriptID}": {
+    "/projects/{projectId}/scripts/{scriptId}": {
       "get": {
         "summary": "Get Script",
         "operationId": "getScript",
@@ -503,10 +511,10 @@ func init() {
       },
       "parameters": [
         {
-          "$ref": "#/parameters/projectID"
+          "$ref": "#/parameters/projectId"
         },
         {
-          "$ref": "#/parameters/scriptID"
+          "$ref": "#/parameters/scriptId"
         }
       ]
     }
@@ -520,19 +528,19 @@ func init() {
       "type": "object",
       "title": "Data Common",
       "required": [
-        "job_id",
-        "script_id",
-        "script_rev",
+        "jobId",
+        "scriptId",
+        "scriptRev",
         "value"
       ],
       "properties": {
-        "job_id": {
+        "jobId": {
           "type": "string"
         },
-        "script_id": {
+        "scriptId": {
           "type": "string"
         },
-        "script_rev": {
+        "scriptRev": {
           "type": "string"
         },
         "value": {
@@ -561,17 +569,17 @@ func init() {
         {
           "type": "object",
           "required": [
-            "job_id",
-            "script_id"
+            "jobId",
+            "scriptId"
           ],
           "properties": {
-            "job_id": {
+            "jobId": {
               "type": "string"
             },
-            "script_id": {
+            "scriptId": {
               "type": "string"
             },
-            "script_rev": {
+            "scriptRev": {
               "type": "string"
             }
           }
@@ -660,9 +668,9 @@ func init() {
       "type": "object",
       "title": "Execution Common",
       "required": [
-        "job_id",
-        "script_id",
-        "script_rev",
+        "jobId",
+        "scriptId",
+        "scriptRev",
         "status",
         "cause"
       ],
@@ -670,15 +678,15 @@ func init() {
         "cause": {
           "$ref": "#/definitions/execution-cause"
         },
-        "job_id": {
+        "jobId": {
           "type": "string",
           "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
         },
-        "script_id": {
+        "scriptId": {
           "type": "string",
           "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
         },
-        "script_rev": {
+        "scriptRev": {
           "type": "string"
         },
         "status": {
@@ -691,7 +699,7 @@ func init() {
       "type": "object",
       "title": "Execution Input",
       "required": [
-        "scriptID"
+        "scriptId"
       ],
       "properties": {
         "params": {
@@ -700,7 +708,7 @@ func init() {
             "$ref": "#/definitions/any"
           }
         },
-        "scriptID": {
+        "scriptId": {
           "type": "string",
           "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
         }
@@ -725,7 +733,7 @@ func init() {
         {
           "type": "object",
           "properties": {
-            "ended_at": {
+            "endedAt": {
               "type": "string"
             },
             "error": {
@@ -743,7 +751,7 @@ func init() {
                 "$ref": "#/definitions/any"
               }
             },
-            "started_at": {
+            "startedAt": {
               "type": "string"
             }
           }
@@ -768,13 +776,13 @@ func init() {
       "type": "object",
       "title": "Metadata",
       "required": [
-        "created_at"
+        "createdAt"
       ],
       "properties": {
-        "created_at": {
+        "createdAt": {
           "type": "string"
         },
-        "updated_at": {
+        "updatedAt": {
           "type": "string"
         }
       }
@@ -982,17 +990,17 @@ func init() {
       "name": "cursor",
       "in": "query"
     },
-    "projectID": {
+    "projectId": {
       "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
       "type": "string",
-      "name": "projectID",
+      "name": "projectId",
       "in": "path",
       "required": true
     },
-    "scriptID": {
+    "scriptId": {
       "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
       "type": "string",
-      "name": "scriptID",
+      "name": "scriptId",
       "in": "path",
       "required": true
     },
@@ -1113,7 +1121,7 @@ func init() {
         }
       }
     },
-    "/projects/{projectID}": {
+    "/projects/{projectId}": {
       "get": {
         "summary": "Get Project",
         "operationId": "getProject",
@@ -1156,13 +1164,13 @@ func init() {
         {
           "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
           "type": "string",
-          "name": "projectID",
+          "name": "projectId",
           "in": "path",
           "required": true
         }
       ]
     },
-    "/projects/{projectID}/data": {
+    "/projects/{projectId}/data": {
       "get": {
         "summary": "List Data",
         "operationId": "findProjectData",
@@ -1210,13 +1218,13 @@ func init() {
       "parameters": [
         {
           "type": "string",
-          "name": "projectID",
+          "name": "projectId",
           "in": "path",
           "required": true
         }
       ]
     },
-    "/projects/{projectID}/data/{scriptID}": {
+    "/projects/{projectId}/data/{scriptId}": {
       "get": {
         "summary": "List Script Data",
         "operationId": "findScriptData",
@@ -1240,7 +1248,7 @@ func init() {
           {
             "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
             "type": "string",
-            "name": "scriptID",
+            "name": "scriptId",
             "in": "path",
             "required": true
           }
@@ -1271,19 +1279,19 @@ func init() {
       "parameters": [
         {
           "type": "string",
-          "name": "projectID",
+          "name": "projectId",
           "in": "path",
           "required": true
         },
         {
           "type": "string",
-          "name": "scriptID",
+          "name": "scriptId",
           "in": "path",
           "required": true
         }
       ]
     },
-    "/projects/{projectID}/data/{scriptID}/{dataId}": {
+    "/projects/{projectId}/data/{scriptId}/{dataId}": {
       "get": {
         "summary": "Get Data",
         "operationId": "getScriptData",
@@ -1325,13 +1333,13 @@ func init() {
       "parameters": [
         {
           "type": "string",
-          "name": "projectID",
+          "name": "projectId",
           "in": "path",
           "required": true
         },
         {
           "type": "string",
-          "name": "scriptID",
+          "name": "scriptId",
           "in": "path",
           "required": true
         },
@@ -1343,7 +1351,7 @@ func init() {
         }
       ]
     },
-    "/projects/{projectID}/exec": {
+    "/projects/{projectId}/exec": {
       "get": {
         "summary": "List Execution",
         "operationId": "findExecutions",
@@ -1428,7 +1436,15 @@ func init() {
         "responses": {
           "200": {
             "schema": {
-              "type": "string"
+              "type": "object",
+              "required": [
+                "jobId"
+              ],
+              "properties": {
+                "jobId": {
+                  "type": "string"
+                }
+              }
             }
           }
         }
@@ -1437,13 +1453,13 @@ func init() {
         {
           "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
           "type": "string",
-          "name": "projectID",
+          "name": "projectId",
           "in": "path",
           "required": true
         }
       ]
     },
-    "/projects/{projectID}/exec/{jobID}": {
+    "/projects/{projectId}/exec/{jobID}": {
       "get": {
         "summary": "Get Status of Execution",
         "operationId": "getExecution",
@@ -1466,7 +1482,7 @@ func init() {
         {
           "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
           "type": "string",
-          "name": "projectID",
+          "name": "projectId",
           "in": "path",
           "required": true
         },
@@ -1478,7 +1494,7 @@ func init() {
         }
       ]
     },
-    "/projects/{projectID}/scripts": {
+    "/projects/{projectId}/scripts": {
       "get": {
         "summary": "List Script",
         "operationId": "findScripts",
@@ -1547,13 +1563,13 @@ func init() {
         {
           "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
           "type": "string",
-          "name": "projectID",
+          "name": "projectId",
           "in": "path",
           "required": true
         }
       ]
     },
-    "/projects/{projectID}/scripts/{scriptID}": {
+    "/projects/{projectId}/scripts/{scriptId}": {
       "get": {
         "summary": "Get Script",
         "operationId": "getScript",
@@ -1596,14 +1612,14 @@ func init() {
         {
           "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
           "type": "string",
-          "name": "projectID",
+          "name": "projectId",
           "in": "path",
           "required": true
         },
         {
           "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
           "type": "string",
-          "name": "scriptID",
+          "name": "scriptId",
           "in": "path",
           "required": true
         }
@@ -1619,19 +1635,19 @@ func init() {
       "type": "object",
       "title": "Data Common",
       "required": [
-        "job_id",
-        "script_id",
-        "script_rev",
+        "jobId",
+        "scriptId",
+        "scriptRev",
         "value"
       ],
       "properties": {
-        "job_id": {
+        "jobId": {
           "type": "string"
         },
-        "script_id": {
+        "scriptId": {
           "type": "string"
         },
-        "script_rev": {
+        "scriptRev": {
           "type": "string"
         },
         "value": {
@@ -1660,17 +1676,17 @@ func init() {
         {
           "type": "object",
           "required": [
-            "job_id",
-            "script_id"
+            "jobId",
+            "scriptId"
           ],
           "properties": {
-            "job_id": {
+            "jobId": {
               "type": "string"
             },
-            "script_id": {
+            "scriptId": {
               "type": "string"
             },
-            "script_rev": {
+            "scriptRev": {
               "type": "string"
             }
           }
@@ -1759,9 +1775,9 @@ func init() {
       "type": "object",
       "title": "Execution Common",
       "required": [
-        "job_id",
-        "script_id",
-        "script_rev",
+        "jobId",
+        "scriptId",
+        "scriptRev",
         "status",
         "cause"
       ],
@@ -1769,15 +1785,15 @@ func init() {
         "cause": {
           "$ref": "#/definitions/execution-cause"
         },
-        "job_id": {
+        "jobId": {
           "type": "string",
           "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
         },
-        "script_id": {
+        "scriptId": {
           "type": "string",
           "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
         },
-        "script_rev": {
+        "scriptRev": {
           "type": "string"
         },
         "status": {
@@ -1790,7 +1806,7 @@ func init() {
       "type": "object",
       "title": "Execution Input",
       "required": [
-        "scriptID"
+        "scriptId"
       ],
       "properties": {
         "params": {
@@ -1799,7 +1815,7 @@ func init() {
             "$ref": "#/definitions/any"
           }
         },
-        "scriptID": {
+        "scriptId": {
           "type": "string",
           "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
         }
@@ -1824,7 +1840,7 @@ func init() {
         {
           "type": "object",
           "properties": {
-            "ended_at": {
+            "endedAt": {
               "type": "string"
             },
             "error": {
@@ -1842,7 +1858,7 @@ func init() {
                 "$ref": "#/definitions/any"
               }
             },
-            "started_at": {
+            "startedAt": {
               "type": "string"
             }
           }
@@ -1867,13 +1883,13 @@ func init() {
       "type": "object",
       "title": "Metadata",
       "required": [
-        "created_at"
+        "createdAt"
       ],
       "properties": {
-        "created_at": {
+        "createdAt": {
           "type": "string"
         },
-        "updated_at": {
+        "updatedAt": {
           "type": "string"
         }
       }
@@ -2081,17 +2097,17 @@ func init() {
       "name": "cursor",
       "in": "query"
     },
-    "projectID": {
+    "projectId": {
       "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
       "type": "string",
-      "name": "projectID",
+      "name": "projectId",
       "in": "path",
       "required": true
     },
-    "scriptID": {
+    "scriptId": {
       "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
       "type": "string",
-      "name": "scriptID",
+      "name": "scriptId",
       "in": "path",
       "required": true
     },

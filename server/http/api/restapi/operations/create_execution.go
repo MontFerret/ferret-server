@@ -8,7 +8,11 @@ package operations
 import (
 	"net/http"
 
+	errors "github.com/go-openapi/errors"
 	middleware "github.com/go-openapi/runtime/middleware"
+	strfmt "github.com/go-openapi/strfmt"
+	swag "github.com/go-openapi/swag"
+	validate "github.com/go-openapi/validate"
 )
 
 // CreateExecutionHandlerFunc turns a function with the right signature into a create execution handler
@@ -29,7 +33,7 @@ func NewCreateExecution(ctx *middleware.Context, handler CreateExecutionHandler)
 	return &CreateExecution{Context: ctx, Handler: handler}
 }
 
-/*CreateExecution swagger:route POST /projects/{projectID}/exec createExecution
+/*CreateExecution swagger:route POST /projects/{projectId}/exec createExecution
 
 Create Execution
 
@@ -55,4 +59,54 @@ func (o *CreateExecution) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
+}
+
+// CreateExecutionOKBody create execution o k body
+// swagger:model CreateExecutionOKBody
+type CreateExecutionOKBody struct {
+
+	// job Id
+	// Required: true
+	JobID *string `json:"jobId"`
+}
+
+// Validate validates this create execution o k body
+func (o *CreateExecutionOKBody) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateJobID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CreateExecutionOKBody) validateJobID(formats strfmt.Registry) error {
+
+	if err := validate.Required("createExecutionOK"+"."+"jobId", "body", o.JobID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *CreateExecutionOKBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *CreateExecutionOKBody) UnmarshalBinary(b []byte) error {
+	var res CreateExecutionOKBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
 }

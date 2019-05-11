@@ -23,19 +23,19 @@ type ExecutionCommon struct {
 	// Required: true
 	Cause ExecutionCause `json:"cause"`
 
-	// job id
+	// job Id
 	// Required: true
 	// Pattern: [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}
-	JobID *string `json:"job_id"`
+	JobID *string `json:"jobId"`
 
-	// script id
+	// script Id
 	// Required: true
 	// Pattern: [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}
-	ScriptID *string `json:"script_id"`
+	ScriptID *string `json:"scriptId"`
 
 	// script rev
 	// Required: true
-	ScriptRev *string `json:"script_rev"`
+	ScriptRev *string `json:"scriptRev"`
 
 	// status
 	// Required: true
@@ -86,11 +86,11 @@ func (m *ExecutionCommon) validateCause(formats strfmt.Registry) error {
 
 func (m *ExecutionCommon) validateJobID(formats strfmt.Registry) error {
 
-	if err := validate.Required("job_id", "body", m.JobID); err != nil {
+	if err := validate.Required("jobId", "body", m.JobID); err != nil {
 		return err
 	}
 
-	if err := validate.Pattern("job_id", "body", string(*m.JobID), `[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`); err != nil {
+	if err := validate.Pattern("jobId", "body", string(*m.JobID), `[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`); err != nil {
 		return err
 	}
 
@@ -99,11 +99,11 @@ func (m *ExecutionCommon) validateJobID(formats strfmt.Registry) error {
 
 func (m *ExecutionCommon) validateScriptID(formats strfmt.Registry) error {
 
-	if err := validate.Required("script_id", "body", m.ScriptID); err != nil {
+	if err := validate.Required("scriptId", "body", m.ScriptID); err != nil {
 		return err
 	}
 
-	if err := validate.Pattern("script_id", "body", string(*m.ScriptID), `[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`); err != nil {
+	if err := validate.Pattern("scriptId", "body", string(*m.ScriptID), `[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`); err != nil {
 		return err
 	}
 
@@ -112,7 +112,7 @@ func (m *ExecutionCommon) validateScriptID(formats strfmt.Registry) error {
 
 func (m *ExecutionCommon) validateScriptRev(formats strfmt.Registry) error {
 
-	if err := validate.Required("script_rev", "body", m.ScriptRev); err != nil {
+	if err := validate.Required("scriptRev", "body", m.ScriptRev); err != nil {
 		return err
 	}
 

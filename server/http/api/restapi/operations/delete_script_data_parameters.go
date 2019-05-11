@@ -61,12 +61,12 @@ func (o *DeleteScriptDataParams) BindRequest(r *http.Request, route *middleware.
 		res = append(res, err)
 	}
 
-	rProjectID, rhkProjectID, _ := route.Params.GetOK("projectID")
+	rProjectID, rhkProjectID, _ := route.Params.GetOK("projectId")
 	if err := o.bindProjectID(rProjectID, rhkProjectID, route.Formats); err != nil {
 		res = append(res, err)
 	}
 
-	rScriptID, rhkScriptID, _ := route.Params.GetOK("scriptID")
+	rScriptID, rhkScriptID, _ := route.Params.GetOK("scriptId")
 	if err := o.bindScriptID(rScriptID, rhkScriptID, route.Formats); err != nil {
 		res = append(res, err)
 	}

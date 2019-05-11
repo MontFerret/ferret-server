@@ -29,7 +29,7 @@ func NewGetProject(ctx *middleware.Context, handler GetProjectHandler) *GetProje
 	return &GetProject{Context: ctx, Handler: handler}
 }
 
-/*GetProject swagger:route GET /projects/{projectID} getProject
+/*GetProject swagger:route GET /projects/{projectId} getProject
 
 Get Project
 

@@ -42,7 +42,7 @@ func (o *UpdateScriptDataURL) SetBasePath(bp string) {
 func (o *UpdateScriptDataURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/projects/{projectID}/data/{scriptID}/{dataId}"
+	var _path = "/projects/{projectId}/data/{scriptId}/{dataId}"
 
 	dataID := o.DataID
 	if dataID != "" {
@@ -53,14 +53,14 @@ func (o *UpdateScriptDataURL) Build() (*url.URL, error) {
 
 	projectID := o.ProjectID
 	if projectID != "" {
-		_path = strings.Replace(_path, "{projectID}", projectID, -1)
+		_path = strings.Replace(_path, "{projectId}", projectID, -1)
 	} else {
 		return nil, errors.New("projectId is required on UpdateScriptDataURL")
 	}
 
 	scriptID := o.ScriptID
 	if scriptID != "" {
-		_path = strings.Replace(_path, "{scriptID}", scriptID, -1)
+		_path = strings.Replace(_path, "{scriptId}", scriptID, -1)
 	} else {
 		return nil, errors.New("scriptId is required on UpdateScriptDataURL")
 	}

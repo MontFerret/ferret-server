@@ -35,7 +35,7 @@ func NewFindExecutions(ctx *middleware.Context, handler FindExecutionsHandler) *
 	return &FindExecutions{Context: ctx, Handler: handler}
 }
 
-/*FindExecutions swagger:route GET /projects/{projectID}/exec findExecutions
+/*FindExecutions swagger:route GET /projects/{projectId}/exec findExecutions
 
 List Execution
 

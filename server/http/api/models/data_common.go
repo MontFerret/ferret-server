@@ -19,17 +19,17 @@ import (
 // swagger:model data-common
 type DataCommon struct {
 
-	// job id
+	// job Id
 	// Required: true
-	JobID *string `json:"job_id"`
+	JobID *string `json:"jobId"`
 
-	// script id
+	// script Id
 	// Required: true
-	ScriptID *string `json:"script_id"`
+	ScriptID *string `json:"scriptId"`
 
 	// script rev
 	// Required: true
-	ScriptRev *string `json:"script_rev"`
+	ScriptRev *string `json:"scriptRev"`
 
 	// value
 	// Required: true
@@ -64,7 +64,7 @@ func (m *DataCommon) Validate(formats strfmt.Registry) error {
 
 func (m *DataCommon) validateJobID(formats strfmt.Registry) error {
 
-	if err := validate.Required("job_id", "body", m.JobID); err != nil {
+	if err := validate.Required("jobId", "body", m.JobID); err != nil {
 		return err
 	}
 
@@ -73,7 +73,7 @@ func (m *DataCommon) validateJobID(formats strfmt.Registry) error {
 
 func (m *DataCommon) validateScriptID(formats strfmt.Registry) error {
 
-	if err := validate.Required("script_id", "body", m.ScriptID); err != nil {
+	if err := validate.Required("scriptId", "body", m.ScriptID); err != nil {
 		return err
 	}
 
@@ -82,7 +82,7 @@ func (m *DataCommon) validateScriptID(formats strfmt.Registry) error {
 
 func (m *DataCommon) validateScriptRev(formats strfmt.Registry) error {
 
-	if err := validate.Required("script_rev", "body", m.ScriptRev); err != nil {
+	if err := validate.Required("scriptRev", "body", m.ScriptRev); err != nil {
 		return err
 	}
 

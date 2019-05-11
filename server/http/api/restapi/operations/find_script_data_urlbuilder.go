@@ -46,18 +46,18 @@ func (o *FindScriptDataURL) SetBasePath(bp string) {
 func (o *FindScriptDataURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/projects/{projectID}/data/{scriptID}"
+	var _path = "/projects/{projectId}/data/{scriptId}"
 
 	projectID := o.ProjectID
 	if projectID != "" {
-		_path = strings.Replace(_path, "{projectID}", projectID, -1)
+		_path = strings.Replace(_path, "{projectId}", projectID, -1)
 	} else {
 		return nil, errors.New("projectId is required on FindScriptDataURL")
 	}
 
 	scriptID := o.ScriptID
 	if scriptID != "" {
-		_path = strings.Replace(_path, "{scriptID}", scriptID, -1)
+		_path = strings.Replace(_path, "{scriptId}", scriptID, -1)
 	} else {
 		return nil, errors.New("scriptId is required on FindScriptDataURL")
 	}

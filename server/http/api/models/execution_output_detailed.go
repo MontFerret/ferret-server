@@ -20,7 +20,7 @@ type ExecutionOutputDetailed struct {
 	ExecutionOutput
 
 	// ended at
-	EndedAt string `json:"ended_at,omitempty"`
+	EndedAt string `json:"endedAt,omitempty"`
 
 	// error
 	Error string `json:"error,omitempty"`
@@ -32,7 +32,7 @@ type ExecutionOutputDetailed struct {
 	Params map[string]Any `json:"params,omitempty"`
 
 	// started at
-	StartedAt string `json:"started_at,omitempty"`
+	StartedAt string `json:"startedAt,omitempty"`
 }
 
 // UnmarshalJSON unmarshals this object from a JSON structure
@@ -46,7 +46,7 @@ func (m *ExecutionOutputDetailed) UnmarshalJSON(raw []byte) error {
 
 	// AO1
 	var dataAO1 struct {
-		EndedAt string `json:"ended_at,omitempty"`
+		EndedAt string `json:"endedAt,omitempty"`
 
 		Error string `json:"error,omitempty"`
 
@@ -54,7 +54,7 @@ func (m *ExecutionOutputDetailed) UnmarshalJSON(raw []byte) error {
 
 		Params map[string]Any `json:"params,omitempty"`
 
-		StartedAt string `json:"started_at,omitempty"`
+		StartedAt string `json:"startedAt,omitempty"`
 	}
 	if err := swag.ReadJSON(raw, &dataAO1); err != nil {
 		return err
@@ -84,7 +84,7 @@ func (m ExecutionOutputDetailed) MarshalJSON() ([]byte, error) {
 	_parts = append(_parts, aO0)
 
 	var dataAO1 struct {
-		EndedAt string `json:"ended_at,omitempty"`
+		EndedAt string `json:"endedAt,omitempty"`
 
 		Error string `json:"error,omitempty"`
 
@@ -92,7 +92,7 @@ func (m ExecutionOutputDetailed) MarshalJSON() ([]byte, error) {
 
 		Params map[string]Any `json:"params,omitempty"`
 
-		StartedAt string `json:"started_at,omitempty"`
+		StartedAt string `json:"startedAt,omitempty"`
 	}
 
 	dataAO1.EndedAt = m.EndedAt

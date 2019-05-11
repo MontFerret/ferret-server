@@ -35,7 +35,7 @@ func NewFindScriptData(ctx *middleware.Context, handler FindScriptDataHandler) *
 	return &FindScriptData{Context: ctx, Handler: handler}
 }
 
-/*FindScriptData swagger:route GET /projects/{projectID}/data/{scriptID} findScriptData
+/*FindScriptData swagger:route GET /projects/{projectId}/data/{scriptId} findScriptData
 
 List Script Data
 

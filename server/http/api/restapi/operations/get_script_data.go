@@ -29,7 +29,7 @@ func NewGetScriptData(ctx *middleware.Context, handler GetScriptDataHandler) *Ge
 	return &GetScriptData{Context: ctx, Handler: handler}
 }
 
-/*GetScriptData swagger:route GET /projects/{projectID}/data/{scriptID}/{dataId} getScriptData
+/*GetScriptData swagger:route GET /projects/{projectId}/data/{scriptId}/{dataId} getScriptData
 
 Get Data
 

@@ -29,7 +29,7 @@ func NewUpdateScript(ctx *middleware.Context, handler UpdateScriptHandler) *Upda
 	return &UpdateScript{Context: ctx, Handler: handler}
 }
 
-/*UpdateScript swagger:route PUT /projects/{projectID}/scripts/{scriptID} updateScript
+/*UpdateScript swagger:route PUT /projects/{projectId}/scripts/{scriptId} updateScript
 
 Update Script
 

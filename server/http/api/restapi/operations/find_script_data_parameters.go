@@ -86,12 +86,12 @@ func (o *FindScriptDataParams) BindRequest(r *http.Request, route *middleware.Ma
 		res = append(res, err)
 	}
 
-	rProjectID, rhkProjectID, _ := route.Params.GetOK("projectID")
+	rProjectID, rhkProjectID, _ := route.Params.GetOK("projectId")
 	if err := o.bindProjectID(rProjectID, rhkProjectID, route.Formats); err != nil {
 		res = append(res, err)
 	}
 
-	rScriptID, rhkScriptID, _ := route.Params.GetOK("scriptID")
+	rScriptID, rhkScriptID, _ := route.Params.GetOK("scriptId")
 	if err := o.bindScriptID(rScriptID, rhkScriptID, route.Formats); err != nil {
 		res = append(res, err)
 	}
@@ -198,7 +198,7 @@ func (o *FindScriptDataParams) bindScriptID(rawData []string, hasKey bool, forma
 // validateScriptID carries on validations for parameter ScriptID
 func (o *FindScriptDataParams) validateScriptID(formats strfmt.Registry) error {
 
-	if err := validate.Pattern("scriptID", "path", o.ScriptID, `[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`); err != nil {
+	if err := validate.Pattern("scriptId", "path", o.ScriptID, `[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`); err != nil {
 		return err
 	}
 

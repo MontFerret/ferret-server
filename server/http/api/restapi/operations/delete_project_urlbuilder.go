@@ -40,11 +40,11 @@ func (o *DeleteProjectURL) SetBasePath(bp string) {
 func (o *DeleteProjectURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/projects/{projectID}"
+	var _path = "/projects/{projectId}"
 
 	projectID := o.ProjectID
 	if projectID != "" {
-		_path = strings.Replace(_path, "{projectID}", projectID, -1)
+		_path = strings.Replace(_path, "{projectId}", projectID, -1)
 	} else {
 		return nil, errors.New("projectId is required on DeleteProjectURL")
 	}

@@ -23,7 +23,7 @@ type CreateExecutionOK struct {
 	/*
 	  In: Body
 	*/
-	Payload string `json:"body,omitempty"`
+	Payload *CreateExecutionOKBody `json:"body,omitempty"`
 }
 
 // NewCreateExecutionOK creates CreateExecutionOK with default headers values
@@ -33,13 +33,13 @@ func NewCreateExecutionOK() *CreateExecutionOK {
 }
 
 // WithPayload adds the payload to the create execution o k response
-func (o *CreateExecutionOK) WithPayload(payload string) *CreateExecutionOK {
+func (o *CreateExecutionOK) WithPayload(payload *CreateExecutionOKBody) *CreateExecutionOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the create execution o k response
-func (o *CreateExecutionOK) SetPayload(payload string) {
+func (o *CreateExecutionOK) SetPayload(payload *CreateExecutionOKBody) {
 	o.Payload = payload
 }
 
@@ -47,8 +47,10 @@ func (o *CreateExecutionOK) SetPayload(payload string) {
 func (o *CreateExecutionOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.WriteHeader(200)
-	payload := o.Payload
-	if err := producer.Produce(rw, payload); err != nil {
-		panic(err) // let the recovery middleware deal with this
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
 	}
 }

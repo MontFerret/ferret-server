@@ -22,10 +22,10 @@ type ExecutionInput struct {
 	// params
 	Params map[string]Any `json:"params,omitempty"`
 
-	// script ID
+	// script Id
 	// Required: true
 	// Pattern: [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}
-	ScriptID *string `json:"scriptID"`
+	ScriptID *string `json:"scriptId"`
 }
 
 // Validate validates this execution input
@@ -44,11 +44,11 @@ func (m *ExecutionInput) Validate(formats strfmt.Registry) error {
 
 func (m *ExecutionInput) validateScriptID(formats strfmt.Registry) error {
 
-	if err := validate.Required("scriptID", "body", m.ScriptID); err != nil {
+	if err := validate.Required("scriptId", "body", m.ScriptID); err != nil {
 		return err
 	}
 
-	if err := validate.Pattern("scriptID", "body", string(*m.ScriptID), `[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`); err != nil {
+	if err := validate.Pattern("scriptId", "body", string(*m.ScriptID), `[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`); err != nil {
 		return err
 	}
 

@@ -45,13 +45,15 @@ func MockScript(query string, params map[string]interface{}) scripts.ScriptEntit
 	scriptID, _ := uuid.NewV4()
 	rev, _ := uuid.NewV4()
 
+	ts := time.Now()
+
 	return scripts.ScriptEntity{
 		Entity: dal.Entity{
 			ID:  scriptID.String(),
 			Rev: rev.String(),
 			Metadata: dal.Metadata{
-				CreatedAt: time.Now(),
-				UpdateAt:  time.Now(),
+				CreatedAt: &ts,
+				UpdateAt:  &ts,
 			},
 		},
 		Script: scripts.Script{

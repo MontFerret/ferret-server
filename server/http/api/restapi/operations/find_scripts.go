@@ -35,7 +35,7 @@ func NewFindScripts(ctx *middleware.Context, handler FindScriptsHandler) *FindSc
 	return &FindScripts{Context: ctx, Handler: handler}
 }
 
-/*FindScripts swagger:route GET /projects/{projectID}/scripts findScripts
+/*FindScripts swagger:route GET /projects/{projectId}/scripts findScripts
 
 List Script
 

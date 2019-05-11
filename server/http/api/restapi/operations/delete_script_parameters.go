@@ -54,12 +54,12 @@ func (o *DeleteScriptParams) BindRequest(r *http.Request, route *middleware.Matc
 
 	o.HTTPRequest = r
 
-	rProjectID, rhkProjectID, _ := route.Params.GetOK("projectID")
+	rProjectID, rhkProjectID, _ := route.Params.GetOK("projectId")
 	if err := o.bindProjectID(rProjectID, rhkProjectID, route.Formats); err != nil {
 		res = append(res, err)
 	}
 
-	rScriptID, rhkScriptID, _ := route.Params.GetOK("scriptID")
+	rScriptID, rhkScriptID, _ := route.Params.GetOK("scriptId")
 	if err := o.bindScriptID(rScriptID, rhkScriptID, route.Formats); err != nil {
 		res = append(res, err)
 	}
@@ -92,7 +92,7 @@ func (o *DeleteScriptParams) bindProjectID(rawData []string, hasKey bool, format
 // validateProjectID carries on validations for parameter ProjectID
 func (o *DeleteScriptParams) validateProjectID(formats strfmt.Registry) error {
 
-	if err := validate.Pattern("projectID", "path", o.ProjectID, `[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`); err != nil {
+	if err := validate.Pattern("projectId", "path", o.ProjectID, `[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`); err != nil {
 		return err
 	}
 
@@ -121,7 +121,7 @@ func (o *DeleteScriptParams) bindScriptID(rawData []string, hasKey bool, formats
 // validateScriptID carries on validations for parameter ScriptID
 func (o *DeleteScriptParams) validateScriptID(formats strfmt.Registry) error {
 
-	if err := validate.Pattern("scriptID", "path", o.ScriptID, `[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`); err != nil {
+	if err := validate.Pattern("scriptId", "path", o.ScriptID, `[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`); err != nil {
 		return err
 	}
 

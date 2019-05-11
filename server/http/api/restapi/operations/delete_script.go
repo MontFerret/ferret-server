@@ -29,7 +29,7 @@ func NewDeleteScript(ctx *middleware.Context, handler DeleteScriptHandler) *Dele
 	return &DeleteScript{Context: ctx, Handler: handler}
 }
 
-/*DeleteScript swagger:route DELETE /projects/{projectID}/scripts/{scriptID} deleteScript
+/*DeleteScript swagger:route DELETE /projects/{projectId}/scripts/{scriptId} deleteScript
 
 Delete Script
 

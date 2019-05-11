@@ -80,7 +80,7 @@ func (o *FindProjectDataParams) BindRequest(r *http.Request, route *middleware.M
 		res = append(res, err)
 	}
 
-	rProjectID, rhkProjectID, _ := route.Params.GetOK("projectID")
+	rProjectID, rhkProjectID, _ := route.Params.GetOK("projectId")
 	if err := o.bindProjectID(rProjectID, rhkProjectID, route.Formats); err != nil {
 		res = append(res, err)
 	}

@@ -20,16 +20,16 @@ import (
 type DataOutput struct {
 	Entity
 
-	// job id
+	// job Id
 	// Required: true
-	JobID *string `json:"job_id"`
+	JobID *string `json:"jobId"`
 
-	// script id
+	// script Id
 	// Required: true
-	ScriptID *string `json:"script_id"`
+	ScriptID *string `json:"scriptId"`
 
 	// script rev
-	ScriptRev string `json:"script_rev,omitempty"`
+	ScriptRev string `json:"scriptRev,omitempty"`
 }
 
 // UnmarshalJSON unmarshals this object from a JSON structure
@@ -43,11 +43,11 @@ func (m *DataOutput) UnmarshalJSON(raw []byte) error {
 
 	// AO1
 	var dataAO1 struct {
-		JobID *string `json:"job_id"`
+		JobID *string `json:"jobId"`
 
-		ScriptID *string `json:"script_id"`
+		ScriptID *string `json:"scriptId"`
 
-		ScriptRev string `json:"script_rev,omitempty"`
+		ScriptRev string `json:"scriptRev,omitempty"`
 	}
 	if err := swag.ReadJSON(raw, &dataAO1); err != nil {
 		return err
@@ -73,11 +73,11 @@ func (m DataOutput) MarshalJSON() ([]byte, error) {
 	_parts = append(_parts, aO0)
 
 	var dataAO1 struct {
-		JobID *string `json:"job_id"`
+		JobID *string `json:"jobId"`
 
-		ScriptID *string `json:"script_id"`
+		ScriptID *string `json:"scriptId"`
 
-		ScriptRev string `json:"script_rev,omitempty"`
+		ScriptRev string `json:"scriptRev,omitempty"`
 	}
 
 	dataAO1.JobID = m.JobID
@@ -120,7 +120,7 @@ func (m *DataOutput) Validate(formats strfmt.Registry) error {
 
 func (m *DataOutput) validateJobID(formats strfmt.Registry) error {
 
-	if err := validate.Required("job_id", "body", m.JobID); err != nil {
+	if err := validate.Required("jobId", "body", m.JobID); err != nil {
 		return err
 	}
 
@@ -129,7 +129,7 @@ func (m *DataOutput) validateJobID(formats strfmt.Registry) error {
 
 func (m *DataOutput) validateScriptID(formats strfmt.Registry) error {
 
-	if err := validate.Required("script_id", "body", m.ScriptID); err != nil {
+	if err := validate.Required("scriptId", "body", m.ScriptID); err != nil {
 		return err
 	}
 

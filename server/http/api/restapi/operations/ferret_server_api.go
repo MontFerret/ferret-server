@@ -403,7 +403,7 @@ func (o *FerretServerAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/projects/{projectID}/exec"] = NewCreateExecution(o.context, o.CreateExecutionHandler)
+	o.handlers["POST"]["/projects/{projectId}/exec"] = NewCreateExecution(o.context, o.CreateExecutionHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
@@ -413,37 +413,37 @@ func (o *FerretServerAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/projects/{projectID}/scripts"] = NewCreateScript(o.context, o.CreateScriptHandler)
+	o.handlers["POST"]["/projects/{projectId}/scripts"] = NewCreateScript(o.context, o.CreateScriptHandler)
 
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
-	o.handlers["DELETE"]["/projects/{projectID}/exec/{jobID}"] = NewDeleteExecution(o.context, o.DeleteExecutionHandler)
+	o.handlers["DELETE"]["/projects/{projectId}/exec/{jobID}"] = NewDeleteExecution(o.context, o.DeleteExecutionHandler)
 
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
-	o.handlers["DELETE"]["/projects/{projectID}"] = NewDeleteProject(o.context, o.DeleteProjectHandler)
+	o.handlers["DELETE"]["/projects/{projectId}"] = NewDeleteProject(o.context, o.DeleteProjectHandler)
 
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
-	o.handlers["DELETE"]["/projects/{projectID}/scripts/{scriptID}"] = NewDeleteScript(o.context, o.DeleteScriptHandler)
+	o.handlers["DELETE"]["/projects/{projectId}/scripts/{scriptId}"] = NewDeleteScript(o.context, o.DeleteScriptHandler)
 
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
-	o.handlers["DELETE"]["/projects/{projectID}/data/{scriptID}/{dataId}"] = NewDeleteScriptData(o.context, o.DeleteScriptDataHandler)
+	o.handlers["DELETE"]["/projects/{projectId}/data/{scriptId}/{dataId}"] = NewDeleteScriptData(o.context, o.DeleteScriptDataHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/projects/{projectID}/exec"] = NewFindExecutions(o.context, o.FindExecutionsHandler)
+	o.handlers["GET"]["/projects/{projectId}/exec"] = NewFindExecutions(o.context, o.FindExecutionsHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/projects/{projectID}/data"] = NewFindProjectData(o.context, o.FindProjectDataHandler)
+	o.handlers["GET"]["/projects/{projectId}/data"] = NewFindProjectData(o.context, o.FindProjectDataHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
@@ -453,47 +453,47 @@ func (o *FerretServerAPI) initHandlerCache() {
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/projects/{projectID}/data/{scriptID}"] = NewFindScriptData(o.context, o.FindScriptDataHandler)
+	o.handlers["GET"]["/projects/{projectId}/data/{scriptId}"] = NewFindScriptData(o.context, o.FindScriptDataHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/projects/{projectID}/scripts"] = NewFindScripts(o.context, o.FindScriptsHandler)
+	o.handlers["GET"]["/projects/{projectId}/scripts"] = NewFindScripts(o.context, o.FindScriptsHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/projects/{projectID}/exec/{jobID}"] = NewGetExecution(o.context, o.GetExecutionHandler)
+	o.handlers["GET"]["/projects/{projectId}/exec/{jobID}"] = NewGetExecution(o.context, o.GetExecutionHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/projects/{projectID}"] = NewGetProject(o.context, o.GetProjectHandler)
+	o.handlers["GET"]["/projects/{projectId}"] = NewGetProject(o.context, o.GetProjectHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/projects/{projectID}/scripts/{scriptID}"] = NewGetScript(o.context, o.GetScriptHandler)
+	o.handlers["GET"]["/projects/{projectId}/scripts/{scriptId}"] = NewGetScript(o.context, o.GetScriptHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/projects/{projectID}/data/{scriptID}/{dataId}"] = NewGetScriptData(o.context, o.GetScriptDataHandler)
+	o.handlers["GET"]["/projects/{projectId}/data/{scriptId}/{dataId}"] = NewGetScriptData(o.context, o.GetScriptDataHandler)
 
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
-	o.handlers["PUT"]["/projects/{projectID}"] = NewUpdateProject(o.context, o.UpdateProjectHandler)
+	o.handlers["PUT"]["/projects/{projectId}"] = NewUpdateProject(o.context, o.UpdateProjectHandler)
 
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
-	o.handlers["PUT"]["/projects/{projectID}/scripts/{scriptID}"] = NewUpdateScript(o.context, o.UpdateScriptHandler)
+	o.handlers["PUT"]["/projects/{projectId}/scripts/{scriptId}"] = NewUpdateScript(o.context, o.UpdateScriptHandler)
 
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
-	o.handlers["PUT"]["/projects/{projectID}/data/{scriptID}/{dataId}"] = NewUpdateScriptData(o.context, o.UpdateScriptDataHandler)
+	o.handlers["PUT"]["/projects/{projectId}/data/{scriptId}/{dataId}"] = NewUpdateScriptData(o.context, o.UpdateScriptDataHandler)
 
 }
 

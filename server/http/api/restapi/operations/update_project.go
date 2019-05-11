@@ -29,7 +29,7 @@ func NewUpdateProject(ctx *middleware.Context, handler UpdateProjectHandler) *Up
 	return &UpdateProject{Context: ctx, Handler: handler}
 }
 
-/*UpdateProject swagger:route PUT /projects/{projectID} updateProject
+/*UpdateProject swagger:route PUT /projects/{projectId} updateProject
 
 Update Project
 
