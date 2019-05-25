@@ -11,11 +11,11 @@ func MetadataFrom(from dal.Metadata) *models.Metadata {
 	var createdAt string
 	var updatedAt string
 
-	if from.CreatedAt.IsZero() == false {
+	if from.CreatedAt != nil && from.CreatedAt.IsZero() == false {
 		createdAt = from.CreatedAt.String()
 	}
 
-	if from.UpdateAt.IsZero() == false {
+	if from.UpdateAt != nil && from.UpdateAt.IsZero() == false {
 		updatedAt = from.UpdateAt.String()
 	}
 

@@ -7,13 +7,13 @@ import (
 var (
 	findAll = `
 		FOR i IN %s
-			SORT i.created_at
+			SORT i.created_at DESC
 			LIMIT  @` + ParamPageOffset + `, @` + ParamPageCount + `
 			RETURN i
 `
 	findAllByScriptID = `
 		FOR i IN %s
-			SORT i.created_at
+			SORT i.created_at DESC
 			FILTER i.script_id == @` + ParamFilterByScriptID + `
 			LIMIT  @` + ParamPageOffset + `, @` + ParamPageCount + `
 			RETURN i

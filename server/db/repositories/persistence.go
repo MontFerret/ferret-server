@@ -63,7 +63,7 @@ func NewPersistenceRepository(db driver.Database, collectionName string) (*Persi
 	})
 
 	if err != nil {
-		return nil, errors.Wrap(err, "create skiplist indexes")
+		return nil, errors.Wrap(err, "create skip list indexes")
 	}
 
 	return &PersistenceRepository{collection: collection}, nil

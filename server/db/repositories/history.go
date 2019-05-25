@@ -123,8 +123,6 @@ func (repo *HistoryRepository) Get(ctx context.Context, jobID string) (history.R
 func (repo *HistoryRepository) Find(ctx context.Context, q dal.Query) (history.QueryResult, error) {
 	cq := compileQuery(repo.collection.Name(), q)
 
-	fmt.Println(cq.String)
-
 	cursor, err := repo.collection.Database().Query(
 		ctx,
 		cq.String,

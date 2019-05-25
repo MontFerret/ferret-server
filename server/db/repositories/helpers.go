@@ -114,6 +114,7 @@ func compileQuery(collectionName string, q dal.Query) dal.CompiledQuery {
 	qs.WriteString("SORT ")
 	qs.WriteString(varName)
 	qs.WriteString(".created_at")
+	qs.WriteString(" DESC ")
 
 	if q.Filtering.Fields != nil && len(q.Filtering.Fields) > 0 {
 		qs.WriteString("\n")
