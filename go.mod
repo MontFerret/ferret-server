@@ -3,7 +3,7 @@ module github.com/MontFerret/ferret-server
 go 1.12
 
 require (
-	github.com/MontFerret/ferret v0.7.0
+	github.com/MontFerret/ferret v0.8.2
 	github.com/PuerkitoBio/goquery v1.5.0 // indirect
 	github.com/antlr/antlr4 v0.0.0-20190325153624-837aa60e2c47 // indirect
 	github.com/arangodb/go-driver v0.0.0-20190419135208-92d7387e1e88
