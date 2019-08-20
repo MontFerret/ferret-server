@@ -18,7 +18,7 @@ require (
 	github.com/go-openapi/runtime v0.19.3
 	github.com/go-openapi/spec v0.19.0
 	github.com/go-openapi/strfmt v0.19.2
-	github.com/go-openapi/swag v0.19.4
+	github.com/go-openapi/swag v0.19.5
 	github.com/go-openapi/validate v0.19.2
 	github.com/gofrs/uuid v3.2.0+incompatible
 	github.com/google/go-cmp v0.2.0 // indirect
