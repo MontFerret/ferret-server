@@ -32,7 +32,7 @@ require (
 	github.com/namsral/flag v1.7.4-pre
 	github.com/pilu/xrequestid v0.0.0-20160221113542-870344eeaa6c
 	github.com/pkg/errors v0.8.1
-	github.com/rs/zerolog v1.15.0
+	github.com/rs/zerolog v1.16.0
 	github.com/sethgrid/pester v0.0.0-20190127155807-68a33a018ad0 // indirect
 	github.com/smartystreets/assertions v0.0.0-20190401211740-f487f9de1cd3 // indirect
 	github.com/smartystreets/goconvey v0.0.0-20190330032615-68dc04aab96a
