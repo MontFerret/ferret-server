@@ -11,7 +11,7 @@ require (
 	github.com/coreos/go-iptables v0.4.0 // indirect
 	github.com/corpix/uarand v0.1.0 // indirect
 	github.com/go-openapi/analysis v0.19.0 // indirect
-	github.com/go-openapi/errors v0.19.0
+	github.com/go-openapi/errors v0.19.4
 	github.com/go-openapi/jsonpointer v0.19.0 // indirect
 	github.com/go-openapi/jsonreference v0.19.0 // indirect
 	github.com/go-openapi/loads v0.19.2
