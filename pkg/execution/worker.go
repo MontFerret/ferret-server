@@ -17,13 +17,13 @@ var ErrWorkerAlreadyRunning = errors.New("worker already running")
 
 type FQLWorker struct {
 	mu       sync.Mutex
-	compiler *compiler.FqlCompiler
+	compiler *compiler.Compiler
 	log      io.Writer
 	job      Job
 	cancel   context.CancelFunc
 }
 
-func NewFQLWorker(compiler *compiler.FqlCompiler, log io.Writer, job Job) Worker {
+func NewFQLWorker(compiler *compiler.Compiler, log io.Writer, job Job) Worker {
 	w := new(FQLWorker)
 	w.compiler = compiler
 	w.log = log

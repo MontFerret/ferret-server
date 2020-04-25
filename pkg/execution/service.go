@@ -34,7 +34,7 @@ type (
 	Service struct {
 		logger   *zerolog.Logger
 		db       DbContext
-		compiler *compiler.FqlCompiler
+		compiler *compiler.Compiler
 		queue    Queue
 		pool     *WorkerPool
 		state    StateWriter
@@ -46,7 +46,7 @@ func NewService(
 	settings Settings,
 	logger *zerolog.Logger,
 	db DbContext,
-	compiler *compiler.FqlCompiler,
+	compiler *compiler.Compiler,
 	queue Queue,
 	state StateWriter,
 	logs LogWriter,
