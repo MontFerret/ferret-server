@@ -3,7 +3,7 @@ module github.com/MontFerret/ferret-server
 go 1.14
 
 require (
-	github.com/MontFerret/ferret v0.10.2
+	github.com/MontFerret/ferret v0.11.1
 	github.com/arangodb/go-driver v0.0.0-20200403100147-ca5dd87ffe93
 	github.com/codegangsta/negroni v1.0.0
 	github.com/go-openapi/errors v0.19.4
