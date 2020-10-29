@@ -3,7 +3,7 @@ module github.com/MontFerret/ferret-server
 go 1.14
 
 require (
-	github.com/MontFerret/ferret v0.10.2
+	github.com/MontFerret/ferret v0.12.1
 	github.com/arangodb/go-driver v0.0.0-20200403100147-ca5dd87ffe93
 	github.com/codegangsta/negroni v1.0.0
 	github.com/go-openapi/errors v0.19.4
@@ -18,7 +18,8 @@ require (
 	github.com/namsral/flag v1.7.4-pre
 	github.com/pilu/xrequestid v0.0.0-20160221113542-870344eeaa6c
 	github.com/pkg/errors v0.9.1
-	github.com/rs/zerolog v1.18.0
+	github.com/rs/zerolog v1.19.0
 	github.com/smartystreets/goconvey v1.6.4
+	github.com/zenazn/goji v0.9.0 // indirect
 	golang.org/x/net v0.0.0-20200421231249-e086a090c8fd
 )
