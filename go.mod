@@ -20,5 +20,5 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/rs/zerolog v1.18.0
 	github.com/smartystreets/goconvey v1.6.4
-	golang.org/x/net v0.0.0-20200421231249-e086a090c8fd
+	golang.org/x/net v0.7.0
 )
